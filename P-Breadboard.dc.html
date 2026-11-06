@@ -1698,7 +1698,7 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <div ref="{{qRingRef}}" class="k-rp"><div class="k-rs"></div><div ref="{{qProbeRef}}" class="k-probe k-mono"></div></div>
 <div ref="{{qDotRef}}" class="k-dp"><div class="k-ds"></div></div>
 </div>
-<div class="mk-desktop-theater" style="position: relative; height: 2900vh">
+<div class="mk-desktop-theater" style="position: relative; height: 2590vh">
 <div style="position: sticky; top: 0px; height: 100vh; overflow: hidden; contain: layout paint; background-color: #17261F">
 <div class="k-grid k-mat" aria-hidden="true"></div>
 <div class="k-clip">
@@ -1950,7 +1950,8 @@ qMagC = (el) => { this.qMagEl.c = el; };
 // wheel and trackpad scroll natively (on the compositor, with the system's own momentum); the scene eases after it in qLoop
 qOnScroll = (ev) => {
 const el = ev.currentTarget;
-this.qTarget = el.clientHeight > 0 ? el.scrollTop / el.clientHeight : 0;
+const scroll = el.clientHeight > 0 ? el.scrollTop / el.clientHeight : 0;
+this.qTarget = this.qPh3D ? scroll : this.qMap(scroll);
 this.qWake();
 };
 componentDidMount() {
@@ -2207,7 +2208,7 @@ qGo(screens) {
 return (ev) => {
 if (ev && ev.preventDefault) ev.preventDefault();
 const el = this.qEl; if (!el) return;
-const top = screens < 0 ? el.scrollHeight : screens * el.clientHeight;
+const top = screens < 0 ? el.scrollHeight : this.qUnmap(screens) * el.clientHeight;
 el.scrollTo({ top, behavior: 'smooth' });
 };
 }
@@ -2252,8 +2253,9 @@ if (ev && ev.preventDefault) ev.preventDefault();
 const el = this.qEl; if (!el) return;
 const ov = this.qFadeEl;
 const jump = () => {
-el.scrollTop = typeof screens === 'function' ? screens(el) : (screens < 0 ? el.scrollHeight : screens * el.clientHeight);
-const t = el.clientHeight > 0 ? el.scrollTop / el.clientHeight : 0;
+el.scrollTop = typeof screens === 'function' ? screens(el) : (screens < 0 ? el.scrollHeight : this.qUnmap(screens) * el.clientHeight);
+const scroll = el.clientHeight > 0 ? el.scrollTop / el.clientHeight : 0;
+const t = this.qPh3D ? scroll : this.qMap(scroll);
 this.qTarget = t; this.qCur = t; this.qKey3 = ''; this.setState({ sp: t }); this.qWake();
 };
 if (!ov) { jump(); return; }
@@ -2265,7 +2267,7 @@ this.qFadeT = setTimeout(() => { jump(); requestAnimationFrame(() => requestAnim
 qToggleCalm = () => { this.setState({ calm: !this.state.calm }); this.qKey3 = ''; this.qWake(); };
 qSuFocus = () => {
 const o = this.qOps(this.state.sp);
-if (o.suOp < 0.6 && this.qEl) this.qEl.scrollTo({ top: 22.35 * this.qEl.clientHeight, behavior: 'smooth' });
+if (o.suOp < 0.6 && this.qEl) this.qEl.scrollTo({ top: this.qUnmap(22.35) * this.qEl.clientHeight, behavior: 'smooth' });
 };
 qMail() {
 const s = this.state;
@@ -2375,7 +2377,22 @@ if (this.qEl) this.qEl.setAttribute('data-drag', 'on');
 qPointerUp(e) {
 if (this.qDrag) { if (performance.now() - this.qDrag.t > 80) { this.qOrb.va = 0; this.qOrb.ve = 0; } this.qDrag = null; if (this.qEl) this.qEl.removeAttribute('data-drag'); }
 }
-qMap(s) { return s; }
+qMap(s) {
+const physical = [3.8, 4.3, 4.8, 5.3, 5.8, 6.3], logical = [3.8, 4.95, 6.05, 7.15, 8.7, 9.4];
+if (s <= physical[0]) return s;
+for (let i = 0; i < physical.length - 1; i++) {
+if (s < physical[i + 1]) return logical[i] + (s - physical[i]) * (logical[i + 1] - logical[i]) / (physical[i + 1] - physical[i]);
+}
+return s + logical[logical.length - 1] - physical[physical.length - 1];
+}
+qUnmap(s) {
+const physical = [3.8, 4.3, 4.8, 5.3, 5.8, 6.3], logical = [3.8, 4.95, 6.05, 7.15, 8.7, 9.4];
+if (s <= logical[0]) return s;
+for (let i = 0; i < logical.length - 1; i++) {
+if (s < logical[i + 1]) return physical[i] + (s - logical[i]) * (physical[i + 1] - physical[i]) / (logical[i + 1] - logical[i]);
+}
+return s + physical[physical.length - 1] - logical[logical.length - 1];
+}
 qFlags(sp) {
 const o = this.qOps(sp);
 const B = [0, 1.1, 3.4, 9.4, 12.6, 14.4, 19.2, 21.8, 23.35, 25.0, 26.7];
@@ -5195,4 +5212,3 @@ function mkMobileSubmit() {
 </script>
 </body>
 </html>
-
