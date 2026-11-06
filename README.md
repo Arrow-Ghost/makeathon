@@ -31,5 +31,5 @@ some browsers block the scripts over file://.
 ## Run and deploy
 
 - `npm install`, then `npm run db:setup` once (creates the `subscribers` table).
-- `npm start` serves the site and `/api/subscribe` at http://localhost:8000. It needs `DATABASE_URL` in `.env`.
+- `npm start` serves the site and `/api/subscribe` at http://localhost:8000. It reads `DATABASE_URL` from `.env.local`, which `neon deploy` writes.
 - Vercel: import the repo and add `DATABASE_URL` as an environment variable. `vercel.json` serves the page at `/`, and `api/subscribe.js` runs as a serverless function.

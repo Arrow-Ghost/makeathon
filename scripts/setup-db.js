@@ -1,6 +1,7 @@
 import { neon } from '@neondatabase/serverless';
 
-const sql = neon(process.env.DATABASE_URL);
+// schema changes use the direct connection; the app itself uses the pooled DATABASE_URL
+const sql = neon(process.env.DATABASE_URL_UNPOOLED || process.env.DATABASE_URL);
 
 await sql`
   CREATE TABLE IF NOT EXISTS subscribers (

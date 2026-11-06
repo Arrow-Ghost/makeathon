@@ -12,14 +12,15 @@ const TYPES = {
   '.mp4': 'video/mp4', '.pdf': 'application/pdf'
 };
 // never serve the server-side code or secrets as static files
-const PRIVATE = /^\/(\.env|\.git|node_modules|api|scripts|server\.js|package(-lock)?\.json)(\/|$)/;
+const PRIVATE = /^\/(\.[^/]*|node_modules|api|scripts|server\.js|neon\.ts|skills-lock\.json|package(-lock)?\.json)(\/|$)/i;
 
 createServer(async (req, res) => {
   const path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   if (path === '/api/subscribe') return subscribe(req, res);
 
   const file = normalize(path === '/' ? '/P-Breadboard.dc.html' : path);
-  if (file.includes('..') || PRIVATE.test(file)) { res.statusCode = 404; return res.end('Not found'); }
+  // normalize() gives backslashes on Windows, and the check is written for forward slashes
+  if (file.includes('..') || PRIVATE.test(file.replace(/\\/g, '/'))) { res.statusCode = 404; return res.end('Not found'); }
   try {
     const data = await readFile(join(ROOT, file));
     res.setHeader('Content-Type', TYPES[extname(file).toLowerCase()] || 'application/octet-stream');
