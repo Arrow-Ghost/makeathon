@@ -39,9 +39,9 @@ x-dc{display:none!important}
    Responsive story layout for screens ≤ 1023px wide, and portrait screens up to 1366px
    ============================================================ */
 
-/* Narrow screens run the same board and scroll story as the desktop (html.mk-ph3d, the rules after .k-root's own
-   styles), with captions set for the phone and the static sections following the story. A phone that cannot run
-   the board (no GPU, reduced motion, or WebGL failing) falls back to the static layout alone. */
+/* Narrow screens keep the 3D board for the hero only (html.mk-ph3d, the rules after .k-root's own styles): there is
+   too little screen for it beside the text, so everything below the hero is the static layout. A phone that cannot
+   run the board (no GPU, reduced motion, or WebGL failing) falls back to the static layout alone. */
 @media (max-width: 1023px), (max-width: 1366px) and (max-aspect-ratio: 4/5) {
   html:not(.mk-ph3d) #dc-root, html:not(.mk-ph3d) #mk-pre { display: none !important; }
   .mk-mobile { display: block !important; }
@@ -1365,7 +1365,7 @@ try { if (matchMedia('(max-width: 1023px), (max-width: 1366px) and (max-aspect-r
     var P = S.qPtr || { x: -999, y: -999, in: false }, live = P.in && S.qFine;
     ptr.x += ((live ? P.x : W * 0.72) - ptr.x) * Math.min(1, dt * 9); ptr.y += ((live ? P.y : H * 0.45) - ptr.y) * Math.min(1, dt * 9); ptr.a += ((live ? 1 : 0) - ptr.a) * Math.min(1, dt * 4);
     if (sp >= 12.55) { if (bootAt < 0) bootAt = now; } else bootAt = -1;
-    if (spR > (S.qPh3D ? 14.6 : 23.8)) return;
+    if (spR > 23.8) return;
     // with the page at rest the ambient effects draw at half rate, leaving the GPU to the board
     var still = Math.abs(sp - lastSp) < 1e-4 && now - (P.t || 0) > 600 && now - bootAt > 2400 && now - t0 > 3000; lastSp = sp; odd = !odd;
     if (still && odd) return;
@@ -1579,11 +1579,10 @@ button:hover{filter:brightness(1.08)}
 @media (max-width: 1023px), (max-width: 1366px) and (max-aspect-ratio: 4/5){
 html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 .mk-ph3d .k-root{height:100vh!important;height:100dvh!important}
-.mk-ph3d .mk-desktop-theater{height:calc(100vh*15.3)!important;height:calc(100dvh*15.3)!important}
+.mk-ph3d .mk-desktop-theater{height:100vh!important;height:100dvh!important}
 .mk-ph3d .mk-desktop-theater>div{height:100vh!important;height:100dvh!important}
 .mk-ph3d .k-root>:not(.mk-desktop-theater):not(.mk-mobile):not(.k-fade):not(.k-flow){display:none!important}
-.mk-ph3d .k-flow{right:16px;top:55%;bottom:auto;padding:11px 28px;font-size:14px}
-.mk-ph3d .k-flow.is-sec{top:auto;bottom:calc(18px + env(safe-area-inset-bottom))}
+.mk-ph3d .k-flow{right:16px!important;bottom:calc(16px + env(safe-area-inset-bottom))!important;padding:11px 28px;font-size:14px}
 .mk-ph3d .k-stage,.mk-ph3d .k-dkmask,.mk-ph3d .k-ptrace,.mk-ph3d .k-nd,.mk-ph3d .k-sweep,.mk-ph3d .k-call{display:none!important}
 .mk-ph3d .mk-mobile{min-height:0;background-color:#17261F}
 .mk-ph3d .mk-mnav{position:fixed;left:0;right:0;top:0}
@@ -1592,11 +1591,8 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 .mk-ph3d .mk-msec,.mk-ph3d .mk-mnotify,.mk-ph3d #m-contact{scroll-margin-top:94px}
 .mk-ph3d .k-pc{display:block;position:absolute;inset:0;pointer-events:none;font-family:'Barlow Condensed',sans-serif;color:#EDF1EF}
 .k-pc::after{content:"";position:absolute;left:0;right:0;bottom:0;height:52%;background:linear-gradient(0deg,#17261F 42%,rgba(23,38,31,0));z-index:0}
-.k-pc-b{position:absolute;left:22px;right:22px;bottom:calc(30px + env(safe-area-inset-bottom));z-index:1;opacity:0;will-change:opacity,transform}
-.k-pc-t{position:absolute;left:22px;right:22px;top:112px;z-index:1;will-change:opacity,transform}
-.k-pc-eb{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;color:#F2B84B}
-.k-pc-h{margin:0;font-weight:600;line-height:.96;letter-spacing:.02em}
-.k-pc-p{margin:10px 0 0;font-size:17px;line-height:1.35;color:#C1CBC6}
+.k-pc-b{position:absolute;left:22px;right:22px;bottom:calc(30px + env(safe-area-inset-bottom));z-index:1}
+.k-pc-t{position:absolute;left:22px;right:22px;top:112px;z-index:1}
 .k-pc-hero{margin:0;font-weight:600;font-size:min(19.5vw,12vh);line-height:.9;letter-spacing:.04em;white-space:nowrap}
 .k-pc-yr{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.22em;color:#F2B84B;margin-bottom:6px}
 .k-pc-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin:0 0 16px}
@@ -1605,29 +1601,22 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 .k-pc-cta{display:flex;gap:10px;pointer-events:auto}
 .k-pc-cta>*{flex:1 1 0;min-width:0;box-sizing:border-box;padding-left:8px;padding-right:8px;white-space:nowrap;text-align:center}
 .k-pc-hint{margin-top:12px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.16em;color:#9BACA4;text-align:center}
-.k-pc-segs{display:flex;gap:6px;margin-top:14px}.k-pc-segs i{flex:1;height:3px;background:rgba(237,241,239,.2)}.k-pc-segs i.on{background:#F2B84B}
-.k-pc-list{margin:10px 0 0;padding:0;list-style:none;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;color:#C1CBC6}
-.k-pc-list li{padding:6px 0;border-top:1px solid rgba(237,241,239,.14)}
-.k-pc-code{margin-top:10px;border:1px solid rgba(237,241,239,.3);background:rgba(23,38,31,.82);font-family:'DM Mono',monospace;font-size:11px;line-height:17px;padding:8px 10px;height:calc(17px*8);overflow:hidden;white-space:pre}
-.k-pc-up{position:relative;margin-top:8px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;color:#C1CBC6;padding-bottom:6px}
-.k-pc-up i{position:absolute;left:0;bottom:0;height:2px;width:100%;background:#F2B84B;transform-origin:0 50%;transform:scaleX(0)}
-@media (min-width:600px) and (orientation:portrait){.k-pc-b,.k-pc-t{left:48px;right:48px}.k-pc-b{bottom:48px}.k-pc-t{top:128px}.k-pc-eb{font-size:14px}.k-pc-p{font-size:24px}.k-pc-yr{font-size:16px}.k-pc-meta dt{font-size:13px}.k-pc-meta dd{font-size:22px}.k-pc-list{font-size:14px}.k-pc-hint{font-size:12px}.k-pc-code{font-size:15px;line-height:22px;height:calc(22px*8)}.k-pc-up{font-size:12px}}
-@media (max-height:640px){.k-pc-list{display:none}.k-pc-meta{margin-bottom:10px}.k-pc-p{font-size:15px}.k-pc-t{top:100px}}
-@media (orientation:landscape){.mk-ph3d .k-flow{top:auto;bottom:14px}.k-pc::after{left:0;right:auto;top:0;bottom:0;width:46%;height:auto;background:linear-gradient(90deg,#17261F 55%,rgba(23,38,31,0))}.k-pc-b{right:54%}.k-pc-t{right:54%}.k-pc-hero{font-size:11vh}.k-pc-list,.k-pc-p{display:none}}
+@media (min-width:600px) and (orientation:portrait){.k-pc-b,.k-pc-t{left:48px;right:48px}.k-pc-b{bottom:76px}.k-pc-t{top:128px}.k-pc-yr{font-size:16px}.k-pc-meta dt{font-size:13px}.k-pc-meta dd{font-size:22px}.k-pc-hint{font-size:12px}}
+@media (max-height:640px){.k-pc-meta{margin-bottom:10px}.k-pc-t{top:100px}}
+@media (orientation:portrait){.k-pc-b{bottom:calc(68px + env(safe-area-inset-bottom))}}
+@media (orientation:landscape){.k-pc::after{left:0;right:auto;top:0;bottom:0;width:46%;height:auto;background:linear-gradient(90deg,#17261F 55%,rgba(23,38,31,0))}.k-pc-b{right:54%}.k-pc-t{right:54%}.k-pc-hero{font-size:11vh}}
 }
 .k-root{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;overscroll-behavior:none}
 .k-root ::selection{background-color:#F2B84B;color:#17261F}
 .k-cvs,.k-clip canvas{will-change:transform}
-.k-flow{--e:cubic-bezier(.23,1,.32,1);--b:cubic-bezier(.34,1.56,.64,1);position:fixed;right:6.67vw;bottom:84px;z-index:80;display:flex;align-items:center;overflow:hidden;padding:13px 34px;border:1.5px solid rgba(237,241,239,.42);border-radius:100px;background-color:rgba(23,38,31,.78);color:#EDF1EF;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;line-height:1;letter-spacing:.12em;white-space:nowrap;cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;transition:border-color .6s var(--e),border-radius .6s var(--e),color .6s var(--e),transform .6s var(--e),opacity .35s ease,visibility .35s}
+.k-flow{--e:cubic-bezier(.23,1,.32,1);--b:cubic-bezier(.34,1.56,.64,1);position:fixed;right:60px;bottom:40px;z-index:80;display:flex;align-items:center;overflow:hidden;padding:13px 34px;border:1.5px solid rgba(237,241,239,.42);border-radius:100px;background-color:rgba(23,38,31,.78);color:#EDF1EF;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;line-height:1;letter-spacing:.12em;white-space:nowrap;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:border-color .6s var(--e),border-radius .6s var(--e),color .6s var(--e),transform .6s var(--e),opacity .35s ease,visibility .35s}
 .k-flow.is-off{opacity:0;visibility:hidden;pointer-events:none}
 .k-flow:focus-visible{outline:2px solid #F2B84B;outline-offset:3px}
 .k-flow-t{position:relative;z-index:1;transform:translateX(-12px);transition:transform .8s ease-out}
 .k-flow-c{position:absolute;left:50%;top:50%;width:16px;height:16px;border-radius:50%;background-color:#F2B84B;opacity:0;transform:translate(-50%,-50%);transition:width .8s cubic-bezier(.19,1,.22,1),height .8s cubic-bezier(.19,1,.22,1),opacity .8s cubic-bezier(.19,1,.22,1)}
 .k-flow-a{position:absolute;z-index:2;width:16px;height:16px;fill:none;stroke:#EDF1EF;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:left .8s var(--b),right .8s var(--b),stroke .6s var(--e)}
 .k-flow-l{left:-25%}.k-flow-r{right:14px}
-.k-flow-p{position:absolute;left:0;top:0;bottom:0;width:100%;z-index:0;background-color:rgba(23,38,31,.3);transform-origin:0 50%;transform:scaleX(0);transition:transform .2s ease}
-.k-flow.is-hold .k-flow-p{transform:scaleX(1);transition:transform 1.5s linear}
-.k-flow.is-hold{transform:scale(.95)}
+.k-flow:active{transform:scale(.95)}
 @media (hover:hover){
 .k-flow:hover{border-color:transparent;border-radius:12px;color:#17261F}
 .k-flow:hover .k-flow-t{transform:translateX(12px)}
@@ -1635,11 +1624,11 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 .k-flow:hover .k-flow-l{left:14px;stroke:#17261F}
 .k-flow:hover .k-flow-r{right:-25%;stroke:#17261F}
 }
-.k-flow.is-hold{border-color:transparent;border-radius:12px;color:#17261F}
-.k-flow.is-hold .k-flow-t{transform:translateX(12px)}
-.k-flow.is-hold .k-flow-c{width:420px;height:420px;opacity:1}
-.k-flow.is-hold .k-flow-l{left:14px;stroke:#17261F}
-.k-flow.is-hold .k-flow-r{right:-25%;stroke:#17261F}
+.k-flow:active{border-color:transparent;border-radius:12px;color:#17261F}
+.k-flow:active .k-flow-t{transform:translateX(12px)}
+.k-flow:active .k-flow-c{width:420px;height:420px;opacity:1}
+.k-flow:active .k-flow-l{left:14px;stroke:#17261F}
+.k-flow:active .k-flow-r{right:-25%;stroke:#17261F}
 .k-fade{position:fixed;left:0;top:0;right:0;bottom:0;z-index:90;background-color:#17261F;opacity:0;pointer-events:none;transition:opacity .5s cubic-bezier(.4,0,.2,1)}
 .k-fade.is-on{opacity:1;pointer-events:auto}
 .k-rulX{position:absolute;left:20px;right:20px;top:21px;height:9px;pointer-events:none;background-image:linear-gradient(90deg,rgba(237,241,239,.45) 1px,transparent 1px),linear-gradient(90deg,rgba(237,241,239,.22) 1px,transparent 1px);background-size:120px 9px,24px 5px;background-repeat:repeat-x;background-position:center top,center top}
@@ -1702,7 +1691,7 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <div ref="{{qRootRef}}" onScroll="{{qOnScroll}}" class="k-root" data-calm="{{calm}}" style="position: relative; height: 100vh; overflow-x: hidden; overflow-y: auto; background-color: #17261F">
 <a class="k-skip k-mono" href="#notify" onClick="{{goNotify}}">SKIP TO SIGN-UP</a>
 <div ref="{{qFadeRef}}" class="k-fade" aria-hidden="true"></div>
-<button ref="{{qFlowRef}}" type="button" class="k-flow is-off"><svg class="k-flow-a k-flow-l" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg><span class="k-flow-t"></span><i class="k-flow-c"></i><svg class="k-flow-a k-flow-r" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg><i class="k-flow-p"></i></button>
+<button ref="{{qFlowRef}}" type="button" class="k-flow is-off"><svg class="k-flow-a k-flow-l" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg><span class="k-flow-t"></span><i class="k-flow-c"></i><svg class="k-flow-a k-flow-r" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></button>
 <div ref="{{qCurRef}}" class="k-cur" aria-hidden="true">
 <div ref="{{qRingRef}}" class="k-rp"><div class="k-rs"></div><div ref="{{qProbeRef}}" class="k-probe k-mono"></div></div>
 <div ref="{{qDotRef}}" class="k-dp"><div class="k-ds"></div></div>
@@ -1734,14 +1723,14 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <div ref="{{qPhRef}}" class="k-pc"></div>
 <div class="k-stage" style="position: absolute; left: 50%; top: 50%; width: {{sw}}; height: 900px; transform: translate(-50%, -50%) scale({{k}}); font-family: 'Barlow Condensed', sans-serif; color: #EDF1EF; pointer-events: none">
 
-<div class="k-fadein k-tkw" style="position: absolute; left: 96px; right: 96px; top: calc(40px - {{yh}}); height: 30px; display: flex; align-items: center; gap: 18px; border-bottom: 1px solid rgba(237,241,239,0.15); pointer-events: auto">
+<div class="k-fadein k-tkw" style="position: absolute; left: 60px; right: 60px; top: calc(40px - {{yh}}); height: 30px; display: flex; align-items: center; gap: 18px; border-bottom: 1px solid rgba(237,241,239,0.15); pointer-events: auto">
 <span class="k-mono" style="flex-shrink: 0; display: flex; align-items: center; gap: 8px; font-size: 13px; letter-spacing: 0.16em; color: #F2B84B"><span class="k-led" style="width: 7px; height: 7px; border-radius: 50%; background-color: #F2B84B"></span>LATEST</span>
 <div class="k-tkmask" style="flex-grow: 1; overflow: hidden">
 <div class="k-mono k-mq" style="display: flex; width: max-content; white-space: nowrap; font-size: 13px; letter-spacing: 0.14em; color: #C1CBC6"><span style="display: flex; align-items: center; flex-shrink: 0">19–20 JAN 2027 · ANNA AUDITORIUM, VIT VELLORE<span style="display: block; width: 5px; height: 5px; margin: 0px 32px; background-color: #F2B84B; transform: rotate(45deg)"></span></span><span style="display: flex; align-items: center; flex-shrink: 0">36-HOUR HARDWARE + SOFTWARE HACKATHON · PRIZE POOL ₹1,00,000<span style="display: block; width: 5px; height: 5px; margin: 0px 32px; background-color: #F2B84B; transform: rotate(45deg)"></span></span><span style="display: flex; align-items: center; flex-shrink: 0">PARTNER ENQUIRIES · OPEN<span style="display: block; width: 5px; height: 5px; margin: 0px 32px; background-color: #F2B84B; transform: rotate(45deg)"></span></span><span style="display: flex; align-items: center; flex-shrink: 0">50+ TEAMS · 250+ PARTICIPANTS · 30+ INDUSTRY JUDGES · 30+ COLLEGES<span style="display: block; width: 5px; height: 5px; margin: 0px 32px; background-color: #F2B84B; transform: rotate(45deg)"></span></span><span style="display: flex; align-items: center; flex-shrink: 0">19–20 JAN 2027 · ANNA AUDITORIUM, VIT VELLORE<span style="display: block; width: 5px; height: 5px; margin: 0px 32px; background-color: #F2B84B; transform: rotate(45deg)"></span></span><span style="display: flex; align-items: center; flex-shrink: 0">36-HOUR HARDWARE + SOFTWARE HACKATHON · PRIZE POOL ₹1,00,000<span style="display: block; width: 5px; height: 5px; margin: 0px 32px; background-color: #F2B84B; transform: rotate(45deg)"></span></span><span style="display: flex; align-items: center; flex-shrink: 0">PARTNER ENQUIRIES · OPEN<span style="display: block; width: 5px; height: 5px; margin: 0px 32px; background-color: #F2B84B; transform: rotate(45deg)"></span></span><span style="display: flex; align-items: center; flex-shrink: 0">50+ TEAMS · 250+ PARTICIPANTS · 30+ INDUSTRY JUDGES · 30+ COLLEGES<span style="display: block; width: 5px; height: 5px; margin: 0px 32px; background-color: #F2B84B; transform: rotate(45deg)"></span></span></div>
 </div>
 <button class="k-mono k-mot" onClick="{{toggleCalm}}" aria-pressed="{{calmP}}" title="Reduce motion"><span class="k-motI" aria-hidden="true"></span>MOTION <span style="color: {{motC}}">{{motTxt}}</span></button>
 </div>
-<header class="k-fadein" style="position: absolute; left: 96px; right: 96px; top: calc(92px - {{yh}}); display: flex; align-items: center; justify-content: space-between; pointer-events: auto">
+<header class="k-fadein" style="position: absolute; left: 60px; right: 60px; top: calc(92px - {{yh}}); display: flex; align-items: center; justify-content: space-between; pointer-events: auto">
 <a href="#top" onClick="{{goTop}}" style="display: flex; align-items: baseline; gap: 12px"><span style="font-weight: 600; font-size: 26px; letter-spacing: 0.2em">MAKEATHON</span><span style="font-weight: 600; font-size: 26px; letter-spacing: 0.1em; color: #F2B84B">2027</span></a>
 <nav class="k-mono k-nav" aria-label="Sections" style="display: flex; align-items: center; gap: 30px; font-size: 13px; letter-spacing: 0.14em">
 <a href="#about" class="k-nl {{nOn.a}}" aria-current="{{nAc.a}}" onClick="{{goAbout}}" onMouseEnter="{{nh.a}}">{{nv.a}}</a>
@@ -1774,13 +1763,13 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <span>{{hintTxt}}</span><span style="color: #EDF1EF">SCROLL</span><span class="k-nudge" style="color: #F2B84B">↓</span>
 </div>
 
-<div style="position: absolute; left: 96px; top: 226px; width: 760px; opacity: {{stOp}}; transform: translateY({{stY}}); pointer-events: none">
+<div style="position: absolute; left: 60px; top: 226px; width: 760px; opacity: {{stOp}}; transform: translateY({{stY}}); pointer-events: none">
 <h2 class="k-sr" id="about">Real hardware. Real code. Judged on what works.</h2>
 <sc-for list="{{lines}}" as="ln" hint-placeholder-count="4"><div aria-hidden="true" style="white-space: nowrap; font-weight: 600; font-size: 106px; line-height: 0.96; letter-spacing: 0.02em"><sc-for list="{{ln.words}}" as="w" hint-placeholder-count="2"><span style="display: inline-block; margin-right: 0.2em; opacity: {{w.o}}; transform: translateY({{w.y}}); color: {{w.c}}">{{w.t}}</span></sc-for></div></sc-for>
 <p style="margin: 30px 0px 0px; max-width: 560px; font-size: 25px; line-height: 1.4; color: #C1CBC6; opacity: {{stSub}}">Makeathon is the flagship hardware hackathon of the School of Electrical Engineering at VIT Vellore.</p>
 </div>
 
-<div class="{{bdCls}}" style="position: absolute; left: 96px; top: 190px; width: 640px; opacity: {{bdOp}}; transform: translateY({{bdY}}); pointer-events: none">
+<div class="{{bdCls}}" style="position: absolute; left: 60px; top: 190px; width: 640px; opacity: {{bdOp}}; transform: translateY({{bdY}}); pointer-events: none">
 <h2 id="build" style="margin: 0px; font-weight: 600; font-size: 74px; line-height: 0.96; letter-spacing: 0.02em"><span class="k-ln"><span>EVERY BUILD</span></span><span class="k-ln"><span style="transition-delay: 0.08s">STARTS IN PIECES.</span></span></h2>
 <p style="margin: 16px 0px 0px; max-width: 560px; font-size: 24px; line-height: 1.4; color: #C1CBC6">Electrical and computer science, building the same machine.</p>
 <div style="margin-top: 34px; opacity: {{scOp}}; transform: translateY({{scY}})">
@@ -1792,7 +1781,7 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <div style="display: flex; gap: 8px; margin-top: 26px"><sc-for list="{{segs}}" as="g" hint-placeholder-count="5"><span style="width: 56px; height: 3px; background-color: {{g.c}}"></span></sc-for></div>
 </div>
 
-<div class="{{cdCls}}" style="position: absolute; left: 96px; top: 146px; width: 664px; opacity: {{cdOp}}; transform: translateY({{cdY}}); pointer-events: none">
+<div class="{{cdCls}}" style="position: absolute; left: 60px; top: 146px; width: 664px; opacity: {{cdOp}}; transform: translateY({{cdY}}); pointer-events: none">
 <div class="k-mono k-eb" style="font-size: 14px; letter-spacing: 0.18em; color: #F2B84B">{{ebCd}}</div>
 <h2 style="margin: 8px 0px 0px; font-weight: 600; font-size: 54px; line-height: 1; letter-spacing: 0.02em"><span class="k-ln"><span>THEN, THE CODE.</span></span></h2>
 <div class="k-glass" style="margin-top: 18px; border: 1px solid rgba(237,241,239,0.4)">
@@ -1812,18 +1801,18 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 </div>
 </div>
 
-<div class="{{okCls}}" style="position: absolute; left: 96px; top: 560px; width: 820px; opacity: {{okOp}}; transform: translateY({{okY}}); pointer-events: none">
+<div class="{{okCls}}" style="position: absolute; left: 60px; top: 560px; width: 820px; opacity: {{okOp}}; transform: translateY({{okY}}); pointer-events: none">
 <div class="k-mono k-eb" style="font-size: 14px; letter-spacing: 0.18em; color: #F2B84B">{{ebOk}}</div>
 <h2 style="margin: 8px 0px 0px; font-weight: 600; font-size: 168px; line-height: 0.9; letter-spacing: 0.02em"><span class="k-ln"><span>IT <span style="color: #F2B84B">WORKS.</span></span></span></h2>
 <p style="margin: 16px 0px 0px; max-width: 600px; font-size: 24px; line-height: 1.42; color: #C1CBC6">Not slides, not mock-ups: a build that runs on the bench. That is the bar at Makeathon.</p>
 </div>
 
-<div class="{{arCls}}" style="position: absolute; left: 96px; top: 166px; opacity: {{arOp}}; transform: translateY({{arY}}); pointer-events: none">
+<div class="{{arCls}}" style="position: absolute; left: 60px; top: 166px; opacity: {{arOp}}; transform: translateY({{arY}}); pointer-events: none">
 <div class="k-mono k-eb" style="font-size: 14px; letter-spacing: 0.18em; color: #F2B84B">{{ebAr}}</div>
 <h2 id="archive" style="margin: 12px 0px 0px; font-weight: 600; font-size: 96px; line-height: 1; letter-spacing: 0.02em"><span class="k-ln"><span>LAST TIME, ON THE BENCH.</span></span></h2>
 </div>
-<div style="position: absolute; left: 96px; right: 96px; top: 372px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid rgba(237,241,239,0.3); border-bottom: 1px solid rgba(237,241,239,0.3); background-color: rgba(23,38,31,0.6); opacity: {{cnOp}}; transform: translateY({{cnY}}); pointer-events: none"><div style="padding: 22px 0px 22px 0px;"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n0}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">TEAMS</div></div><div style="padding: 22px 0px 22px 28px; border-left: 1px solid rgba(237,241,239,0.25);"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n1}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">PARTICIPANTS</div></div><div style="padding: 22px 0px 22px 28px; border-left: 1px solid rgba(237,241,239,0.25);"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n2}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">INDUSTRY JUDGES</div></div><div style="padding: 22px 0px 22px 28px; border-left: 1px solid rgba(237,241,239,0.25);"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n3}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">COLLEGES</div></div><div style="padding: 22px 0px 22px 28px; border-left: 1px solid rgba(237,241,239,0.25);"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n4}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">HOURS</div></div></div>
-<div style="position: absolute; left: 96px; top: 304px; width: calc(720px + {{xw}}); height: 450px; overflow: hidden; box-sizing: border-box; border: 1px solid rgba(237,241,239,0.35); background-color: #1B2C24; opacity: {{rlOp}}; transform: translateY({{rlY}}); pointer-events: none">
+<div style="position: absolute; left: 60px; right: 60px; top: 372px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid rgba(237,241,239,0.3); border-bottom: 1px solid rgba(237,241,239,0.3); background-color: rgba(23,38,31,0.6); opacity: {{cnOp}}; transform: translateY({{cnY}}); pointer-events: none"><div style="padding: 22px 0px 22px 0px;"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n0}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">TEAMS</div></div><div style="padding: 22px 0px 22px 28px; border-left: 1px solid rgba(237,241,239,0.25);"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n1}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">PARTICIPANTS</div></div><div style="padding: 22px 0px 22px 28px; border-left: 1px solid rgba(237,241,239,0.25);"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n2}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">INDUSTRY JUDGES</div></div><div style="padding: 22px 0px 22px 28px; border-left: 1px solid rgba(237,241,239,0.25);"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n3}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">COLLEGES</div></div><div style="padding: 22px 0px 22px 28px; border-left: 1px solid rgba(237,241,239,0.25);"><div style="font-weight: 600; font-size: 84px; line-height: 1">{{n4}}</div><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 8px">HOURS</div></div></div>
+<div style="position: absolute; left: 60px; top: 304px; width: calc(792px + {{xw}}); height: 450px; overflow: hidden; box-sizing: border-box; border: 1px solid rgba(237,241,239,0.35); background-color: #1B2C24; opacity: {{rlOp}}; transform: translateY({{rlY}}); pointer-events: none">
 <img class="k-photo" src="./assets/a215f016ee0ca8ff86fce52a85060814.jpg" alt="The opening session on stage at Makeathon 2026" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp0}} 0px)">
 <img class="k-photo" src="./assets/e353632797b6ad056b0f80c28a9ced17.jpg" alt="Teams working in the hall at Makeathon 2026" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp1}} 0px)">
 <img class="k-photo" src="./assets/470679fce9e9e52c9468a0e41492b71a.jpg" alt="Participants gathered around a hardware build at Makeathon 2026" style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0px 0px {{cp2}} 0px)">
@@ -1834,7 +1823,7 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <span aria-hidden="true" style="position: absolute; left: 10px; top: 10px; width: 16px; height: 16px; border-left: 2px solid #EDF1EF; border-top: 2px solid #EDF1EF"></span>
 <span aria-hidden="true" style="position: absolute; right: 10px; bottom: 10px; width: 16px; height: 16px; border-right: 2px solid #EDF1EF; border-bottom: 2px solid #EDF1EF"></span>
 </div>
-<div style="position: absolute; left: calc(880px + {{xw2}}); top: 304px; width: 464px; opacity: {{rlOp}}; transform: translateY({{rlY}}); pointer-events: none">
+<div style="position: absolute; left: calc(916px + {{xw2}}); top: 304px; width: 464px; opacity: {{rlOp}}; transform: translateY({{rlY}}); pointer-events: none">
 <div class="k-num" style="font-weight: 600; font-size: 168px; line-height: 0.82; letter-spacing: 0.02em">{{capNum}}</div>
 <div style="font-weight: 600; font-size: 56px; line-height: 1; letter-spacing: 0.04em; margin-top: 26px">{{capTitle}}</div>
 <div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #C1CBC6; margin-top: 12px">{{capSub}}</div>
@@ -1842,18 +1831,18 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #9BACA4; margin-top: 18px">MAKEATHON '26 · VIT VELLORE</div>
 </div>
 
-<div class="{{nxCls}}" style="position: absolute; left: 96px; top: 200px; width: 540px; opacity: {{nxOp}}; transform: translateY({{nxY}}); pointer-events: none">
+<div class="{{nxCls}}" style="position: absolute; left: 60px; top: 200px; width: 540px; opacity: {{nxOp}}; transform: translateY({{nxY}}); pointer-events: none">
 <div class="k-mono k-eb" style="font-size: 14px; letter-spacing: 0.18em; color: #F2B84B">{{ebNx}}</div>
 <h2 id="next" style="margin: 14px 0px 0px; font-weight: 600; font-size: 76px; line-height: 0.96; letter-spacing: 0.02em"><span class="k-ln"><span>THE NEXT EDITION</span></span><span class="k-ln"><span style="transition-delay: 0.08s">IS BEING</span></span><span class="k-ln"><span style="transition-delay: 0.16s">ENGINEERED.</span></span></h2>
 <p style="margin: 24px 0px 0px; max-width: 500px; font-size: 24px; line-height: 1.42; color: #C1CBC6">Dates, venue, tracks and prizes are confirmed. Problem statements are being finalised with our industry partners and will be released here.</p>
 </div>
-<div class="k-glass" style="position: absolute; left: calc(680px + {{xw2}}); top: 196px; width: 664px; border: 1px solid rgba(237,241,239,0.55); opacity: {{nxOp}}; pointer-events: none">
+<div class="k-glass" style="position: absolute; left: calc(716px + {{xw2}}); top: 196px; width: 664px; border: 1px solid rgba(237,241,239,0.55); opacity: {{nxOp}}; pointer-events: none">
 <div class="k-mono" style="display: flex; justify-content: space-between; height: 46px; align-items: center; padding: 0px 18px; font-size: 13px; letter-spacing: 0.14em; color: #9BACA4"><span>{{ebSp}}</span><span>STATUS</span></div>
 <div style="display: grid; grid-template-columns: 190px minmax(0, 1fr) 170px; align-items: center; gap: 16px; height: 58px; padding: 0px 18px; border-top: 1px solid rgba(237,241,239,0.18)"><span class="k-mono" style="font-size: 13px; letter-spacing: 0.14em; color: #9BACA4">EDITION</span><span style="font-size: 24px; font-weight: 500">2027</span><span class="k-mono" style="justify-self: end; border: 1px solid rgba(237,241,239,0.75); padding: 6px 10px; font-size: 12px; letter-spacing: 0.12em; opacity: {{ro0}}; transform: scale({{rs0}})">CONFIRMED</span></div><div style="display: grid; grid-template-columns: 190px minmax(0, 1fr) 170px; align-items: center; gap: 16px; height: 58px; padding: 0px 18px; border-top: 1px solid rgba(237,241,239,0.18)"><span class="k-mono" style="font-size: 13px; letter-spacing: 0.14em; color: #9BACA4">ORGANISER</span><span style="font-size: 24px; font-weight: 500">SELECT, VIT Vellore</span><span class="k-mono" style="justify-self: end; border: 1px solid rgba(237,241,239,0.75); padding: 6px 10px; font-size: 12px; letter-spacing: 0.12em; opacity: {{ro1}}; transform: scale({{rs1}})">CONFIRMED</span></div><div style="display: grid; grid-template-columns: 190px minmax(0, 1fr) 170px; align-items: center; gap: 16px; height: 58px; padding: 0px 18px; border-top: 1px solid rgba(237,241,239,0.18)"><span class="k-mono" style="font-size: 13px; letter-spacing: 0.14em; color: #9BACA4">VENUE</span><span style="font-size: 24px; font-weight: 500">Anna Auditorium</span><span class="k-mono" style="justify-self: end; border: 1px solid rgba(237,241,239,0.75); padding: 6px 10px; font-size: 12px; letter-spacing: 0.12em; opacity: {{ro2}}; transform: scale({{rs2}})">CONFIRMED</span></div><div style="display: grid; grid-template-columns: 190px minmax(0, 1fr) 170px; align-items: center; gap: 16px; height: 58px; padding: 0px 18px; border-top: 1px solid rgba(237,241,239,0.18)"><span class="k-mono" style="font-size: 13px; letter-spacing: 0.14em; color: #9BACA4">TRACKS</span><span style="font-size: 24px; font-weight: 500">5 + OPEN INNOVATION</span><span class="k-mono" style="justify-self: end; border: 1px solid rgba(237,241,239,0.75); padding: 6px 10px; font-size: 12px; letter-spacing: 0.12em; opacity: {{ro3}}; transform: scale({{rs3}})">CONFIRMED</span></div><div style="display: grid; grid-template-columns: 190px minmax(0, 1fr) 170px; align-items: center; gap: 16px; height: 58px; padding: 0px 18px; border-top: 1px solid rgba(237,241,239,0.18)"><span class="k-mono" style="font-size: 13px; letter-spacing: 0.14em; color: #9BACA4">PROBLEM STATEMENTS</span><span class="k-redact" style="display: block; width: 58%; height: 22px"></span><span class="k-mono" style="justify-self: end; border: 1px solid #F2B84B; color: #F2B84B; padding: 6px 10px; font-size: 12px; letter-spacing: 0.12em; opacity: {{ro4}}; transform: scale({{rs4}})">TO BE ANNOUNCED</span></div><div style="display: grid; grid-template-columns: 190px minmax(0, 1fr) 170px; align-items: center; gap: 16px; height: 58px; padding: 0px 18px; border-top: 1px solid rgba(237,241,239,0.18)"><span class="k-mono" style="font-size: 13px; letter-spacing: 0.14em; color: #9BACA4">DATES</span><span style="font-size: 24px; font-weight: 500">19–20 JAN 2027</span><span class="k-mono" style="justify-self: end; border: 1px solid rgba(237,241,239,0.75); padding: 6px 10px; font-size: 12px; letter-spacing: 0.12em; opacity: {{ro5}}; transform: scale({{rs5}})">CONFIRMED</span></div><div style="display: grid; grid-template-columns: 190px minmax(0, 1fr) 170px; align-items: center; gap: 16px; height: 58px; padding: 0px 18px; border-top: 1px solid rgba(237,241,239,0.18)"><span class="k-mono" style="font-size: 13px; letter-spacing: 0.14em; color: #9BACA4">PRIZE POOL</span><span style="font-size: 24px; font-weight: 500">₹1,00,000</span><span class="k-mono" style="justify-self: end; border: 1px solid rgba(237,241,239,0.75); padding: 6px 10px; font-size: 12px; letter-spacing: 0.12em; opacity: {{ro6}}; transform: scale({{rs6}})">CONFIRMED</span></div><div style="display: grid; grid-template-columns: 190px minmax(0, 1fr) 170px; align-items: center; gap: 16px; height: 58px; padding: 0px 18px; border-top: 1px solid rgba(237,241,239,0.18)"><span class="k-mono" style="font-size: 13px; letter-spacing: 0.14em; color: #9BACA4">PARTNERS</span><span class="k-redact" style="display: block; width: 66%; height: 22px"></span><span class="k-mono" style="justify-self: end; border: 1px solid #F2B84B; color: #F2B84B; padding: 6px 10px; font-size: 12px; letter-spacing: 0.12em; opacity: {{ro7}}; transform: scale({{rs7}})">ENQUIRIES OPEN</span></div>
 <div style="position: absolute; left: 0px; right: 0px; top: {{scanY}}; height: 2px; background-color: #F2B84B; box-shadow: 0px 0px 18px rgba(242,184,75,0.85); opacity: {{scanOp}}"></div>
 </div>
 
-<div class="{{suCls}}" style="position: absolute; left: calc(760px + {{xw2}}); top: 186px; width: 600px; opacity: {{suOp}}; transform: translateY({{suY}}); pointer-events: {{suPe}}">
+<div class="{{suCls}}" style="position: absolute; left: calc(796px + {{xw2}}); top: 186px; width: 600px; opacity: {{suOp}}; transform: translateY({{suY}}); pointer-events: {{suPe}}">
 <div class="k-mono k-eb" style="font-size: 14px; letter-spacing: 0.18em; color: #F2B84B">{{ebSu}}</div>
 <h2 id="notify" style="margin: 12px 0px 0px; font-weight: 600; font-size: 132px; line-height: 0.92; letter-spacing: 0.02em"><span class="k-ln"><span>HEAR IT</span></span><span class="k-ln"><span style="transition-delay: 0.09s">FIRST.</span></span></h2>
 <p style="margin: 22px 0px 0px; max-width: 540px; font-size: 24px; line-height: 1.42; color: #C1CBC6">Get an email the moment registrations open and problem statements for Makeathon 2027 are released.</p>
@@ -1880,29 +1869,29 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <div class="k-mono k-hud" style="position: absolute; left: 0px; right: 0px; top: calc(830px + {{yh}}); display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 13px; letter-spacing: 0.14em; color: #C1CBC6; opacity: {{benchOp}}; pointer-events: none">
 <span style="color: #9BACA4">BENCH SUPPLY</span><span style="color: #F2B84B">{{benchV}}</span><span>{{benchA}}</span>
 </div>
-<div class="k-mono k-hud k-eb" style="position: absolute; left: 96px; top: calc(830px + {{yh}}); display: flex; align-items: center; gap: 14px; font-size: 14px; letter-spacing: 0.16em; opacity: {{hudOp}}">
+<div class="k-mono k-hud k-eb" style="position: absolute; left: 60px; top: calc(830px + {{yh}}); display: flex; align-items: center; gap: 14px; font-size: 14px; letter-spacing: 0.16em; opacity: {{hudOp}}">
 <span style="color: #F2B84B">{{chNum}}</span><span style="color: #9BACA4">/ 08</span><span>{{chName}}</span>
 </div>
-<div class="k-mono k-hud k-eb" style="position: absolute; right: 96px; top: calc(830px + {{yh}}); display: flex; align-items: center; gap: 10px; font-size: 14px; letter-spacing: 0.16em; color: #9BACA4; opacity: {{hudOp}}">NEXT<span style="color: #EDF1EF">{{nextName}}</span><span class="k-nudge" style="color: #F2B84B">↓</span></div>
+<div class="k-mono k-hud k-eb" style="position: absolute; right: calc(60px + var(--flw, 229px)); top: calc(830px + {{yh}}); display: flex; align-items: center; gap: 10px; font-size: 14px; letter-spacing: 0.16em; color: #9BACA4; opacity: {{hudOp}}">NEXT<span style="color: #EDF1EF">{{nextName}}</span><span class="k-nudge" style="color: #F2B84B">↓</span></div>
 </div>
 </div>
 </div>
 <div class="{{d1Cls}}" id="why" style="position: relative; height: 100vh; overflow: hidden; contain: layout paint; background-color: #17261F">
 <div class="k-grid k-mat" aria-hidden="true"></div>
 <div aria-hidden="true" style="position: absolute; left: 20px; top: 20px; right: 20px; bottom: 20px; border: 1px solid rgba(237,241,239,0.16); pointer-events: none"></div><span style="position: absolute; top: 20px; left: 20px; width: 22px; height: 22px; border-top: 2px solid rgba(237,241,239,0.7); border-left: 2px solid rgba(237,241,239,0.7)"></span><span style="position: absolute; top: 20px; right: 20px; width: 22px; height: 22px; border-top: 2px solid rgba(237,241,239,0.7); border-right: 2px solid rgba(237,241,239,0.7)"></span><span style="position: absolute; bottom: 20px; left: 20px; width: 22px; height: 22px; border-bottom: 2px solid rgba(237,241,239,0.7); border-left: 2px solid rgba(237,241,239,0.7)"></span><span style="position: absolute; bottom: 20px; right: 20px; width: 22px; height: 22px; border-bottom: 2px solid rgba(237,241,239,0.7); border-right: 2px solid rgba(237,241,239,0.7)"></span><div aria-hidden="true" class="k-rulX"></div><div aria-hidden="true" class="k-rulY"></div>
-<div style="position: absolute; left: 50%; top: 50%; width: {{sw}}; height: 900px; transform: translate(-50%, -50%) scale({{k}}); font-family: 'Barlow Condensed', sans-serif; color: #EDF1EF"><div style="position:absolute;left:96px;top:92px;width:calc(1248px + {{xw2}})"><div class="k-mono k-eb" style="font-size:14px;letter-spacing:.18em;color:#F2B84B">WHY MAKEATHON</div><h2 style="margin:12px 0 0;font-weight:600;font-size:76px;line-height:1;letter-spacing:.02em"><span class="k-ln"><span>WHY MAKEATHON?</span></span></h2></div><div style="position:absolute;left:96px;top:280px;width:calc(1248px + {{xw2}});display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px"><div class="k-cd2 k-rv" style="transition-delay:0.00s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">01</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">STRUCTURED BRIEFINGS</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">Well-defined challenge statements directly from industry.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.06s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">02</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">TEAM IDEATION</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">Cross-disciplinary teams brainstorm, evaluate and refine their concepts.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.12s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">03</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">END-TO-END PROTOTYPES</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">From hardware builds to full-stack software, functional within the 36-hour sprint.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.18s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">04</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">EXPERT MENTORSHIP</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">Industry professionals and subject experts give continuous feedback on feasibility and scalability.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.24s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">05</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">JURY EVALUATION</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">30+ industrial judges assess innovation, technical depth, feasibility and impact.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.30s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">06</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">HIGH-IMPACT SHOWCASE</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">Exceptional solutions are recognised and highlighted for future development.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.36s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">07</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">PATENT FILING</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">Novel, patentable ideas may get support from VIT, subject to terms and eligibility.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.42s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">08</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">BUSINESS INCUBATION</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">Promising ideas may opt for incubation support to grow into viable ventures.</div></div></div></div>
+<div style="position: absolute; left: 50%; top: 50%; width: {{sw}}; height: 900px; transform: translate(-50%, -50%) scale({{k}}); font-family: 'Barlow Condensed', sans-serif; color: #EDF1EF"><div style="position:absolute;left:60px;top:92px;width:calc(1320px + {{xw2}})"><div class="k-mono k-eb" style="font-size:14px;letter-spacing:.18em;color:#F2B84B">WHY MAKEATHON</div><h2 style="margin:12px 0 0;font-weight:600;font-size:76px;line-height:1;letter-spacing:.02em"><span class="k-ln"><span>WHY MAKEATHON?</span></span></h2></div><div style="position:absolute;left:60px;top:280px;width:calc(1320px + {{xw2}});display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px"><div class="k-cd2 k-rv" style="transition-delay:0.00s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">01</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">STRUCTURED BRIEFINGS</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">Well-defined challenge statements directly from industry.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.06s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">02</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">TEAM IDEATION</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">Cross-disciplinary teams brainstorm, evaluate and refine their concepts.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.12s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">03</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">END-TO-END PROTOTYPES</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">From hardware builds to full-stack software, functional within the 36-hour sprint.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.18s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">04</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">EXPERT MENTORSHIP</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">Industry professionals and subject experts give continuous feedback on feasibility and scalability.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.24s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">05</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">JURY EVALUATION</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">30+ industrial judges assess innovation, technical depth, feasibility and impact.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.30s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">06</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">HIGH-IMPACT SHOWCASE</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">Exceptional solutions are recognised and highlighted for future development.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.36s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">07</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">PATENT FILING</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">Novel, patentable ideas may get support from VIT, subject to terms and eligibility.</div></div><div class="k-cd2 k-rv" style="transition-delay:0.42s"><div class="k-mono" style="font-size:13px;letter-spacing:.16em;color:#F2B84B">08</div><div style="font-size:26px;font-weight:600;letter-spacing:.03em;line-height:1.05;margin-top:8px">BUSINESS INCUBATION</div><div style="font-size:20px;line-height:1.4;color:#C1CBC6;margin-top:10px">Promising ideas may opt for incubation support to grow into viable ventures.</div></div></div></div>
 </div>
 <div class="{{d3Cls}}" id="hosts" style="position: relative; height: 100vh; overflow: hidden; contain: layout paint; background-color: #17261F">
 <div class="k-grid k-mat" aria-hidden="true"></div>
 <div aria-hidden="true" style="position: absolute; left: 20px; top: 20px; right: 20px; bottom: 20px; border: 1px solid rgba(237,241,239,0.16); pointer-events: none"></div><span style="position: absolute; top: 20px; left: 20px; width: 22px; height: 22px; border-top: 2px solid rgba(237,241,239,0.7); border-left: 2px solid rgba(237,241,239,0.7)"></span><span style="position: absolute; top: 20px; right: 20px; width: 22px; height: 22px; border-top: 2px solid rgba(237,241,239,0.7); border-right: 2px solid rgba(237,241,239,0.7)"></span><span style="position: absolute; bottom: 20px; left: 20px; width: 22px; height: 22px; border-bottom: 2px solid rgba(237,241,239,0.7); border-left: 2px solid rgba(237,241,239,0.7)"></span><span style="position: absolute; bottom: 20px; right: 20px; width: 22px; height: 22px; border-bottom: 2px solid rgba(237,241,239,0.7); border-right: 2px solid rgba(237,241,239,0.7)"></span><div aria-hidden="true" class="k-rulX"></div><div aria-hidden="true" class="k-rulY"></div>
-<div style="position: absolute; left: 50%; top: 50%; width: {{sw}}; height: 900px; transform: translate(-50%, -50%) scale({{k}}); font-family: 'Barlow Condensed', sans-serif; color: #EDF1EF"><div style="position:absolute;left:96px;top:92px;width:calc(1248px + {{xw2}})"><div class="k-mono k-eb" style="font-size:14px;letter-spacing:.18em;color:#F2B84B">HOSTS · MAKEATHON 2027</div><h2 style="margin:12px 0 0;font-weight:600;font-size:76px;line-height:1;letter-spacing:.02em"><span class="k-ln"><span>VIT × SELECT.</span></span></h2></div><div class="k-rv" style="position:absolute;left:96px;top:262px;width:calc(600px + {{xw}})"><div class="k-mono k-eb" style="font-size:14px;letter-spacing:.18em;color:#F2B84B;padding-bottom:10px;border-bottom:1px solid rgba(237,241,239,.25);margin-bottom:16px">ABOUT VIT</div><p style="margin:0;font-size:23px;line-height:1.42;color:#C1CBC6">Vellore Institute of Technology is a leading institution recognised for excellence in education, research and innovation, with a diverse student community, advanced research facilities and strong international collaborations. It fosters technological innovation, interdisciplinary learning and entrepreneurship, an ideal platform for Makeathon.</p></div><div class="k-rv" style="position:absolute;left:calc(744px + {{xw}});top:262px;width:calc(600px + {{xw}})"><div class="k-mono k-eb" style="font-size:14px;letter-spacing:.18em;color:#F2B84B;padding-bottom:10px;border-bottom:1px solid rgba(237,241,239,.25);margin-bottom:16px">ABOUT SELECT</div><p style="margin:0;font-size:23px;line-height:1.42;color:#C1CBC6">The School of Electrical Engineering at VIT excels in education, research and innovation. Its B.Tech. programmes are accredited by ABET and hold six-year NBA accreditation, and all UG and PG programmes are accredited by the IET, U.K. With advanced laboratories and strong industry collaborations, SELECT is the ideal foundation for technological innovation. Makeathon '27 is organised by SELECT, VIT Vellore.</p></div><div style="position:absolute;left:96px;right:96px;top:650px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid rgba(237,241,239,.3);border-bottom:1px solid rgba(237,241,239,.3)"><div class="k-rv" style="transition-delay:0.00s;padding:20px 0 20px 0px;"><div style="font-weight:600;font-size:76px;line-height:1">87</div><div class="k-mono" style="font-size:12px;letter-spacing:.14em;color:#9BACA4;margin-top:8px">WORLD RANK · EEE · QS 2026</div></div><div class="k-rv" style="transition-delay:0.07s;padding:20px 0 20px 24px;border-left:1px solid rgba(237,241,239,.25)"><div style="font-weight:600;font-size:76px;line-height:1">6</div><div class="k-mono" style="font-size:12px;letter-spacing:.14em;color:#9BACA4;margin-top:8px">INDIA RANK · EEE · QS 2026</div></div><div class="k-rv" style="transition-delay:0.14s;padding:20px 0 20px 24px;border-left:1px solid rgba(237,241,239,.25)"><div style="font-weight:600;font-size:76px;line-height:1">14</div><div class="k-mono" style="font-size:12px;letter-spacing:.14em;color:#9BACA4;margin-top:8px">NIRF 2025 · UNIVERSITIES</div></div><div class="k-rv" style="transition-delay:0.21s;padding:20px 0 20px 24px;border-left:1px solid rgba(237,241,239,.25)"><div style="font-weight:600;font-size:76px;line-height:1">16</div><div class="k-mono" style="font-size:12px;letter-spacing:.14em;color:#9BACA4;margin-top:8px">NIRF 2025 · ENGINEERING</div></div><div class="k-rv" style="transition-delay:0.28s;padding:20px 0 20px 24px;border-left:1px solid rgba(237,241,239,.25)"><div style="font-weight:600;font-size:76px;line-height:1">A++</div><div class="k-mono" style="font-size:12px;letter-spacing:.14em;color:#9BACA4;margin-top:8px">NAAC ACCREDITATION</div></div></div></div>
+<div style="position: absolute; left: 50%; top: 50%; width: {{sw}}; height: 900px; transform: translate(-50%, -50%) scale({{k}}); font-family: 'Barlow Condensed', sans-serif; color: #EDF1EF"><div style="position:absolute;left:60px;top:92px;width:calc(1320px + {{xw2}})"><div class="k-mono k-eb" style="font-size:14px;letter-spacing:.18em;color:#F2B84B">HOSTS · MAKEATHON 2027</div><h2 style="margin:12px 0 0;font-weight:600;font-size:76px;line-height:1;letter-spacing:.02em"><span class="k-ln"><span>VIT × SELECT.</span></span></h2></div><div class="k-rv" style="position:absolute;left:60px;top:262px;width:calc(636px + {{xw}})"><div class="k-mono k-eb" style="font-size:14px;letter-spacing:.18em;color:#F2B84B;padding-bottom:10px;border-bottom:1px solid rgba(237,241,239,.25);margin-bottom:16px">ABOUT VIT</div><p style="margin:0;font-size:23px;line-height:1.42;color:#C1CBC6">Vellore Institute of Technology is a leading institution recognised for excellence in education, research and innovation, with a diverse student community, advanced research facilities and strong international collaborations. It fosters technological innovation, interdisciplinary learning and entrepreneurship, an ideal platform for Makeathon.</p></div><div class="k-rv" style="position:absolute;left:calc(744px + {{xw}});top:262px;width:calc(636px + {{xw}})"><div class="k-mono k-eb" style="font-size:14px;letter-spacing:.18em;color:#F2B84B;padding-bottom:10px;border-bottom:1px solid rgba(237,241,239,.25);margin-bottom:16px">ABOUT SELECT</div><p style="margin:0;font-size:23px;line-height:1.42;color:#C1CBC6">The School of Electrical Engineering at VIT excels in education, research and innovation. Its B.Tech. programmes are accredited by ABET and hold six-year NBA accreditation, and all UG and PG programmes are accredited by the IET, U.K. With advanced laboratories and strong industry collaborations, SELECT is the ideal foundation for technological innovation. Makeathon '27 is organised by SELECT, VIT Vellore.</p></div><div style="position:absolute;left:60px;right:60px;top:650px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid rgba(237,241,239,.3);border-bottom:1px solid rgba(237,241,239,.3)"><div class="k-rv" style="transition-delay:0.00s;padding:20px 0 20px 0px;"><div style="font-weight:600;font-size:76px;line-height:1">87</div><div class="k-mono" style="font-size:12px;letter-spacing:.14em;color:#9BACA4;margin-top:8px">WORLD RANK · EEE · QS 2026</div></div><div class="k-rv" style="transition-delay:0.07s;padding:20px 0 20px 24px;border-left:1px solid rgba(237,241,239,.25)"><div style="font-weight:600;font-size:76px;line-height:1">6</div><div class="k-mono" style="font-size:12px;letter-spacing:.14em;color:#9BACA4;margin-top:8px">INDIA RANK · EEE · QS 2026</div></div><div class="k-rv" style="transition-delay:0.14s;padding:20px 0 20px 24px;border-left:1px solid rgba(237,241,239,.25)"><div style="font-weight:600;font-size:76px;line-height:1">14</div><div class="k-mono" style="font-size:12px;letter-spacing:.14em;color:#9BACA4;margin-top:8px">NIRF 2025 · UNIVERSITIES</div></div><div class="k-rv" style="transition-delay:0.21s;padding:20px 0 20px 24px;border-left:1px solid rgba(237,241,239,.25)"><div style="font-weight:600;font-size:76px;line-height:1">16</div><div class="k-mono" style="font-size:12px;letter-spacing:.14em;color:#9BACA4;margin-top:8px">NIRF 2025 · ENGINEERING</div></div><div class="k-rv" style="transition-delay:0.28s;padding:20px 0 20px 24px;border-left:1px solid rgba(237,241,239,.25)"><div style="font-weight:600;font-size:76px;line-height:1">A++</div><div class="k-mono" style="font-size:12px;letter-spacing:.14em;color:#9BACA4;margin-top:8px">NAAC ACCREDITATION</div></div></div></div>
 </div>
 <div style="position: relative; height: 100vh; overflow: hidden; contain: layout paint; background-color: #17261F">
 <div class="k-grid k-mat" aria-hidden="true"></div>
 <div aria-hidden="true" style="position: absolute; left: 20px; top: 20px; right: 20px; bottom: 20px; border: 1px solid rgba(237,241,239,0.16); pointer-events: none"></div><span style="position: absolute; top: 20px; left: 20px; width: 22px; height: 22px; border-top: 2px solid rgba(237,241,239,0.7); border-left: 2px solid rgba(237,241,239,0.7)"></span><span style="position: absolute; top: 20px; right: 20px; width: 22px; height: 22px; border-top: 2px solid rgba(237,241,239,0.7); border-right: 2px solid rgba(237,241,239,0.7)"></span><span style="position: absolute; bottom: 20px; left: 20px; width: 22px; height: 22px; border-bottom: 2px solid rgba(237,241,239,0.7); border-left: 2px solid rgba(237,241,239,0.7)"></span><span style="position: absolute; bottom: 20px; right: 20px; width: 22px; height: 22px; border-bottom: 2px solid rgba(237,241,239,0.7); border-right: 2px solid rgba(237,241,239,0.7)"></span><div aria-hidden="true" class="k-rulX"></div><div aria-hidden="true" class="k-rulY"></div>
 <div style="position: absolute; left: 50%; top: 50%; width: {{sw}}; height: 900px; transform: translate(-50%, -50%) scale({{k}}); font-family: 'Barlow Condensed', sans-serif; color: #EDF1EF">
 <div class="{{fqCls}}" style="position: absolute; left: 0px; top: 0px; right: 0px; height: 900px; opacity: {{fqOp}}; transform: translateY({{fqY}})">
-<div style="position: absolute; left: 96px; top: 92px; width: calc(760px + {{xw}})">
+<div style="position: absolute; left: 60px; top: 92px; width: calc(832px + {{xw}})">
 <div class="k-mono k-eb" style="font-size: 14px; letter-spacing: 0.18em; color: #F2B84B">{{ebFq}}</div>
 <h2 id="faq" style="margin: 12px 0px 0px; font-weight: 600; font-size: 76px; line-height: 1; letter-spacing: 0.02em"><span class="k-ln"><span>QUESTIONS, ANSWERED.</span></span></h2>
 <div style="margin-top: 36px; border-bottom: 1px solid rgba(237,241,239,0.2)">
@@ -1920,7 +1909,7 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 </sc-for>
 </div>
 </div>
-<div style="position: absolute; left: calc(940px + {{xw2}}); top: 92px; width: 404px">
+<div style="position: absolute; left: calc(976px + {{xw2}}); top: 92px; width: 404px">
 <div class="k-mono k-eb" style="font-size: 14px; letter-spacing: 0.18em; color: #F2B84B">{{ebCt}}</div>
 <h2 id="contact" style="margin: 12px 0px 0px; font-weight: 600; font-size: 76px; line-height: 1; letter-spacing: 0.02em"><span class="k-ln"><span style="transition-delay: 0.06s">GET IN TOUCH.</span></span></h2>
 <div style="margin-top: 36px"><div style="padding: 13px 0px; border-top: 1px solid rgba(237,241,239,0.2)"><div class="k-mono" style="font-size: 13px; letter-spacing: 0.14em; color: #9BACA4">STUDENT CONVENER</div><div style="font-size: 23px; font-weight: 500; margin-top: 4px; line-height: 1.3">Prakul K Hebbur · 9844120276</div></div><div style="padding: 13px 0px; border-top: 1px solid rgba(237,241,239,0.2)"><div class="k-mono" style="font-size: 13px; letter-spacing: 0.14em; color: #9BACA4">STUDENT CONVENER</div><div style="font-size: 23px; font-weight: 500; margin-top: 4px; line-height: 1.3">Riddhi Tambi</div></div><div style="padding: 13px 0px; border-top: 1px solid rgba(237,241,239,0.2)"><div class="k-mono" style="font-size: 13px; letter-spacing: 0.14em; color: #9BACA4">FACULTY CONVENER</div><div style="font-size: 23px; font-weight: 500; margin-top: 4px; line-height: 1.3">Dr. K Satish Kumar · Dr. Marimuthu R</div></div><div style="padding: 13px 0px; border-top: 1px solid rgba(237,241,239,0.2)"><div class="k-mono" style="font-size: 13px; letter-spacing: 0.14em; color: #9BACA4">EMAIL</div><div style="font-size: 23px; font-weight: 500; margin-top: 4px; line-height: 1.3"><a href="mailto:enquiry@makeathon.in">enquiry@makeathon.in</a></div></div><div style="padding: 13px 0px; border-top: 1px solid rgba(237,241,239,0.2)"><div class="k-mono" style="font-size: 13px; letter-spacing: 0.14em; color: #9BACA4">ADDRESS</div><div style="font-size: 23px; font-weight: 500; margin-top: 4px; line-height: 1.3">School of Electrical Engineering, VIT Vellore, Tamil Nadu 632014</div></div></div>
@@ -1940,7 +1929,7 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <div style="position: absolute; left: 0px; top: 0px; clip-path: inset(0px {{wmR}} 0px 0px)">MAKEATHON <span style="color: #F2B84B">2027</span></div>
 <div class="k-wmE" style="position: absolute; top: -6px; bottom: -6px; left: {{wmX}}; width: 2px; background-color: #F2B84B; opacity: {{wmEo}}"></div>
 </div>
-<div class="k-mono k-hud" style="position: absolute; left: 96px; right: 96px; top: calc(812px + {{yh}}); padding-top: 20px; border-top: 1px solid rgba(237,241,239,0.2); display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: 0.16em">
+<div class="k-mono k-hud" style="position: absolute; left: 60px; right: 60px; top: calc(812px + {{yh}}); padding-top: 20px; border-top: 1px solid rgba(237,241,239,0.2); display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: 0.16em">
 <span style="display: flex; align-items: center; gap: 10px; color: {{syC}}; transition: color 0.6s ease"><span style="width: 7px; height: 7px; border-radius: 50%; background-color: {{syD}}; box-shadow: {{syG}}; transition: background-color 0.6s ease, box-shadow 0.6s ease"></span>{{syTxt}}</span>
 <span style="color: #9BACA4">SCHOOL OF ELECTRICAL ENGINEERING · VIT VELLORE</span>
 <a href="#top" class="k-ul" onClick="{{goTop}}" style="color: #F2B84B">BACK TO TOP ↑</a>
@@ -2000,55 +1989,53 @@ document.addEventListener('visibilitychange', this.qL.vc);
 this.qIO = null;
 this.qInit();
 this.qPh3D = this.qPhNow();
-this.qLow = !!(window.__mkGPU && window.__mkGPU.soft) || this.qPh3D; if (this.qLow) { this.qQ = 3; this.qRS = 0.9; }
+this.qLow = !!(window.__mkGPU && window.__mkGPU.soft); if (this.qLow) { this.qQ = 3; this.qRS = 0.9; }
 if (this.qPh3D) this.qPhInit();
 this.qFlowInit();
 this.qMeasure();
 this.qBoot();
 }
-// hold for 1.5 s to skip: from the story to the archive, from the archive to what's next, and then it bows out
+// one press jumps to the next section down the page, shown on the button by name; past the last one it bows out
 qFlowInit() {
 const b = this.qFlowEl; if (!b) return;
-this.qFlowTx = b.querySelector('.k-flow-t'); this.qFlowTgt = '';
-const stop = () => { clearTimeout(this.qFlowT); this.qFlowT = 0; b.classList.remove('is-hold'); };
-const start = () => {
-if (this.qFlowT || !this.qFlowTgt) return;
-b.classList.add('is-hold');
-this.qFlowT = setTimeout(() => { stop(); this.qFlowGo(); }, 1500);
-};
-b.addEventListener('pointerdown', (ev) => { if (ev.button === 0) start(); });
-['pointerup', 'pointerleave', 'pointercancel', 'blur', 'keyup'].forEach((n) => b.addEventListener(n, stop));
-b.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); if (!ev.repeat) start(); } });
-b.addEventListener('contextmenu', (ev) => ev.preventDefault());
-}
-qFlowGo() {
-const a = this.qFlowTgt === 'a';
-if (!this.qPh3D) { this.qGo(a ? 15.0 : 20.4)(); return; }
-const n = document.getElementById(a ? 'm-archive' : 'm-next');
+this.qFlowTx = b.querySelector('.k-flow-t'); this.qFlowTgt = null;
+this.qFlowL = [['ARCHIVE', 15.0, 'm-archive'], ["WHAT'S NEXT", 20.4, 'm-next'], ['WHY', 23.8, 'm-why'], ['VIT × SELECT', 24.8, 'm-hosts'], ['FAQ', 25.8, 'm-faq']];
+b.addEventListener('click', () => {
+const t = this.qFlowTgt; if (!t) return;
+if (!this.qPh3D) { this.qGo(t[1])(); return; }
+const n = document.getElementById(t[2]);
 if (n) this.qGo((el) => el.scrollTop + n.getBoundingClientRect().top - 94)();
+});
+}
+// the corner of the stage: level with the chapter labels, as far from the frame as the rest of the text
+qFlowPos() {
+const b = this.qFlowEl; if (!b) return;
+if (this.qPh3D) { b.style.right = ''; b.style.bottom = ''; return; }
+const W = this.qW || 1440, H = this.qH || 900, k = this.qK || 1;
+const xw = Math.max(0, Math.min(240, (W / k - 1440) / 2)), yh = Math.max(0, Math.min(140, (H / k - 900) / 2));
+b.style.right = Math.max(32, W / 2 - (660 + xw) * k).toFixed(1) + 'px';
+b.style.bottom = Math.max(30, H / 2 - (389 + yh) * k - 21.5).toFixed(1) + 'px';
+document.documentElement.style.setProperty('--flw', (229 / k).toFixed(1) + 'px');
 }
 qFlowStep() {
-const b = this.qFlowEl; if (!b) return;
-let tgt = '', sec = false;
+const b = this.qFlowEl, L = this.qFlowL; if (!b || !L) return;
+let tgt = null;
 if (this.qRevealed) {
-if (this.qPh3D) {
-const na = document.getElementById('m-archive'), nn = document.getElementById('m-next');
-if (na && nn) { const ta = na.getBoundingClientRect().top, tn = nn.getBoundingClientRect().top, H = this.qEl ? this.qEl.clientHeight : 0; sec = ta < H; tgt = tn <= 110 ? '' : (ta <= 110 ? 'n' : 'a'); }
-} else { const sp = this.qCur || 0; tgt = sp < 14.4 ? 'a' : (sp < 19.2 ? 'n' : ''); }
+if (this.qPh3D) { for (let i = 0; i < L.length && !tgt; i++) { const n = document.getElementById(L[i][2]); if (n && n.getBoundingClientRect().top > 110) tgt = L[i]; } }
+else { const sp = (this.qCur || 0) + 0.05; for (let i = 0; i < L.length && !tgt; i++) if (L[i][1] > sp) tgt = L[i]; }
 }
-if (sec !== this.qFlowSec) { this.qFlowSec = sec; b.classList.toggle('is-sec', sec); }
 if (tgt === this.qFlowTgt) return;
 this.qFlowTgt = tgt;
 b.classList.toggle('is-off', !tgt);
 b.tabIndex = tgt ? 0 : -1;
-if (tgt) { const t = 'HOLD TO SKIP · ' + (tgt === 'a' ? 'ARCHIVE' : "WHAT'S NEXT"); this.qFlowTx.textContent = t; b.setAttribute('aria-label', 'Press and hold to skip to ' + (tgt === 'a' ? 'the archive' : "what's next")); }
+if (tgt) { this.qFlowTx.textContent = tgt[0]; b.setAttribute('aria-label', 'Skip to ' + tgt[0]); }
 }
 qPhNow() { try { return document.documentElement.classList.contains('mk-ph3d') && window.matchMedia('(max-width: 1023px), (max-width: 1366px) and (max-aspect-ratio: 4/5)').matches; } catch (e) { return false; } }
-// phones: the static sections follow the story in the same scroller, the nav stays on top, and "about" and "build" lead back into the story
+// phones: the static sections follow the hero in the same scroller, and the nav stays on top
 qPhInit() {
 const m = document.querySelector('.mk-mobile');
 if (m && this.qEl) this.qEl.appendChild(m);
-this.qPhMap = { '#top-mobile': 0, '#m-hero': 0, '#m-about': 1.6, '#m-build': 3.9 };
+this.qPhMap = { '#top-mobile': 0, '#m-hero': 0 };
 this.qPhClick = (ev) => {
 const a = ev.target && ev.target.closest && ev.target.closest('a[href^="#"]'), to = a ? this.qPhMap[a.getAttribute('href')] : undefined;
 if (to !== undefined && this.qPh3D && this.qEl) { ev.preventDefault(); this.qEl.scrollTop = to * this.qEl.clientHeight; }
@@ -2069,43 +2056,9 @@ this.qMeasure();
 }
 qPhBuild() {
 const meta = [['FORMAT', 'HARDWARE HACKATHON'], ['HOSTED BY', 'SELECT · VIT VELLORE'], ['DATES', '19–20 JAN 2027'], ['PRIZE POOL', '₹1,00,000']].map((r) => '<div><dt>' + r[0] + '</dt><dd' + (r[0] === 'FORMAT' || r[0] === 'HOSTED BY' ? '' : ' style="color:#F2B84B"') + '>' + r[1] + '</dd></div>').join('');
-const L = [['REAL', 'HARDWARE.'], ['REAL', 'CODE.'], ['JUDGED', 'ON'], ['WHAT', 'WORKS.']];
-const hs = 'font-size:min(14vw,8vh)';
 this.qPhEl.innerHTML =
-'<div class="k-pc-t" data-c="hero"><div class="k-pc-yr">2027</div><h1 class="k-pc-hero">MAKEATHON</h1></div>' +
-'<div class="k-pc-b" data-c="hero" style="opacity:1"><dl class="k-pc-meta">' + meta + '</dl><div class="k-pc-cta"><a href="#m-notify" class="mk-btn-primary">GET NOTIFIED →</a><a href="#m-faq" class="mk-btn-outline">FAQ</a></div><div class="k-pc-hint">DRAG TO TURN · TAP THE BUTTON · SCROLL ↓</div></div>' +
-'<div class="k-pc-b" data-c="st"><h2 class="k-pc-h" style="' + hs + '">' + L.map((ws) => '<div>' + ws.map((t) => '<span data-w style="color:' + (t === 'WORKS.' ? '#F2B84B' : '#EDF1EF') + '">' + t + '</span>').join(' ') + '</div>').join('') + '</h2><p class="k-pc-p">Makeathon is the flagship hardware hackathon of the School of Electrical Engineering at VIT Vellore.</p></div>' +
-'<div class="k-pc-b" data-c="bd"><div class="k-pc-eb" data-f="lbl"></div><h2 class="k-pc-h" style="font-size:min(11vw,6.5vh);margin-top:6px" data-f="name"></h2><p class="k-pc-p" data-f="desc"></p><ul class="k-pc-list" data-f="list"></ul><div class="k-pc-segs" data-f="segs"><i></i><i></i><i></i><i></i><i></i></div></div>' +
-'<div class="k-pc-b" data-c="cd"><div class="k-pc-eb">STEP 05 · FIRMWARE</div><h2 class="k-pc-h" style="font-size:min(10vw,6vh);margin-top:6px">THEN, THE CODE.</h2><div class="k-pc-code" data-f="code"></div><div class="k-pc-up"><span data-f="up"></span><i data-f="upw"></i></div></div>' +
-'<div class="k-pc-b" data-c="ok"><div class="k-pc-eb">THE RUN</div><h2 class="k-pc-h" style="font-size:min(20vw,11vh);margin-top:6px">IT <span style="color:#F2B84B">WORKS.</span></h2><p class="k-pc-p">Not slides, not mock-ups: a build that runs on the bench. That is the bar at Makeathon.</p></div>';
-const $ = (q) => this.qPhEl.querySelector(q);
-this.qPhN = { hero: [...this.qPhEl.querySelectorAll('[data-c="hero"]')], st: $('[data-c="st"]'), bd: $('[data-c="bd"]'), cd: $('[data-c="cd"]'), ok: $('[data-c="ok"]'), w: [...this.qPhEl.querySelectorAll('[data-w]')], lbl: $('[data-f="lbl"]'), name: $('[data-f="name"]'), desc: $('[data-f="desc"]'), list: $('[data-f="list"]'), segs: [...this.qPhEl.querySelectorAll('[data-f="segs"] i')], code: $('[data-f="code"]'), up: $('[data-f="up"]'), upw: $('[data-f="upw"]') };
-this.qPhS = -1; this.qPhT = '';
-}
-// the captions are moved directly, not through the page template, so a phone's frame is the board's alone
-qPhStep(sp, B) {
-const N = this.qPhN; if (!N) return;
-const O = this.qOps(sp), set = (el, o, y) => { const v = o.toFixed(3); if (el.qO !== v) { el.qO = v; el.style.opacity = v; el.style.visibility = o > 0.002 ? 'visible' : 'hidden'; } if (y !== undefined) el.style.transform = 'translateY(' + y.toFixed(1) + 'px)'; };
-N.hero.forEach((el) => { set(el, O.hero); el.style.pointerEvents = O.hero > 0.5 ? '' : 'none'; });
-set(N.st, O.stOp, (1 - O.stOp) * 14); set(N.bd, O.bdOp, (1 - O.bdOp) * 14); set(N.cd, O.cdOp, (1 - O.cdOp) * 14); set(N.ok, O.okOp, (1 - O.okOp) * 14);
-if (O.stOp > 0) N.w.forEach((el, i) => { const a = 1.35 + i * 0.16, x = Math.min(1, Math.max(0, (sp - a) / 0.32)); el.style.opacity = (0.15 + 0.85 * x).toFixed(2); });
-if (O.bdOp > 0) {
-const si = this.qStepOf(sp)[0], st = this.qSTEPS && this.qSTEPS[si];
-if (st && si !== this.qPhS) { this.qPhS = si; N.lbl.textContent = 'STEP ' + String(si + 1).padStart(2, '0') + ' / 05'; N.name.textContent = st[0]; N.desc.textContent = st[1]; N.list.innerHTML = st[2].map((t) => '<li>' + t + '</li>').join(''); N.segs.forEach((g, i) => { g.className = i <= si ? 'on' : ''; }); }
-}
-if (O.cdOp > 0) {
-const cd = this.qCode(sp), syn = { k: '#9FD1B5', t: '#F2B84B', f: '#EDF1EF', n: '#E8B48A', s: '#CFDB8F', c: '#9BACA4', p: '#CFD9D4' };
-const key = cd.typed + ':' + cd.cur;
-if (key !== this.qPhT) {
-this.qPhT = key;
-const top = Math.max(0, Math.min(cd.lines.length - 8, cd.cur - 5));
-const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-N.code.innerHTML = cd.lines.slice(top, top + 8).map((l) => { let left = l.show, h = ''; l.toks.forEach((tk) => { if (left <= 0) return; const t = tk[0].slice(0, left); left -= t.length; h += '<span style="color:' + (syn[tk[1]] || '#CFD9D4') + '">' + esc(t) + '</span>'; }); return '<div>' + (h || ' ') + '</div>'; }).join('');
-}
-const upl = B ? B.upl : 0, txt = upl >= 1 ? 'UPLOADED · RUNNING' : (upl > 0 ? 'UPLOADING · USB-C' : (cd.typed >= cd.N ? 'READY TO UPLOAD' : 'MAKEATHON.INO'));
-if (N.up.textContent !== txt) N.up.textContent = txt;
-N.upw.style.transform = 'scaleX(' + Math.min(1, upl).toFixed(3) + ')';
-}
+'<div class="k-pc-t"><div class="k-pc-yr">2027</div><h1 class="k-pc-hero">MAKEATHON</h1></div>' +
+'<div class="k-pc-b"><dl class="k-pc-meta">' + meta + '</dl><div class="k-pc-cta"><a href="#m-notify" class="mk-btn-primary">GET NOTIFIED →</a><a href="#m-faq" class="mk-btn-outline">FAQ</a></div><div class="k-pc-hint">DRAG TO TURN · TAP THE BUTTON · SCROLL ↓</div></div>';
 }
 qBoot() {
 this.qT0 = performance.now() + 1e7; this.qB0 = 0;
@@ -2158,6 +2111,7 @@ this.qPf = f;
 qMeasure() {
 if (this.qEl) this.setState({ w: this.qEl.clientWidth, h: this.qEl.clientHeight });
 this.qResize();
+this.qFlowPos();
 const phone = window.matchMedia('(max-width: 1023px), (max-width: 1366px) and (max-aspect-ratio: 4/5)').matches && !this.qPhNow(), wasPhone = this.qPhone;
 this.qPh3D = this.qPhNow();
 this.qPhone = phone;
@@ -2368,7 +2322,7 @@ if (this.qG3) this.qG3Size();
 }
 qG3Init() {
 let pres = false; try { pres = !!window.__mkPreserve; } catch (e) {}
-try { this.qG3 = this.qB3Make(this.qGLCv, { preserve: pres, low: !!this.qLow, logo: this.qLogo || null }); } catch (e) { this.qG3 = null; }
+try { this.qG3 = this.qB3Make(this.qGLCv, { preserve: pres, low: !!this.qLow, phone: !!this.qPh3D, logo: this.qLogo || null }); } catch (e) { this.qG3 = null; }
 if (!this.qG3 || !this.qG3.ok) { this.qG3Off = true; this.qG3 = null; this.qPhFall(); return; }
 try { this.qGLCv.addEventListener('webglcontextlost', (ev) => { ev.preventDefault(); this.qG3Off = true; this.qG3 = null; if (this.qGLCv) this.qGLCv.style.visibility = 'hidden'; this.qPhFall(); this.qWake(); }); } catch (e) {}
 let force = false; try { force = !!window.__mkForce3D; } catch (e) {}
@@ -2383,7 +2337,7 @@ const g = this.qG3; if (!g) return;
 // the browser's downscale starts skipping samples, so a smaller window draws fewer pixels, never softer ones.
 // Only software rendering (no GPU at all) stays at 1080p
 const W = this.qW || 1440, H = this.qH || 900, nat = (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
-const dpr = this.qLow ? Math.max(0.5, Math.min(this.qDpr || 1, Math.sqrt(2.1e6 / (W * H)))) : Math.min(2 * nat, Math.sqrt(8294400 / (W * H)));
+const dpr = this.qLow ? Math.max(0.5, Math.min(this.qDpr || 1, Math.sqrt(2.1e6 / (W * H)))) : this.qPh3D ? Math.min(3, nat * 1.25) : Math.min(2 * nat, Math.sqrt(8294400 / (W * H)));
 g.resize(W, H, dpr);
 this.qKey3 = '';
 }
@@ -2525,11 +2479,12 @@ led[6] = !calm && Math.sin(t * 7.0) > 0.92 ? 0.8 : 0;
 const pl = this.qPlot, txt = String(Math.round(cm)) + ' CM';
 const ops = [['t', 'MAKEATHON 2027', 22, 2, 1], ['r', 0, 12, 128, 1], ['t', 'DISTANCE', 2, 18, 1], ['t', txt, 2, 31, 2], ['p', 62, 18, 64, 42, pl.length > 1 ? pl : [0.5, 0.5]]];
 oled = { key: 'run' + txt + ':' + pl.map((x) => x.toFixed(2)).join(','), ops };
+if (this.qPh3D) { const big = txt.length > 5 ? 3 : 4; oled = { key: 'ph' + txt, ops: [['t', 'MAKEATHON', 10, 4, 2], ['t', txt, Math.round((128 - txt.length * 6 * big) / 2), 26, big]] }; }
 if (this.qYour >= 0 && sp > 21.5) {
 oled = { key: 'you' + this.qName, ops: [['t', 'WELCOME,', 4, 6, 2], ['t', this.qName, 4, 28, 2], ['r', 0, 50, 128, 1], ['t', 'PIXEL ' + String(this.qYour + 1).padStart(2, '0') + ' IS YOURS', 4, 55, 1]] };
 }
 if (hello < 1.8) {
-oled = { key: 'hi', inv: true, ops: [['t', 'HELLO,', 22, 12, 2], ['t', 'MAKER!', 22, 34, 2]] };
+oled = this.qPh3D ? { key: 'hi', inv: true, ops: [['t', 'HELLO,', 10, 6, 3], ['t', 'MAKER!', 10, 34, 3]] } : { key: 'hi', inv: true, ops: [['t', 'HELLO,', 22, 12, 2], ['t', 'MAKER!', 22, 34, 2]] };
 const f = Math.max(0, 1 - hello / 1.6);
 for (let k = 0; k < 16; k++) { ring[k * 3] += 2.2 * f; ring[k * 3 + 1] += 1.45 * f; ring[k * 3 + 2] += 0.45 * f; }
 led[0] = led[1] = led[2] = hello < 1.2 ? 1 : 0;
@@ -2577,7 +2532,7 @@ if (this.qStep3D(dt, A, now, up, live)) busy = true;
 return busy;
 }
 qStep3D(dt, A, now, up, live) {
-const st = this.state, sp = this.qCur || 0, bt = now - this.qT0, p = this.qPtr;
+const st = this.state, sp = this.qPh3D ? 0 : (this.qCur || 0), bt = now - this.qT0, p = this.qPtr;
 const cl = (v) => Math.min(1, Math.max(0, v));
 const ss = (a, b, x) => { const t = cl((x - a) / (b - a)); return t * t * (3 - 2 * t); };
 const eo = (t) => 1 - Math.pow(1 - cl(t), 3);
@@ -2585,8 +2540,8 @@ const W = this.qW || 1440, H = this.qH || 900, k = this.qK || 1;
 const booting = bt < 3200;
 const TOTAL = 22.8;
 // the board owns the opening, the build, the code and the run; it steps aside for the archive and the plan, and returns for the sign-up
-const a3 = (1 - ss(13.95, 14.3, sp)) + (this.qPh3D ? 0 : ss(21.6, 21.95, sp) * (1 - ss(TOTAL - 0.3, TOTAL + 0.45, sp)));
-const want = a3 > 0.002 && sp < TOTAL + 0.5;
+const a3 = (1 - ss(13.95, 14.3, sp)) + ss(21.6, 21.95, sp) * (1 - ss(TOTAL - 0.3, TOTAL + 0.45, sp));
+const want = a3 > 0.002 && sp < TOTAL + 0.5 && !(this.qPh3D && (this.qCur || 0) > 1.02);
 if (want && !this.qG3 && !this.qG3Off && this.qGLCv && (bt > 0 || sp > 0.05)) this.qG3Init();
 const g0 = this.qG3 && !this.qG3Off ? this.qG3 : null;
 if (g0 && g0.failed) { this.qG3Off = true; this.qG3 = null; if (this.qEl) this.qEl.removeAttribute('data-b3'); this.qPhFall(); }
@@ -2609,7 +2564,6 @@ const cm0 = this.qCm; this.qCm += (cmT - this.qCm) * A(0.12);
 if (Math.abs(this.qCm - cmT) < 0.05) this.qCm = cmT;
 if (now - this.qPlotT > 110) { this.qPlotT = now; this.qPlot.push(Math.min(1, this.qCm / 120)); if (this.qPlot.length > 28) this.qPlot.shift(); }
 const B = this.qBoard(sp, now);
-if (this.qPh3D) this.qPhStep(sp, B);
 // the camera, with a breath of drift, the pointer's parallax and the reader's own orbit
 const c = this.qCam(sp);
 const parOn = live && this.qSpinOK() && !this.qDrag && !calm;
@@ -2617,10 +2571,11 @@ const pa = parOn ? -((p.x - ox) / W - 0.5) * 0.07 : 0, pe = parOn ? ((p.y - oy) 
 this.qPar.a += (pa - this.qPar.a) * A(0.05); this.qPar.e += (pe - this.qPar.e) * A(0.05);
 const intro = eo(b3 / 1600);
 const drift = calm ? 0 : 0.03 * Math.sin(now / 3100);
+const PHC = this.qPh3D && W < H ? [0.42, 0.24, 1.04] : null;
 const cam = {
-T: c.T, fov: c.fov, S: c.S * k * (0.86 + 0.14 * intro) * (this.qPh3D && W < H ? 1 - 0.18 * ss(12.2, 12.9, sp) : 1),
-el: Math.max(0.12, Math.min(1.5, c.el + this.qPar.e + this.qOrb.e - (1 - intro) * 0.22)),
-az: c.az + this.qPar.a + this.qOrb.a + drift * (1 - ss(9.0, 9.6, sp) * (1 - ss(12.3, 12.6, sp))) - (1 - intro) * 0.5,
+T: PHC ? [0, c.T[1], c.T[2]] : c.T, fov: c.fov, S: c.S * k * (0.86 + 0.14 * intro) * (PHC ? PHC[2] : 1),
+el: Math.max(0.12, Math.min(1.5, (PHC ? PHC[0] : c.el) + this.qPar.e + this.qOrb.e - (1 - intro) * 0.22)),
+az: (PHC ? PHC[1] : c.az) + this.qPar.a + this.qOrb.a + drift * (1 - ss(9.0, 9.6, sp) * (1 - ss(12.3, 12.6, sp))) - (1 - intro) * 0.5,
 ax: this.qPh3D && W > H ? W * 0.68 : this.qMobile ? W / 2 : (c.ax - 720) * k + W / 2,
 ay: this.qPh3D ? (W > H ? H * 0.52 : H * 0.4) : this.qMobile ? H / 2 : (c.ay - 450) * k + H / 2
 };
@@ -2633,9 +2588,9 @@ else if (sp >= 12.55 && this.qBootT >= 0 && now - this.qBootT < 2400) { ts = (no
 if (ts >= 0) { fx = true; surge = { x: ox, z: oz, r: 4 + 380 * eo(ts / 1.35), a: Math.pow(Math.max(0, 1 - ts / 1.35), 1.3) }; cascade = { t: ts, a: 1 - ss(1.5, 2.3, ts) }; kick = 0.12 * Math.exp(-ts * 5.5); bloomB = 0.16 * Math.exp(-ts * 3); }
 }
 // frames in motion may draw fewer pixels on a slow GPU (never fewer than the screen has on a 1080p display); a still frame always draws at full resolution
-const moving = Math.abs((this.qTarget || 0) - (this.qCur || 0)) > 0.0004 || !!this.qDrag || (b3 >= 0 && b3 < 1800) || Math.abs(this.qOrb.va) + Math.abs(this.qOrb.ve) > 0.0005;
-if (g.timed && g.cost && !this.qSoft && !this.qLow) this.qRS = Math.max(0.5, Math.min(1, Math.round(Math.sqrt(7 / g.cost) * 20) / 20));
-const rs = moving ? this.qRS : (this.qSoft || this.qLow ? Math.min(1, this.qRS + 0.15) : 1);
+const moving = (!this.qPh3D && Math.abs((this.qTarget || 0) - (this.qCur || 0)) > 0.0004) || !!this.qDrag || (b3 >= 0 && b3 < 1800) || Math.abs(this.qOrb.va) + Math.abs(this.qOrb.ve) > 0.0005;
+if (g.timed && g.cost && !this.qSoft && !this.qLow) this.qRS = Math.max(this.qPh3D ? 0.6 : 0.5, Math.min(1, Math.round(Math.sqrt((this.qPh3D ? 24 : 7) / g.cost) * 20) / 20));
+const rs = moving || this.qPh3D ? this.qRS : (this.qSoft || this.qLow ? Math.min(1, this.qRS + 0.15) : 1);
 const dofK = c.dof * (calm ? 0.6 : 1);
 const F = {
 cam, grp: B.grp, led: B.led, ring: B.ring, oled: B.oled, oledOn: B.oledOn, plate: B.plate * (0.25 + 0.75 * L2), rail: B.rail, hi: B.hi, press: B.press, flow: calm ? 0 : B.flow,
@@ -2652,8 +2607,14 @@ const fi = now - (this.qLast3 || 0);
 let drew = false;
 if (bt < 0 ? !this.qKey3 : (!ambientOnly || (animated && fi > (this.qSoft ? 66 : 31)))) {
 g.render(F); this.qLast3 = now; this.qKey3 = key; drew = true;
+// a phone on its last step gives up edge smoothing before frame rate; without GPU timers it judges by the gap between frames (about 33 ms when keeping up)
+if (this.qPh3D && b3 > 1000 && document.visibilityState !== 'hidden') {
+const gap = now - (this.qLastFrameAt || now);
+if (gap > 4 && gap < 400) { this.qEma = this.qEma * 0.92 + gap * 0.08; if (this.qEma > 48) this.qSlowN++; else this.qSlowN = 0; }
+if (this.qSlowN > 25) { this.qSlowN = 0; this.qEma = 34; if (!g.timed && this.qRS > 0.6) this.qRS = Math.max(0.6, this.qRS * 0.85); else if (g.msaa() > 0) g.msaa(0); }
+}
 // a browser without GPU timers, or software rendering, fits motion frames to the machine by frame time instead
-if ((this.qLow || this.qSoft || !g.timed) && b3 > 1000 && moving && document.visibilityState !== 'hidden') {
+if (!this.qPh3D && (this.qLow || this.qSoft || !g.timed) && b3 > 1000 && moving && document.visibilityState !== 'hidden') {
 const ft = now - (this.qLastFrameAt || now);
 if (ft > 4 && ft < 400) {
 this.qFT = this.qFT * 0.94 + Math.min(ft, 250) * 0.06;
@@ -2989,7 +2950,7 @@ function drawPlate(c, logo) {
 
 // PCB artwork, one atlas. Channels: R = silkscreen, G = exposed gold, B = copper under the mask; white = a drilled hole
 // (TS doubles all the artwork to about 50 px/mm wherever the GPU takes 8K textures)
-const TS = !opt.low && (gl.getParameter(gl.MAX_TEXTURE_SIZE) || 4096) >= 8192 ? 2 : 1;
+const TS = !opt.low && !opt.phone && (gl.getParameter(gl.MAX_TEXTURE_SIZE) || 4096) >= 8192 ? 2 : 1;
 const ATL = { W: 4096, H: 2048, K: 24, RING: [0, 0, 1068, 1068], MB: [1080, 0, 792, 1272], OLED: [1884, 0, 656, 668], DEV: [1884, 680, 1032, 504], ULTRA: [0, 1080, 1080, 480] };
 Object.keys(ATL).forEach((a) => { ATL[a] = Array.isArray(ATL[a]) ? ATL[a].map((v) => v * TS) : ATL[a] * TS; });
 const atlUV = (reg) => [reg[0] / ATL.W, reg[1] / ATL.H, (reg[0] + reg[2]) / ATL.W, (reg[1] + reg[3]) / ATL.H];
@@ -4209,7 +4170,7 @@ function target(w, h, ms) {
 }
 function freeTarget(T) { if (!T) return; [T.res, T.dep].forEach((t) => t && gl.deleteTexture(t)); [T.resF, T.msF].forEach((f) => f && gl.deleteFramebuffer(f)); [T.msC, T.msD].forEach((r) => r && gl.deleteRenderbuffer(r)); }
 let main = null, mips = [], dofT = null, W = 0, H = 0, CW = 0, CH = 0, DPR = 1, CVW = 0, CVH = 0;
-const SHN = opt.low ? 1024 : (gl.getParameter(gl.MAX_TEXTURE_SIZE) >= 8192 ? 4096 : 2048), HMW = 1024, HMH = 448;
+const SHN = opt.low ? 1024 : (!opt.phone && gl.getParameter(gl.MAX_TEXTURE_SIZE) >= 8192 ? 4096 : 2048), HMW = 1024, HMH = 448;
 function depthTex(w, h, cmp) {
   const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT24, w, h, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, null);
@@ -4585,7 +4546,7 @@ const L = [['REAL', 'HARDWARE.'], ['REAL', 'CODE.'], ['JUDGED', 'ON'], ['WHAT', 
 let wi = 0;
 const lines = L.map((ws) => ({ words: ws.map((t) => { const a = 1.35 + wi * 0.16; wi++; const o = ss(a, a + 0.32, sp); return { t, o: lerp(0.1, 1, o).toFixed(3), y: ((1 - o) * 34).toFixed(1) + 'px', c: t === 'WORKS.' ? '#F2B84B' : '#EDF1EF' }; }) }));
 // the build card
-const STEPS = this.qSTEPS = [["ENCLOSURE", "Mechanical design and the housing around it", ["ACRYLIC BASE · EDGE-LIT", "BREADBOARD · 830 TIE POINTS", "4 × M3 BRASS STANDOFFS"]], ["POWER", "Power systems and energy", ["MB102 · 5 V AND 3.3 V", "470 µF BULK CAPACITOR", "BOTH RAILS LIVE"]], ["CIRCUIT", "Electronics and PCB design", ["MKT-27 DEV · 16 MHZ", "3 × LED · 3 × 220 Ω", "2 × 100 NF DECOUPLING"]], ["SENSING", "Sensors and signal processing", ["HC-SR04 · ULTRASONIC", "SSD1306 · 128 × 64 OLED", "WS2812B × 16 · PUSH BUTTON"]], ["FIRMWARE", "Embedded code and control logic", ["MAKEATHON.INO · 24 LINES", "C++ · ARDUINO CORE", "UPLOAD OVER USB-C"]]];
+const STEPS = [["ENCLOSURE", "Mechanical design and the housing around it", ["ACRYLIC BASE · EDGE-LIT", "BREADBOARD · 830 TIE POINTS", "4 × M3 BRASS STANDOFFS"]], ["POWER", "Power systems and energy", ["MB102 · 5 V AND 3.3 V", "470 µF BULK CAPACITOR", "BOTH RAILS LIVE"]], ["CIRCUIT", "Electronics and PCB design", ["MKT-27 DEV · 16 MHZ", "3 × LED · 3 × 220 Ω", "2 × 100 NF DECOUPLING"]], ["SENSING", "Sensors and signal processing", ["HC-SR04 · ULTRASONIC", "SSD1306 · 128 × 64 OLED", "WS2812B × 16 · PUSH BUTTON"]], ["FIRMWARE", "Embedded code and control logic", ["MAKEATHON.INO · 24 LINES", "C++ · ARDUINO CORE", "UPLOAD OVER USB-C"]]];
 const so = this.qStepOf(sp), si = so[0], sl = so[1], sAct = so[2];
 const card = sAct >= 0 ? Math.min(ss(0, 0.1, sl), si === 4 ? 1 : 1 - ss(0.9, 1, sl)) : (sp < 3.8 ? 0 : 1);
 const st = STEPS[si];
