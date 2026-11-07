@@ -1953,6 +1953,22 @@ const scroll = el.clientHeight > 0 ? el.scrollTop / el.clientHeight : 0;
 this.qTarget = this.qPh3D ? scroll : this.qMap(scroll);
 this.qWake();
 };
+qOnWheel = (ev) => {
+const el = this.qEl;
+if (this.qPh3D || !el || !ev.deltaY || !el.clientHeight) return;
+const height = el.clientHeight;
+const start = this.qUnmap(9.8) * height, end = this.qUnmap(11.65) * height;
+const top = el.scrollTop;
+if ((top < start && top + ev.deltaY <= start) || top >= end) return;
+const progress = (this.qMap(top / height) - 9.8) / 1.85 * 24;
+const line = Math.max(0, Math.min(24, Math.round(progress)));
+const direction = Math.sign(ev.deltaY);
+if ((direction < 0 && line === 0) || (direction > 0 && line === 24)) return;
+ev.preventDefault();
+el.scrollTop = start + (line + direction) * (end - start) / 24;
+this.qTarget = this.qMap(el.scrollTop / height);
+this.qWake();
+};
 componentDidMount() {
 this.qCur = 0; this.qTarget = 0; this.qScale = 1;
 this.qT0 = performance.now() + 1e7; this.qLt = performance.now();
@@ -1968,9 +1984,11 @@ rs: () => this.qMeasure(),
 pm: (e) => this.qOnMove(e),
 pd: (e) => this.qOnDown(e),
 pu: (e) => this.qOnUp(e),
+wh: (e) => this.qOnWheel(e),
 po: (e) => { if (!e.relatedTarget) { this.qPtr.in = false; this.qWake(); } },
 vc: () => { if (!document.hidden) this.qWake(); }
 };
+if (this.qEl) this.qEl.addEventListener('wheel', this.qL.wh, { passive: false });
 window.addEventListener('resize', this.qL.rs);
 window.addEventListener('pointermove', this.qL.pm, { passive: true });
 window.addEventListener('pointerdown', this.qL.pd, { passive: true });
@@ -2075,6 +2093,7 @@ if (pre) { pre.classList.add('is-out'); setTimeout(() => { if (pre.parentNode) p
 this.qWake();
 }
 componentWillUnmount() {
+if (this.qEl && this.qL.wh) this.qEl.removeEventListener('wheel', this.qL.wh);
 window.removeEventListener('resize', this.qL.rs);
 window.removeEventListener('pointermove', this.qL.pm);
 window.removeEventListener('pointerdown', this.qL.pd);
