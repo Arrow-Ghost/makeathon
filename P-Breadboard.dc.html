@@ -1698,7 +1698,7 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <div ref="{{qRingRef}}" class="k-rp"><div class="k-rs"></div><div ref="{{qProbeRef}}" class="k-probe k-mono"></div></div>
 <div ref="{{qDotRef}}" class="k-dp"><div class="k-ds"></div></div>
 </div>
-<div class="mk-desktop-theater" style="position: relative; height: 2900vh">
+<div class="mk-desktop-theater" style="position: relative; height: calc(2150vh + 3400px)">
 <div style="position: sticky; top: 0px; height: 100vh; overflow: hidden; contain: layout paint; background-color: #17261F">
 <div class="k-grid k-mat" aria-hidden="true"></div>
 <div class="k-clip">
@@ -1907,7 +1907,6 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <div class="k-mono k-hud k-eb" style="position: absolute; left: 60px; top: calc(830px + {{yh}}); display: flex; align-items: center; gap: 14px; font-size: 14px; letter-spacing: 0.16em; opacity: {{hudOp}}">
 <span style="color: #F2B84B">{{chNum}}</span><span style="color: #9BACA4">/ 11</span><span>{{chName}}</span>
 </div>
-<div class="k-mono k-hud k-eb" style="position: absolute; right: calc(60px + var(--flw, 197px)); top: calc(830px + {{yh}}); display: flex; align-items: center; gap: 10px; font-size: 14px; letter-spacing: 0.16em; color: #9BACA4; opacity: {{hudNx}}">NEXT<span style="color: #EDF1EF">{{nextName}}</span><span class="k-nudge" style="color: #F2B84B">↓</span></div>
 </div>
 </div>
 </div>
@@ -1950,7 +1949,8 @@ qMagC = (el) => { this.qMagEl.c = el; };
 // wheel and trackpad scroll natively (on the compositor, with the system's own momentum); the scene eases after it in qLoop
 qOnScroll = (ev) => {
 const el = ev.currentTarget;
-this.qTarget = el.clientHeight > 0 ? el.scrollTop / el.clientHeight : 0;
+const scroll = el.clientHeight > 0 ? el.scrollTop / el.clientHeight : 0;
+this.qTarget = this.qPh3D ? scroll : this.qMap(scroll);
 this.qWake();
 };
 componentDidMount() {
@@ -1987,12 +1987,12 @@ this.qFlowInit();
 this.qMeasure();
 this.qBoot();
 }
-// one press jumps to the next section down the page, shown on the button by name; past the last one it bows out
+// one press jumps to the next part down the page, shown on the button by name; on the last one it bows out
 qFlowInit() {
 const b = this.qFlowEl; if (!b) return;
 this.qFlowTx = b.querySelector('.k-flow-t'); this.qFlowTgt = null;
-this.qFlowDesk = [['ARCHIVE', 15.0], ["WHAT'S NEXT", 20.4], ['WHY', 23.9], ['FAQ', 25.6], ['VIT × SELECT', 27.3]];
-this.qFlowPhone = [['ARCHIVE', 0, 'm-archive'], ["WHAT'S NEXT", 0, 'm-next'], ['WHY', 0, 'm-why'], ['VIT × SELECT', 0, 'm-hosts'], ['FAQ', 0, 'm-faq']];
+this.qFlowDesk = [['STATEMENT', 2.3, 1.1], ['THE BUILD', 4.3, 3.4], ['FIRMWARE', 9.9, 9.4], ['IT WORKS', 13.3, 12.6], ['ARCHIVE', 15.0, 14.4], ["WHAT'S NEXT", 20.4, 19.2], ['STAY UPDATED', 22.35, 21.8], ['WHY', 23.9, 23.35], ['FAQ & CONTACT', 25.6, 25.0], ['VIT × SELECT', 27.3, 26.7]];
+this.qFlowPhone = [['ABOUT', 0, 'm-about'], ['THE BUILD', 0, 'm-build'], ['ARCHIVE', 0, 'm-archive'], ["WHAT'S NEXT", 0, 'm-next'], ['WHY', 0, 'm-why'], ['VIT × SELECT', 0, 'm-hosts'], ['FAQ', 0, 'm-faq'], ['STAY UPDATED', 0, 'm-notify']];
 b.addEventListener('click', () => {
 const t = this.qFlowTgt; if (!t) return;
 if (!this.qPh3D) { this.qGo(t[1])(); return; }
@@ -2000,20 +2000,13 @@ const n = document.getElementById(t[2]);
 if (n) this.qGo((el) => el.scrollTop + n.getBoundingClientRect().top - 94)();
 });
 }
-// the chapter hint keeps clear of the button in the frame's corner, whatever the stage's scale
-qFlowPos() {
-if (this.qPh3D) return;
-const W = this.qW || 1440, k = this.qK || 1, xw = Math.max(0, Math.min(240, (W / k - 1440) / 2));
-const edge = Math.max(0, W / 2 - (660 + xw) * k);
-document.documentElement.style.setProperty('--flw', (Math.max(0, 257 - edge) / k).toFixed(1) + 'px');
-}
 qFlowStep() {
 const b = this.qFlowEl; if (!b) return;
 const L = this.qPh3D ? this.qFlowPhone : this.qFlowDesk;
 let tgt = null;
 if (this.qRevealed) {
 if (this.qPh3D) { for (let i = 0; i < L.length && !tgt; i++) { const n = document.getElementById(L[i][2]); if (n && n.getBoundingClientRect().top > 110) tgt = L[i]; } }
-else { const sp = (this.qCur || 0) + 0.05; for (let i = 0; i < L.length && !tgt; i++) if (L[i][1] > sp) tgt = L[i]; }
+else { const sp = this.qCur || 0; for (let i = 0; i < L.length && !tgt; i++) if (L[i][2] > sp) tgt = L[i]; }
 }
 if (tgt === this.qFlowTgt) return;
 this.qFlowTgt = tgt;
@@ -2102,7 +2095,6 @@ this.qPf = f;
 qMeasure() {
 if (this.qEl) this.setState({ w: this.qEl.clientWidth, h: this.qEl.clientHeight });
 this.qResize();
-this.qFlowPos();
 const phone = window.matchMedia('(max-width: 1023px), (max-width: 1366px) and (max-aspect-ratio: 4/5)').matches && !this.qPhNow(), wasPhone = this.qPhone;
 this.qPh3D = this.qPhNow();
 this.qPhone = phone;
@@ -2207,7 +2199,7 @@ qGo(screens) {
 return (ev) => {
 if (ev && ev.preventDefault) ev.preventDefault();
 const el = this.qEl; if (!el) return;
-const top = screens < 0 ? el.scrollHeight : screens * el.clientHeight;
+const top = screens < 0 ? el.scrollHeight : this.qUnmap(screens) * el.clientHeight;
 el.scrollTo({ top, behavior: 'smooth' });
 };
 }
@@ -2252,8 +2244,9 @@ if (ev && ev.preventDefault) ev.preventDefault();
 const el = this.qEl; if (!el) return;
 const ov = this.qFadeEl;
 const jump = () => {
-el.scrollTop = typeof screens === 'function' ? screens(el) : (screens < 0 ? el.scrollHeight : screens * el.clientHeight);
-const t = el.clientHeight > 0 ? el.scrollTop / el.clientHeight : 0;
+el.scrollTop = typeof screens === 'function' ? screens(el) : (screens < 0 ? el.scrollHeight : this.qUnmap(screens) * el.clientHeight);
+const scroll = el.clientHeight > 0 ? el.scrollTop / el.clientHeight : 0;
+const t = this.qPh3D ? scroll : this.qMap(scroll);
 this.qTarget = t; this.qCur = t; this.qKey3 = ''; this.setState({ sp: t }); this.qWake();
 };
 if (!ov) { jump(); return; }
@@ -2265,7 +2258,7 @@ this.qFadeT = setTimeout(() => { jump(); requestAnimationFrame(() => requestAnim
 qToggleCalm = () => { this.setState({ calm: !this.state.calm }); this.qKey3 = ''; this.qWake(); };
 qSuFocus = () => {
 const o = this.qOps(this.state.sp);
-if (o.suOp < 0.6 && this.qEl) this.qEl.scrollTo({ top: 22.35 * this.qEl.clientHeight, behavior: 'smooth' });
+if (o.suOp < 0.6 && this.qEl) this.qEl.scrollTo({ top: this.qUnmap(22.35) * this.qEl.clientHeight, behavior: 'smooth' });
 };
 qMail() {
 const s = this.state;
@@ -2375,7 +2368,34 @@ if (this.qEl) this.qEl.setAttribute('data-drag', 'on');
 qPointerUp(e) {
 if (this.qDrag) { if (performance.now() - this.qDrag.t > 80) { this.qOrb.va = 0; this.qOrb.ve = 0; } this.qDrag = null; if (this.qEl) this.qEl.removeAttribute('data-drag'); }
 }
-qMap(s) { return s; }
+qMap(s) {
+const height = this.qEl?.clientHeight || this.state.h || 900, wheel = 100 / height;
+const physical = [3.8, 3.8 + 2 * wheel, 3.8 + 4 * wheel, 3.8 + 6 * wheel, 3.8 + 8 * wheel, 3.8 + 10 * wheel];
+const logical = [3.8, 4.95, 6.05, 7.15, 8.7, 9.45];
+if (s <= physical[0]) return s;
+for (let i = 0; i < physical.length - 1; i++) {
+if (s < physical[i + 1]) return logical[i] + (s - physical[i]) * (logical[i + 1] - logical[i]) / (physical[i + 1] - physical[i]);
+}
+const buildOffset = logical[logical.length - 1] - physical[physical.length - 1];
+const codeStart = 9.8 - buildOffset, codeEnd = codeStart + 24 * wheel;
+if (s < codeStart) return s + buildOffset;
+if (s < codeEnd) return 9.8 + (s - codeStart) * (11.65 - 9.8) / (codeEnd - codeStart);
+return s + 11.65 - codeEnd;
+}
+qUnmap(s) {
+const height = this.qEl?.clientHeight || this.state.h || 900, wheel = 100 / height;
+const physical = [3.8, 3.8 + 2 * wheel, 3.8 + 4 * wheel, 3.8 + 6 * wheel, 3.8 + 8 * wheel, 3.8 + 10 * wheel];
+const logical = [3.8, 4.95, 6.05, 7.15, 8.7, 9.45];
+if (s <= logical[0]) return s;
+for (let i = 0; i < logical.length - 1; i++) {
+if (s < logical[i + 1]) return physical[i] + (s - logical[i]) * (physical[i + 1] - physical[i]) / (logical[i + 1] - logical[i]);
+}
+const buildOffset = logical[logical.length - 1] - physical[physical.length - 1];
+const codeStart = 9.8 - buildOffset, codeEnd = codeStart + 24 * wheel;
+if (s < 9.8) return s - buildOffset;
+if (s < 11.65) return codeStart + (s - 9.8) * (codeEnd - codeStart) / (11.65 - 9.8);
+return s + codeEnd - 11.65;
+}
 qFlags(sp) {
 const o = this.qOps(sp);
 const B = [0, 1.1, 3.4, 9.4, 12.6, 14.4, 19.2, 21.8, 23.35, 25.0, 26.7];
@@ -2495,18 +2515,18 @@ const sonar = running && hello > 1.8 && !(this.qYour >= 0 && sp > 21.5) ? 1 : 0;
 return { bob, sonar, grp, led, ring, oled, oledOn, plate, rail, hi, press, flow: running ? (sp < 1.35 ? 0.3 * (1 - ss(0.9, 1.3, sp)) : (sp < 14.3 ? 0.45 * ss(13.0, 13.3, sp) : 0.25)) : 0, live, running, upl, devOn, mbOn };
 }
 qCode(sp) {
-const C = [[["// makeathon.ino · MKT-27 DEV", "c"]], [["#include", "k"], [" ", "p"], ["\"mkt27.h\"", "s"]], [], [["const", "k"], [" ", "p"], ["int", "k"], [" TRIG = ", "p"], ["10", "n"], [", ECHO = ", "p"], ["9", "n"], [";   ", "p"], ["// HC-SR04", "c"]], [["const", "k"], [" ", "p"], ["int", "k"], [" LEDS[] = { ", "p"], ["2", "n"], [", ", "p"], ["3", "n"], [", ", "p"], ["4", "n"], [" };  ", "p"], ["// red, amber, green", "c"]], [["const", "k"], [" ", "p"], ["int", "k"], [" BTN = ", "p"], ["5", "n"], [";", "p"]], [["Ring", "t"], ["   ", "p"], ["ring", "f"], ["(", "p"], ["11", "n"], [", ", "p"], ["16", "n"], [");             ", "p"], ["// WS2812B × 16", "c"]], [["Screen", "t"], [" ", "p"], ["oled", "f"], ["(", "p"], ["0x3C", "n"], [");               ", "p"], ["// SSD1306, I2C", "c"]], [], [["void", "k"], [" ", "p"], ["setup", "f"], ["() {", "p"]], [["  ", "p"], ["pinMode", "f"], ["(TRIG, ", "p"], ["OUTPUT", "t"], [");", "p"]], [["  ", "p"], ["pinMode", "f"], ["(ECHO, ", "p"], ["INPUT", "t"], [");", "p"]], [["  ", "p"], ["for", "k"], [" (", "p"], ["int", "k"], [" p : LEDS) ", "p"], ["pinMode", "f"], ["(p, ", "p"], ["OUTPUT", "t"], [");", "p"]], [["  ring.", "p"], ["begin", "f"], ["();", "p"]], [["  oled.", "p"], ["begin", "f"], ["();", "p"]], [["}", "p"]], [], [["void", "k"], [" ", "p"], ["loop", "f"], ["() {", "p"]], [["  ", "p"], ["int", "k"], [" cm = ", "p"], ["sonar", "f"], ["(TRIG, ECHO);      ", "p"], ["// how close are you?", "c"]], [["  ring.", "p"], ["fill", "f"], ["(", "p"], ["GOLD", "t"], [", ", "p"], ["map", "f"], ["(cm, ", "p"], ["5", "n"], [", ", "p"], ["80", "n"], [", ", "p"], ["16", "n"], [", ", "p"], ["0", "n"], ["));", "p"]], [["  ", "p"], ["light", "f"], ["(cm < ", "p"], ["20", "n"], [" ? ", "p"], ["0", "n"], [" : cm < ", "p"], ["50", "n"], [" ? ", "p"], ["1", "n"], [" : ", "p"], ["2", "n"], [");", "p"]], [["  oled.", "p"], ["show", "f"], ["(", "p"], ["\"MAKEATHON 2027\"", "s"], [", cm);", "p"]], [["  ", "p"], ["if", "k"], [" (!", "p"], ["digitalRead", "f"], ["(BTN)) ring.", "p"], ["flash", "f"], ["(", "p"], ["GOLD", "t"], [");", "p"]], [["}", "p"]]], HL = [[], [], [], [12, 13], [2, 3, 4], [15, 9], [14, 16, 17], [10, 11, 5, 6], [], [], [12], [13], [2, 3, 4], [14], [10, 11], [], [], [], [12, 13], [14], [2, 3, 4], [10, 11], [15, 14], []], N = 615;
+const C = [[["// makeathon.ino · MKT-27 DEV", "c"]], [["#include", "k"], [" ", "p"], ["\"mkt27.h\"", "s"]], [], [["const", "k"], [" ", "p"], ["int", "k"], [" TRIG = ", "p"], ["10", "n"], [", ECHO = ", "p"], ["9", "n"], [";   ", "p"], ["// HC-SR04", "c"]], [["const", "k"], [" ", "p"], ["int", "k"], [" LEDS[] = { ", "p"], ["2", "n"], [", ", "p"], ["3", "n"], [", ", "p"], ["4", "n"], [" };  ", "p"], ["// red, amber, green", "c"]], [["const", "k"], [" ", "p"], ["int", "k"], [" BTN = ", "p"], ["5", "n"], [";", "p"]], [["Ring", "t"], ["   ", "p"], ["ring", "f"], ["(", "p"], ["11", "n"], [", ", "p"], ["16", "n"], [");             ", "p"], ["// WS2812B × 16", "c"]], [["Screen", "t"], [" ", "p"], ["oled", "f"], ["(", "p"], ["0x3C", "n"], [");               ", "p"], ["// SSD1306, I2C", "c"]], [], [["void", "k"], [" ", "p"], ["setup", "f"], ["() {", "p"]], [["  ", "p"], ["pinMode", "f"], ["(TRIG, ", "p"], ["OUTPUT", "t"], [");", "p"]], [["  ", "p"], ["pinMode", "f"], ["(ECHO, ", "p"], ["INPUT", "t"], [");", "p"]], [["  ", "p"], ["for", "k"], [" (", "p"], ["int", "k"], [" p : LEDS) ", "p"], ["pinMode", "f"], ["(p, ", "p"], ["OUTPUT", "t"], [");", "p"]], [["  ring.", "p"], ["begin", "f"], ["();", "p"]], [["  oled.", "p"], ["begin", "f"], ["();", "p"]], [["}", "p"]], [], [["void", "k"], [" ", "p"], ["loop", "f"], ["() {", "p"]], [["  ", "p"], ["int", "k"], [" cm = ", "p"], ["sonar", "f"], ["(TRIG, ECHO);      ", "p"], ["// how close are you?", "c"]], [["  ring.", "p"], ["fill", "f"], ["(", "p"], ["GOLD", "t"], [", ", "p"], ["map", "f"], ["(cm, ", "p"], ["5", "n"], [", ", "p"], ["80", "n"], [", ", "p"], ["16", "n"], [", ", "p"], ["0", "n"], ["));", "p"]], [["  ", "p"], ["light", "f"], ["(cm < ", "p"], ["20", "n"], [" ? ", "p"], ["0", "n"], [" : cm < ", "p"], ["50", "n"], [" ? ", "p"], ["1", "n"], [" : ", "p"], ["2", "n"], [");", "p"]], [["  oled.", "p"], ["show", "f"], ["(", "p"], ["\"MAKEATHON 2027\"", "s"], [", cm);", "p"]], [["  ", "p"], ["if", "k"], [" (!", "p"], ["digitalRead", "f"], ["(BTN)) ring.", "p"], ["flash", "f"], ["(", "p"], ["GOLD", "t"], [");", "p"]], [["}", "p"]]], HL = [[], [], [], [12, 13], [2, 3, 4], [15, 9], [14, 16, 17], [10, 11, 5, 6], [], [], [12], [13], [2, 3, 4], [14], [10, 11], [], [], [], [12, 13], [14], [2, 3, 4], [10, 11], [15, 14], []];
 const cl = (v) => Math.min(1, Math.max(0, v));
-const typed = Math.floor(N * cl((sp - 9.8) / 1.85));
-let left = typed, cur = -1, hl = null;
-const lines = C.map((toks, i) => {
-let len = 0; toks.forEach((tk) => { len += tk[0].length; });
-const show = Math.max(0, Math.min(len, left));
-if (left > 0 && (left <= len || i === C.length - 1)) cur = i;
-left -= len;
-return { toks, show, len };
-});
-if (typed < N && cur < 0) cur = 0;
+const lengths = C.map((toks) => toks.reduce((n, tk) => n + tk[0].length, 0));
+const N = lengths.reduce((n, len) => n + len, 0);
+const progress = C.length * cl((sp - 9.8) / 1.85);
+const count = Math.min(C.length, Math.floor(progress + 1e-9));
+const cur = Math.min(C.length - 1, count);
+const lineProgress = count < C.length ? cl(progress - count) : 0;
+const partial = Math.floor(lengths[cur] * lineProgress + 1e-7);
+const typed = lengths.slice(0, count).reduce((n, len) => n + len, 0) + partial;
+let hl = null;
+const lines = C.map((toks, i) => ({ toks, show: i < count ? lengths[i] : (i === cur ? partial : 0), len: lengths[i] }));
 if (cur >= 0 && typed > 0) { for (let i = cur; i >= 0; i--) { if (HL[i].length) { hl = HL[i]; break; } if (i < cur - 1) break; } }
 return { lines, cur, typed, N, hl };
 }
@@ -4630,8 +4650,8 @@ scanY: (46 + scan * 8 * 58).toFixed(1) + 'px', scanOp: scan > 0 && scan < 1 ? 1 
 suCls: rv(O.suOp, sp > 23), ebSu: T('su', 'STAY UPDATED'), suOp: O.suOp.toFixed(3), suY: ((1 - O.suOp) * 30).toFixed(1) + 'px', suPe: O.suOp > 0.5 ? 'auto' : 'none',
 yourSlot: this.qYour >= 0 ? pad2(this.qYour + 1) : '—',
 benchOp: (ss(4.9, 5.2, sp) * (1 - ss(13.9, 14.2, sp))).toFixed(3), benchV: bench[0], benchA: bench[1],
-hudOp: (ss(0.4, 0.8, sp) * (1 - ss(27.7, 28, sp))).toFixed(3), hudNx: (ss(0.4, 0.8, sp) * (ch < 10 ? 1 : 0)).toFixed(3),
-chNum: pad2(ch + 1), chName: T('hud', CH[ch]), nextName: CH[Math.min(10, ch + 1)],
+hudOp: (ss(0.4, 0.8, sp) * (1 - ss(27.7, 28, sp))).toFixed(3),
+chNum: pad2(ch + 1), chName: T('hud', CH[ch]),
 fqCls: rv(O.fq, sp > 26.3), fqOp: O.fq.toFixed(3), fqY: ((1 - O.fq) * 30).toFixed(1) + 'px', fqV: O.fq > 0.002 ? 'visible' : 'hidden', fqPe: O.fq > 0.5 ? 'auto' : 'none',
 wyOp: O.wyOp.toFixed(3), wyY: ((1 - O.wyOp) * 30).toFixed(1) + 'px', wyV: O.wyOp > 0.002 ? 'visible' : 'hidden',
 hsOp: O.hsOp.toFixed(3), hsY: ((1 - O.hsOp) * 30).toFixed(1) + 'px', hsV: O.hsOp > 0.002 ? 'visible' : 'hidden',
@@ -5195,4 +5215,3 @@ function mkMobileSubmit() {
 </script>
 </body>
 </html>
-
