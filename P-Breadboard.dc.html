@@ -1991,7 +1991,8 @@ this.qBoot();
 qFlowInit() {
 const b = this.qFlowEl; if (!b) return;
 this.qFlowTx = b.querySelector('.k-flow-t'); this.qFlowTgt = null;
-this.qFlowDesk = [['STATEMENT', 2.3, 1.1], ['THE BUILD', 4.3, 3.4], ['FIRMWARE', 9.9, 9.4], ['IT WORKS', 13.3, 12.6], ['ARCHIVE', 15.0, 14.4], ["WHAT'S NEXT", 20.4, 19.2], ['STAY UPDATED', 22.35, 21.8], ['WHY', 23.9, 23.35], ['FAQ & CONTACT', 25.6, 25.0], ['VIT × SELECT', 27.3, 26.7]];
+const A = this.qAt;
+this.qFlowDesk = [['ABOUT', A.about, 1.1], ['THE BUILD', A.build, 3.4], ['FIRMWARE', A.firmware, 9.4], ['IT WORKS', A.works, 12.6], ['ARCHIVE', A.archive, 14.4], ["WHAT'S NEXT", A.next, 19.2], ['STAY UPDATED', A.notify, 21.8], ['WHY', A.why, 23.35], ['FAQ & CONTACT', A.faq, 25.0], ['VIT × SELECT', A.hosts, 26.7]];
 this.qFlowPhone = [['ABOUT', 0, 'm-about'], ['THE BUILD', 0, 'm-build'], ['ARCHIVE', 0, 'm-archive'], ["WHAT'S NEXT", 0, 'm-next'], ['WHY', 0, 'm-why'], ['VIT × SELECT', 0, 'm-hosts'], ['FAQ', 0, 'm-faq'], ['STAY UPDATED', 0, 'm-notify']];
 b.addEventListener('click', () => {
 const t = this.qFlowTgt; if (!t) return;
@@ -2236,6 +2237,9 @@ qCallRef = (el) => { this.qCallEl = el; };
 qPhRef = (el) => { this.qPhEl = el; };
 qProbeRef = (el) => { this.qProbeEl = el; };
 qFadeRef = (el) => { this.qFadeEl = el; };
+// where each part has finished its scroll animation: the words in, step 01's card and specs, the code typed and
+// uploaded, the counters at their totals, every spec row confirmed; the nav and the next-section button land here
+qAt = { about: 2.85, build: 4.45, firmware: 12.34, works: 13.3, archive: 15.5, next: 21.05, notify: 22.35, why: 23.9, faq: 25.6, hosts: 27.3 };
 qFlowRef = (el) => { this.qFlowEl = el; };
 qGo(screens) {
 // the nav never scrolls you through the page: the view fades out, the page is set at the section, and it fades back in
@@ -4616,7 +4620,7 @@ qMagA: this.qMagA, qMagB: this.qMagB, qMagC: this.qMagC, qOnScroll: this.qOnScro
 nOn, nAc, ctaCls: heroOn ? 'is-hid' : '', ctaTab: heroOn ? '-1' : '0', heroTab: heroOn ? '0' : '-1', hPe: heroOn ? 'auto' : 'none',
 calm: s.calm ? 'on' : 'off', calmP: s.calm ? 'true' : 'false', motTxt: s.calm ? 'OFF' : 'ON', motC: s.calm ? '#9BACA4' : '#F2B84B', toggleCalm: this.qToggleCalm,
 hintTxt: 'DRAG TO TURN · POINT AT THE SENSOR ·',
-goTop: this.qGo(0), goAbout: this.qGo(2.3), goBuild: this.qGo(4.3), goArchive: this.qGo(15.0), goNext: this.qGo(20.4), goNotify: this.qGo(22.35), goFaq: this.qGo(25.6), goTracks: this.qGo(23.9), goEnd: this.qGo(-1),
+goTop: this.qGo(0), goAbout: this.qGo(this.qAt.about), goBuild: this.qGo(this.qAt.build), goArchive: this.qGo(this.qAt.archive), goNext: this.qGo(this.qAt.next), goNotify: this.qGo(this.qAt.notify), goFaq: this.qGo(this.qAt.faq), goTracks: this.qGo(this.qAt.why), goEnd: this.qGo(-1),
 wmR: ((1 - wmF) * 100).toFixed(2) + '%', wmX: (wmF * 1008).toFixed(1) + 'px', wmEo: wmF > 0.002 && wmF < 0.995 ? 1 : 0,
 syTxt: T('sy', synced ? 'IT WORKS · SEE YOU AT THE BENCH' : 'BOOTING'), syC: synced ? '#F2B84B' : '#9BACA4', syD: synced ? '#F2B84B' : '#9BACA4', syG: synced ? '0px 0px 10px rgba(242,184,75,0.9)' : 'none',
 nv: { g: T('n6', 'WHY'), a: T('n0', 'ABOUT'), b: T('n1', 'THE BUILD'), c: T('n2', 'ARCHIVE'), d: T('n3', "WHAT'S NEXT"), e: T('n4', 'FAQ'), f: T('n5', 'GET NOTIFIED') },
