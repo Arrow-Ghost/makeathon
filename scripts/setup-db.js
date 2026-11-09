@@ -9,4 +9,11 @@ await sql`
     email      text NOT NULL UNIQUE,
     created_at timestamptz NOT NULL DEFAULT now()
   )`;
-console.log('subscribers table ready');
+await sql`
+  CREATE TABLE IF NOT EXISTS subscription_rate_limits (
+    address_hash char(64) NOT NULL,
+    window_start timestamptz NOT NULL,
+    request_count integer NOT NULL CHECK (request_count > 0),
+    PRIMARY KEY (address_hash, window_start)
+  )`;
+console.log('database tables ready');

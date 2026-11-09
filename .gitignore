@@ -1,6 +1,15 @@
 node_modules/
 .env
+.env.*
+!.env.example
 .vercel
+*.pem
+*.key
+credentials.json
+service-account.json
+dist/
+build/
+coverage/
 makeathon-2027.pdf
 .neon
 .env.local

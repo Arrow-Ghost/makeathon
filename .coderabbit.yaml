@@ -1,0 +1,30 @@
+language: en-US
+reviews:
+  profile: assertive
+  high_level_summary: true
+  review_status: true
+  auto_review:
+    enabled: true
+    drafts: false
+  path_instructions:
+    - path: "api/**"
+      instructions: |
+        Review for SQL injection, input validation, authentication and authorization, rate limiting, abuse prevention, error handling, database integrity, and sensitive information exposure. Check that serverless behavior is safe across concurrent instances.
+    - path: "server.js"
+      instructions: |
+        Review request lifecycle and middleware ordering, error handling, security headers, CORS, request validation, path handling, and runtime stability. Do not weaken protections on private files.
+    - path: "neon.ts"
+      instructions: |
+        Review database credential protection, SQL parameterization, query safety, connection handling, transaction integrity, error handling, and least-privilege access patterns.
+    - path: "scripts/**"
+      instructions: |
+        Review for unsafe shell commands, command injection, filesystem traversal, destructive operations, hardcoded credentials, unsafe file permissions, and untrusted input.
+    - path: "assets/**"
+      instructions: |
+        Check for unexpected executable files, suspicious embedded scripts, unnecessary sensitive files, and unexpected changes to third-party assets.
+    - path: ".github/**"
+      instructions: |
+        Review workflow permissions, secret exposure, unsafe pull_request_target usage, untrusted code execution, action pinning, workflow injection, and unauthorized deployment paths. Require human review for workflow security changes.
+    - path: "**/*"
+      instructions: |
+        Check correctness, security, maintainability, performance, error handling, edge cases, unnecessary dependencies, backwards compatibility, and unintended changes. Do not block changes for style preferences. Require human review for database changes, API security, authentication or authorization, deployment configuration, GitHub Actions security, and environment or secret management. CodeRabbit is advisory and is not the final security authority.
