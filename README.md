@@ -41,10 +41,10 @@ some browsers block the scripts over file://.
 
 ## Registration and admin
 
-- **Register now** in the site's nav opens `/register`. It is open to undergraduate and postgraduate students of VIT and of any other college, research scholars and working professionals. A person signs in with Google or verifies their email with a 6-digit code, fills in their profile (VIT or external; student, professional or researcher; contact, education, VIT campus, registration number and hostel details, special requirements), then starts a team or joins one with its 6-character code or invite link. Teams have 3 to 5 members; the person who starts a team is its leader and can hand leadership to another member.
+- **Register now** in the site's nav opens `/register`. It is open to undergraduate and postgraduate students of VIT and of any other college, research scholars and working professionals. A person signs in with their Google account (which also verifies their email), fills in their profile (VIT or external; student, professional or researcher; contact, education, VIT campus, registration number and hostel details, special requirements), then starts a team or joins one with its 6-character code or invite link. Teams have 3 to 5 members; the person who starts a team is its leader and can hand leadership to another member.
 - The leader picks the track and problem statement, lists the components the team needs, and submits the solution (title, summary, and links to a repository, a demo video and a document). Members see these read-only. The document is a link (Google Drive, OneDrive, Docs) rather than an upload, so no file storage is needed.
 - Everything is stored in the Neon database: `participants`, `teams`, `team_members`, `submissions`, plus `email_codes`, `sessions` and `rate_limits` for sign-in.
-- `/admin` shows every participant, team, component request (with totals across teams), submission and notify-me subscriber, with search, filters, a full-record view and CSV export. Only the addresses in `ADMIN_EMAILS` (comma-separated) can open it; when it is unset the admin is `sarthaktrivedi386@gmail.com`. Admins sign in the same way, with Google or an emailed code. Admin sessions last 12 hours, participant sessions 30 days.
+- `/admin` shows every participant, team, component request (with totals across teams), submission and notify-me subscriber, with search, filters, a full-record view and CSV export. Only the addresses in `ADMIN_EMAILS` (comma-separated) can open it; when it is unset the admin is `sarthaktrivedi386@gmail.com`. Admins sign in the same way, with Google. Admin sessions last 12 hours, participant sessions 30 days.
 - Event settings live in `api/_lib/event.js`: team size, tracks, campuses, and switches that close registration, the components form or submissions. Problem statements are not released yet; when they are, add them to their track there as `{ id: 'FW-01', title: '…' }` and teams can pick them.
 
 ### Google sign-in
@@ -72,9 +72,9 @@ some browsers block the scripts over file://.
 
 Vercel preview deployments have their own URLs, which Google rejects unless each is registered; sign in there with an emailed code. If the site sits behind a proxy that changes the Host header, set `PUBLIC_URL` to the public origin.
 
-### Email
+### Email codes (optional)
 
-Sign-in codes go out over SMTP. Set these variables:
+Sign-in is Google-only by default. To also offer a 6-digit code by email, for people who do not want to use a Google account, set the SMTP variables below; the option appears on `/register` and `/admin` as soon as `SMTP_HOST` is set, and disappears again if it is removed. Set these variables:
 
 | Variable | Example |
 | --- | --- |
@@ -84,7 +84,7 @@ Sign-in codes go out over SMTP. Set these variables:
 | `SMTP_PASS` | its password; for Gmail an [app password](https://myaccount.google.com/apppasswords), which needs 2-step verification on |
 | `MAIL_FROM` | `Makeathon 2027 <makeathon@gmail.com>` (defaults to `SMTP_USER`) |
 
-Without `SMTP_HOST`, a local run prints each code in the server console instead of sending it, so you can test without a mail account. A deployed site (`VERCEL=1` or `NODE_ENV=production`) refuses to sign anyone in until SMTP is set. Gmail allows about 500 messages a day; a transactional provider's SMTP (Brevo, Resend, Amazon SES) suits a larger event.
+Without `SMTP_HOST` the email-code option is hidden. (The `/api/auth` endpoint still works in a local run, printing each code in the server console, which the tests use; a deployed site refuses to send codes.) Gmail allows about 500 messages a day; a transactional provider's SMTP (Brevo, Resend, Amazon SES) suits a larger event.
 
 ## Security and contributor checks
 

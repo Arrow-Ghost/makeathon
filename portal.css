@@ -142,6 +142,9 @@ input[type=date].in::-webkit-calendar-picker-indicator{filter:invert(.8) sepia(1
 .or::before,.or::after{content:"";flex:1 1 auto;height:1px;background-color:var(--line2)}
 .signin .or+form,.signin .g-wrap+form{margin-top:18px}
 .auth-note{margin-top:24px}
+.g-hint{margin-top:14px}
+.g-hint a{color:var(--mute);text-decoration:none;border-bottom:1px solid var(--line2)}
+.g-hint a:hover{color:var(--amber);border-bottom-color:var(--amber)}
 .fine{margin-top:22px;font-size:16px;line-height:1.45;color:var(--dim)}
 .fine a{color:var(--mute);text-decoration:none;border-bottom:1px solid var(--line2)}
 .fine a:hover{color:var(--amber);border-bottom-color:var(--amber)}

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Register · Makeathon 2027</title>
-<meta name="description" content="Register for Makeathon 2027: verify your email, form or join a team of 3 to 5, pick a track and submit your build.">
+<meta name="description" content="Register for Makeathon 2027: sign in with Google, form or join a team of 3 to 5, pick a track and submit your build.">
 <meta name="theme-color" content="#17261F">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preload" href="/fonts/barlow-condensed-600-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -135,6 +135,29 @@
   .actions .btn{flex:1 1 auto}
 }
 @media (max-width:420px){.tracks{grid-template-columns:minmax(0,1fr)}.track>span{min-height:0}}
+
+/* Sign-in step: one screen, no page scroll. Sizes follow the screen height, the column title
+   gives way to the heading beside it, and both columns sit centred in the space under the bar. */
+body.signin-view .shell{min-height:calc(100vh - 64px);min-height:calc(100dvh - 64px);padding-top:clamp(16px,4.5vh,56px);padding-bottom:clamp(16px,4.5vh,56px);align-items:center}
+body.signin-view .rail{position:static;align-self:center}
+body.signin-view .rail>.eyebrow,body.signin-view .rail-h{display:none}
+body.signin-view .steps{margin-top:0}
+body.signin-view .step{padding:clamp(4px,1.1vh,13px) 0}
+body.signin-view .facts{margin-top:clamp(12px,3.2vh,40px);padding-top:clamp(10px,2.2vh,22px);gap:clamp(8px,1.5vh,16px)}
+body.signin-view .facts dd{font-size:clamp(16px,2vh,18px)}
+body.signin-view .signin h2{font-size:clamp(40px,min(6.6vw,9.6vh),84px)}
+body.signin-view .signin .lede{font-size:clamp(17px,2.3vh,21px);margin-top:clamp(10px,1.8vh,16px)}
+body.signin-view .signin .lede+.lede{margin-top:clamp(6px,1vh,10px)}
+body.signin-view .gbtn{margin-top:clamp(16px,3.2vh,28px)}
+body.signin-view .g-hint{margin-top:clamp(8px,1.4vh,14px)}
+body.signin-view .fine{margin-top:clamp(10px,2vh,22px)}
+@media (max-width:960px){
+  body.signin-view .shell{min-height:0;align-items:start;padding-top:clamp(12px,2.4vh,22px);padding-bottom:clamp(12px,2.4vh,24px);gap:clamp(12px,2.6vh,26px)}
+  body.signin-view .step{padding:clamp(6px,1.2vh,10px) 12px}
+  body.signin-view .signin h2{font-size:clamp(34px,min(11.5vw,7vh),64px)}
+  body.signin-view .gbtn{height:clamp(46px,6.4vh,52px)}
+  body.signin-view .g-hint,body.signin-view .fine{font-size:15px}
+}
 </style>
 </head>
 <body>
@@ -153,7 +176,7 @@
     <div class="eyebrow">Registration · 19–20 Jan 2027</div>
     <h1 class="rail-h">Build<br>your team.</h1>
     <ol class="steps" id="steps">
-      <li><button type="button" class="step" data-step="verify"><i class="node" aria-hidden="true"></i><span class="num">01</span><span class="name">Verify email</span><span class="st"></span></button></li>
+      <li><button type="button" class="step" data-step="verify"><i class="node" aria-hidden="true"></i><span class="num">01</span><span class="name">Sign in</span><span class="st"></span></button></li>
       <li><button type="button" class="step" data-step="profile"><i class="node" aria-hidden="true"></i><span class="num">02</span><span class="name">Profile</span><span class="st"></span></button></li>
       <li><button type="button" class="step" data-step="team"><i class="node" aria-hidden="true"></i><span class="num">03</span><span class="name">Team</span><span class="st"></span></button></li>
       <li><button type="button" class="step" data-step="track"><i class="node" aria-hidden="true"></i><span class="num">04</span><span class="name">Track</span><span class="st"></span></button></li>
@@ -175,16 +198,18 @@
     <!-- 01 VERIFY -->
     <section class="panel" id="p-verify" hidden aria-labelledby="h-verify">
       <div class="signin">
-        <div class="eyebrow">01 / Verify email</div>
+        <div class="eyebrow">01 / Sign in</div>
         <h2 id="h-verify" tabindex="-1">Register for<br>Makeathon 2027.</h2>
-        <p class="lede" id="verify-lede">Start with your email. We send a 6-digit code to confirm it is yours. Registered already? Use the same email to pick up where you left off.</p>
-        <p class="lede" style="margin-top:10px">Open to undergraduate and postgraduate students from VIT and any other college, research scholars and working professionals.</p>
+        <p class="lede" id="verify-lede">Sign in with a Google account: personal Gmail, college or work. Registered already? Use the same account to continue.</p>
+        <p class="lede">Open to undergraduate and postgraduate students from any college, VIT included, plus research scholars and working professionals.</p>
         <div class="note bad auth-note" id="auth-note" role="alert" hidden></div>
+        <div class="note auth-note" id="no-signin" hidden><span>Sign-in is not available right now. Please try again later, or write to <a class="ul" href="mailto:enquiry@makeathon.in" style="text-transform:none;letter-spacing:.02em">enquiry@makeathon.in</a>.</span></div>
         <div class="g-wrap" id="g-wrap" hidden>
           <a class="gbtn" id="g-btn" href="/api/google?next=register"><svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Continue with Google</a>
-          <div class="or"><span>or get a code by email</span></div>
+          <p class="hint g-hint" id="g-hint">No Google account? <a href="https://accounts.google.com/signup" rel="noopener noreferrer">Create one with the email address you already use</a>; it takes a minute.</p>
+          <div class="or" id="g-or" hidden><span>or get a code by email</span></div>
         </div>
-        <form id="f-email" novalidate>
+        <form id="f-email" novalidate hidden>
           <div class="field">
             <label class="lbl" for="in-email">Email address</label>
             <div class="inline">
@@ -208,7 +233,7 @@
         </form>
         <p class="fine" id="fine">By continuing you agree to the <a href="/terms">terms of service</a> and acknowledge the <a href="/privacy">privacy policy</a>.</p>
         <div id="verified" hidden style="margin-top:28px">
-          <div class="note ok"><span>Verified as <b id="v-email"></b>.</span></div>
+          <div class="note ok"><span>Signed in as <b id="v-email"></b>.</span></div>
           <button class="btn" type="button" id="b-continue" style="margin-top:22px">Continue <span class="arr" aria-hidden="true">→</span></button>
         </div>
       </div>
@@ -329,13 +354,13 @@ let current = null;    // visible step
 let pendingEmail = '';
 let compRows = null;   // the components editor's rows, kept while switching steps
 let joinCode = (new URLSearchParams(location.search).get('join') || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
-let googleOn = null;   // whether the server has Google sign-in configured
+let providers = null;  // sign-in methods the server offers: { enabled: Google, email: emailed codes }
 // /api/google sends people back with ?auth=… when Google sign-in did not complete
 const AUTH_MSG = {
   cancelled: 'Google sign-in was cancelled.',
-  failed: 'Google sign-in did not go through. Try again, or get a code by email.',
+  failed: 'Google sign-in did not go through. Please try again.',
   busy: 'Too many sign-in attempts. Wait a few minutes and try again.',
-  unavailable: 'Google sign-in is not set up yet. Get a code by email instead.',
+  unavailable: 'Sign-in is not available right now. Please try again later.',
 };
 const authStatus = new URLSearchParams(location.search).get('auth');
 if (authStatus) {
@@ -390,7 +415,7 @@ function fieldFor(root, key) {
 }
 // Shows an API error next to its field when there is one, otherwise under the form.
 function fail(err, root) {
-  if (err.status === 401) return signedOut('Your session ended. Verify your email again to continue.');
+  if (err.status === 401) return signedOut('Your session ended. Sign in again to continue.');
   const f = root && err.field ? fieldFor(root, err.field) : null;
   if (f && !f.hidden) {
     markErr(f, err.message);
@@ -426,7 +451,7 @@ function status() {
     submission: t ? (t.submission ? 'done' : 'todo') : 'locked',
   };
 }
-const LOCKED = { profile: 'Verify your email first', team: 'Save your profile first' };
+const LOCKED = { profile: 'Sign in first', team: 'Save your profile first' };
 function firstStep() {
   const st = status();
   if (!S) return 'verify';
@@ -454,6 +479,7 @@ function go(step, opts) {
   opts = opts || {};
   if (status()[step] === 'locked') { toast(LOCKED[step] || 'Create or join a team first', true); return; }
   current = step;
+  document.body.classList.toggle('signin-view', step === 'verify');
   STEPS.forEach((k) => { $('#p-' + k).hidden = k !== current; });
   RENDER[step]();
   renderSteps();
@@ -487,8 +513,8 @@ function signedOut(msg) {
 
 // ---------- 01 verify ----------
 function showEmailForm() {
-  $('#f-email').hidden = false; $('#f-code').hidden = true;
-  setupGoogle();
+  $('#f-code').hidden = true;
+  setupSignin();
 }
 let resendAt = 0;
 async function sendCode(btn) {
@@ -546,23 +572,31 @@ $('#signout').addEventListener('click', async () => {
 function renderVerify() {
   const done = !!S;
   $('#verified').hidden = !done;
-  $('#f-email').hidden = done || !$('#f-code').hidden;
   $('#fine').hidden = done;
   if (done) { $('#f-code').hidden = true; $('#v-email').textContent = S.email; $('#auth-note').hidden = true; }
-  setupGoogle();
+  setupSignin();
 }
 
-// Shows "Continue with Google" when the server has it configured, carrying any team invite through.
-async function setupGoogle() {
-  if (googleOn === null) {
-    try { googleOn = !!(await api('/api/google?status=1')).enabled; } catch (e) { googleOn = false; }
+// Offers the sign-in methods the server has set up: Google (carrying any team invite
+// through), and emailed codes only when SMTP is configured.
+async function setupSignin() {
+  if (!providers) {
+    try { providers = await api('/api/google?status=1'); } catch (e) { providers = { enabled: false, email: false }; }
   }
+  const google = !!providers.enabled, email = !!providers.email, out = !S, codeStep = !$('#f-code').hidden;
   const q = new URLSearchParams({ next: 'register' });
   if (joinCode) q.set('join', joinCode);
   $('#g-btn').href = '/api/google?' + q;
-  $('#g-wrap').hidden = !googleOn || !!S || !$('#f-code').hidden;
-  $('#verify-lede').textContent = googleOn
-    ? 'Sign in with Google, or get a 6-digit code by email. Registered already? Use the same account to pick up where you left off.'
+  $('#g-wrap').hidden = !out || !google || codeStep;
+  $('#g-hint').hidden = email;
+  $('#g-or').hidden = !email;
+  $('#f-email').hidden = !out || !email || codeStep;
+  $('#no-signin').hidden = !out || google || email;
+  $('#fine').hidden = !out || (!google && !email);
+  $('#verify-lede').textContent = google
+    ? (email
+      ? 'Sign in with a Google account, or get a 6-digit code by email. Registered already? Use the same account to pick up where you left off.'
+      : 'Sign in with a Google account: personal Gmail, college or work. Registered already? Use the same account to continue.')
     : 'Start with your email. We send a 6-digit code to confirm it is yours. Registered already? Use the same email to pick up where you left off.';
 }
 $('#g-btn').addEventListener('click', (e) => { e.currentTarget.setAttribute('aria-busy', 'true'); });

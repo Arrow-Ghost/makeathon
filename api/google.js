@@ -7,7 +7,7 @@ import { startSession } from './_lib/session.js';
 // The person's browser only ever navigates to Google and back, so no Google script runs
 // on our pages and the Content-Security-Policy stays as it is.
 //
-// GET /api/google?status=1               -> { enabled }
+// GET /api/google?status=1               -> { enabled, email }
 // GET /api/google?next=register&join=… -> 302 to Google (next: register | admin)
 // GET /api/google?code=…&state=…        -> Google's callback: starts a session, 302 back
 
@@ -138,7 +138,8 @@ async function finish(req, res, q) {
 export default route('google', {
   async GET(req, res) {
     const q = new URL(req.url, 'http://localhost').searchParams;
-    if (q.has('status')) return { enabled: enabled() };
+    // which sign-in methods the pages offer: Google, and emailed codes only once SMTP is set up
+    if (q.has('status')) return { enabled: enabled(), email: Boolean(process.env.SMTP_HOST) };
     if (q.has('code') || q.has('error') || q.has('state')) return finish(req, res, q);
     return start(req, res, q);
   },

@@ -32,7 +32,7 @@ export async function getSession(req) {
 
 export async function requireSession(req) {
   const session = await getSession(req);
-  if (!session) throw new HttpError(401, 'Your session has ended. Verify your email to continue.');
+  if (!session) throw new HttpError(401, 'Your session has ended. Sign in again to continue.');
   return session;
 }
 

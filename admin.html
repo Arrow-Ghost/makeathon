@@ -102,13 +102,14 @@ table.data{width:100%;border-collapse:separate;border-spacing:0;font-size:17px}
   <section id="login" class="signin" hidden aria-labelledby="h-login">
     <div class="eyebrow">Restricted</div>
     <h2 id="h-login">Admin<br>sign in.</h2>
-    <p class="lede">Sign in with your admin account. Only addresses on the admin list can open the dashboard.</p>
+    <p class="lede">Sign in with your admin Google account. Only addresses on the admin list can open the dashboard.</p>
     <div class="note bad auth-note" id="auth-note" role="alert" hidden></div>
+    <div class="note auth-note" id="no-signin" hidden><span>Sign-in is not available right now: Google sign-in is not configured on the server.</span></div>
     <div class="g-wrap" id="g-wrap" hidden>
       <a class="gbtn" id="g-btn" href="/api/google?next=admin"><svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Continue with Google</a>
-      <div class="or"><span>or get a code by email</span></div>
+      <div class="or" id="g-or" hidden><span>or get a code by email</span></div>
     </div>
-    <form id="f-email" novalidate>
+    <form id="f-email" novalidate hidden>
       <div class="field" data-f="email">
         <label class="lbl" for="in-email">Admin email</label>
         <div class="inline">
@@ -219,19 +220,26 @@ const psLabel = (t) => {
 let pendingEmail = '';
 const AUTH_MSG = {
   cancelled: 'Google sign-in was cancelled.',
-  failed: 'Google sign-in did not go through. Try again, or get a code by email.',
+  failed: 'Google sign-in did not go through. Please try again.',
   busy: 'Too many sign-in attempts. Wait a few minutes and try again.',
-  unavailable: 'Google sign-in is not set up yet. Get a code by email instead.',
+  unavailable: 'Sign-in is not available right now. Please try again later.',
 };
 const authStatus = new URLSearchParams(location.search).get('auth');
 if (authStatus) history.replaceState(null, '', location.pathname);
-let googleOn = null;
+let providers = null;  // { enabled: Google, email: emailed codes (only with SMTP set up) }
+function syncLogin() {
+  const google = !!providers.enabled, email = !!providers.email, codeStep = !$('#f-code').hidden;
+  $('#g-wrap').hidden = !google || codeStep;
+  $('#g-or').hidden = !email;
+  $('#f-email').hidden = !email || codeStep;
+  $('#no-signin').hidden = google || email;
+}
 async function showLogin() {
   show('login');
-  if (googleOn === null) {
-    try { googleOn = !!(await api('/api/google?status=1')).enabled; } catch (e) { googleOn = false; }
+  if (!providers) {
+    try { providers = await api('/api/google?status=1'); } catch (e) { providers = { enabled: false, email: false }; }
   }
-  $('#g-wrap').hidden = !googleOn || !$('#f-code').hidden;
+  syncLogin();
   if (authStatus && AUTH_MSG[authStatus]) { $('#auth-note').innerHTML = '<span>' + esc(AUTH_MSG[authStatus]) + '</span>'; $('#auth-note').hidden = false; }
 }
 $('#g-btn').addEventListener('click', (e) => { e.currentTarget.setAttribute('aria-busy', 'true'); });
@@ -259,7 +267,7 @@ $('#f-code').addEventListener('submit', async (e) => {
     catch (err) { setErr($('#f-code'), err.message); $('#in-code').select(); }
   });
 });
-$('#b-change').addEventListener('click', () => { $('#f-code').hidden = true; $('#f-email').hidden = false; $('#g-wrap').hidden = !googleOn; $('#in-email').focus(); });
+$('#b-change').addEventListener('click', () => { $('#f-code').hidden = true; syncLogin(); $('#in-email').focus(); });
 async function signOut() {
   try { await api('/api/auth', { action: 'logout' }); } catch (e) {}
   D = null; $('#who').hidden = true; $('#signout').hidden = true;
