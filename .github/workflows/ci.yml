@@ -28,8 +28,8 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check server.js
-          node --check api/subscribe.js
           node --check scripts/setup-db.js
+          for file in api/*.js api/_lib/*.js; do node --check "$file"; done
       - name: Run configured quality scripts
         run: |
           node --input-type=module <<'NODE'

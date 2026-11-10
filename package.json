@@ -9,6 +9,7 @@
   "dependencies": {
     "@neon/config": "^1.11.3",
     "@neon/env": "^1.6.15",
-    "@neondatabase/serverless": "^1.0.0"
+    "@neondatabase/serverless": "^1.0.0",
+    "nodemailer": "^10.4.0"
   }
 }
