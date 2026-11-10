@@ -6,6 +6,9 @@ reviews:
   auto_review:
     enabled: true
     drafts: false
+  # archive/<year>/ is generated build output of past sites; review scripts/archive-* instead
+  path_filters:
+    - "!archive/*/**"
   path_instructions:
     - path: "api/**"
       instructions: |

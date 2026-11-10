@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Makeathon Archive</title>
+<meta name="description" content="Websites from past editions of Makeathon, VIT Vellore.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+  @font-face { font-family: 'Barlow Condensed'; font-weight: 500; font-display: swap; src: url(/fonts/barlow-condensed-500-latin.woff2) format('woff2'); }
+  @font-face { font-family: 'Barlow Condensed'; font-weight: 600; font-display: swap; src: url(/fonts/barlow-condensed-600-latin.woff2) format('woff2'); }
+  @font-face { font-family: 'DM Mono'; font-weight: 400; font-display: swap; src: url(/fonts/dm-mono-400-latin.woff2) format('woff2'); }
+  :root { --bg: #17261F; --line: #2C3D35; --text: #EDF1EF; --muted: #9BACA4; --accent: #F2B84B; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); }
+  body { font: 16px/1.5 'DM Mono', ui-monospace, monospace; min-height: 100vh; display: flex; }
+  main { width: 100%; max-width: 720px; margin: auto; padding: 64px 16px; }
+  .eyebrow { color: var(--muted); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 8px; }
+  h1 { font: 600 clamp(48px, 12vw, 96px)/.9 'Barlow Condensed', sans-serif; letter-spacing: .01em; text-transform: uppercase; margin: 0 0 40px; }
+  ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  li a { display: flex; align-items: baseline; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--line); color: inherit; text-decoration: none; }
+  .year { font: 500 36px/1 'Barlow Condensed', sans-serif; min-width: 72px; }
+  .what { color: var(--muted); font-size: 14px; flex: 1; }
+  .go { color: var(--accent); }
+  li a:hover .year, li a:focus-visible .year { color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .back { display: inline-block; margin-top: 32px; color: var(--muted); font-size: 13px; }
+  .back:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Makeathon · VIT Vellore</p>
+  <h1>Archive</h1>
+  <!-- add new years at the top: one archive/<year>/ folder each -->
+  <ul>
+    <li><a href="/archive/2026/"><span class="year">2026</span><span class="what">26–27 March 2026 · SELECT, VIT Vellore</span><span class="go" aria-hidden="true">→</span></a></li>
+  </ul>
+  <a class="back" href="/">← Current Makeathon</a>
+</main>
+</body>
+</html>

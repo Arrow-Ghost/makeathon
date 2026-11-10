@@ -1,0 +1,242 @@
+diff --git a/next.config.ts b/next.config.ts
+index 42f9bab..c590f75 100644
+--- a/next.config.ts
++++ b/next.config.ts
+@@ -1,9 +1,11 @@
+ import type { NextConfig } from "next";
+ 
++// Archived build: static export served from /archive/2026 on the 2027 site.
+ const nextConfig: NextConfig = {
+-  images: {
+-    formats: ["image/avif", "image/webp"],
+-  },
++  output: "export",
++  basePath: "/archive/2026",
++  trailingSlash: true,
++  images: { unoptimized: true },
+ };
+ 
+ export default nextConfig;
+diff --git a/src/app/component/footer.tsx b/src/app/component/footer.tsx
+index 55daa9a..6674fda 100644
+--- a/src/app/component/footer.tsx
++++ b/src/app/component/footer.tsx
+@@ -163,15 +163,9 @@ export default function Footer() {
+                                     <div className="w-1 h-1 rounded-full bg-[#18B8DA]/60 animate-pulse delay-150" />
+                                     <div className="w-1 h-1 rounded-full bg-[#18B8DA]/30 animate-pulse delay-300" />
+                                 </div>
+-                                <a 
+-                                    href="/control-room"
+-                                    target="_blank"
+-                                    rel="noopener noreferrer"
+-                                    className="cursor-target text-[9px] font-mono text-white/50 uppercase tracking-[0.3em] hover:text-[#18B8DA] transition-colors"
+-                                    title="Access System Core"
+-                                >
++                                <span className="text-[9px] font-mono text-white/50 uppercase tracking-[0.3em]">
+                                     SLCT-2026-MKTHN
+-                                </a>
++                                </span>
+                             </div>
+                         </div>
+                     </div>
+diff --git a/src/app/component/navbar.tsx b/src/app/component/navbar.tsx
+index 8686562..09fd5f3 100644
+--- a/src/app/component/navbar.tsx
++++ b/src/app/component/navbar.tsx
+@@ -25,7 +25,6 @@ export default function Navbar() {
+ 
+   const items = useMemo<NavItem[]>(
+     () => [
+-      { label: "Status", href: "#live-dashboard" },
+       { label: "Home", href: "#hero-pin" },
+       { label: "About US", href: "#about" },
+       { label: "Guests", href: "#guests" },
+diff --git a/src/app/component/timeline.tsx b/src/app/component/timeline.tsx
+index 2da8ff5..2c8fe4b 100644
+--- a/src/app/component/timeline.tsx
++++ b/src/app/component/timeline.tsx
+@@ -313,13 +313,8 @@ function CardContent({
+ 
+ /* ── main component ─────────────────────────────────────── */
+ export default function TimelinePage() {
+-  const [connectedNodes, setConnectedNodes] = useState<number | null>(() => {
+-    if (typeof window !== "undefined") {
+-      const cached = localStorage.getItem("connectedNodes");
+-      return cached ? Number(cached) : null;
+-    }
+-    return null;
+-  });
++  // Final registration count when the event closed (archived).
++  const connectedNodes = 1209;
+   const [countdown, setCountdown] = useState({
+     days: 0,
+     hours: 0,
+@@ -327,33 +322,6 @@ export default function TimelinePage() {
+     seconds: 0,
+   });
+ 
+-  const GOOGLE_FORM_ENDPOINT =
+-    "https://script.google.com/macros/s/AKfycbygbUEWrszpJQbFX-cIFcKKCkcSoSXnsyRE06sOEqCDL9Pl1EiSlT6fH39xVRyKOQmbhg/exec";
+-
+-  useEffect(() => {
+-    const fetchRegistrationCount = async () => {
+-      try {
+-        const response = await fetch(
+-          `${GOOGLE_FORM_ENDPOINT}?t=${Date.now()}`,
+-          { method: "GET", headers: { Accept: "application/json" } }
+-        );
+-        if (!response.ok)
+-          throw new Error(`HTTP error! status: ${response.status}`);
+-        const data = await response.json();
+-        if (data && typeof data.count === "number") {
+-          setConnectedNodes(data.count);
+-          localStorage.setItem("connectedNodes", String(data.count));
+-        }
+-      } catch (error) {
+-        console.error("Terminal Sync Error:", error);
+-      }
+-    };
+-
+-    fetchRegistrationCount();
+-    const interval = setInterval(fetchRegistrationCount, 30_000);
+-    return () => clearInterval(interval);
+-  }, []);
+-
+   useEffect(() => {
+     const timer = setInterval(() => {
+       const now = new Date();
+diff --git a/src/app/component/tracks.tsx b/src/app/component/tracks.tsx
+index caa8837..2eb06d2 100644
+--- a/src/app/component/tracks.tsx
++++ b/src/app/component/tracks.tsx
+@@ -3,7 +3,7 @@ import Image from "next/image";
+ import React, { useState } from "react";
+ import {
+   Activity, ArrowRight, Shield, Sprout, Zap,
+-  Radar, Headphones, FileText, Lightbulb
++  Radar, FileText, Lightbulb
+ } from "lucide-react";
+ 
+ type ProblemStatement = {
+@@ -174,7 +174,6 @@ function TechnicalReportContent({ trackData }: { trackData: TrackData }) {
+ 
+ export default function TracksHub() {
+   const [activeTrack, setActiveTrack] = useState<string>("SEC-01");
+-  const [supportMessage, setSupportMessage] = useState<{ type: 'success' | 'error' | null; text: string }>({ type: null, text: '' });
+   const currentData = TRACKS_CONTENT[activeTrack];
+ 
+   return (
+@@ -305,92 +304,6 @@ export default function TracksHub() {
+                 <span className="font-mono font-bold text-[#18B8DA]">REVEALING SOON</span>
+               </div>
+ 
+-              {/* Support Form */}
+-              <div className="space-y-4">
+-                <div className="flex items-center gap-3 mb-4">
+-                  <Headphones className="text-[#18B8DA] h-5 w-5" />
+-                  <div>
+-                    <p className="text-xs font-black uppercase tracking-[0.35em] text-white/55">Tech Support</p>
+-                    <p className="text-sm text-white/70">Have a doubt? Ask us!</p>
+-                  </div>
+-                </div>
+-
+-                <form
+-                  onSubmit={async (e) => {
+-                    e.preventDefault();
+-                    const form = e.target as HTMLFormElement;
+-                    const emailInput = form.elements.namedItem('supportEmail') as HTMLInputElement;
+-                    const doubtInput = form.elements.namedItem('doubt') as HTMLTextAreaElement;
+-                    const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+-
+-                    const email = emailInput.value;
+-                    const doubt = doubtInput.value;
+-
+-                    if (!email || !doubt) return;
+-
+-                    submitBtn.disabled = true;
+-                    submitBtn.textContent = 'SENDING...';
+-                    setSupportMessage({ type: null, text: '' });
+-
+-                    try {
+-                      await fetch('https://script.google.com/macros/s/AKfycbxDHBt4JXhL3c7qt0h8WX_Y5Ut-OF-NbbM09WMW9nQOsuxLY2pHHaaClBxJi7QNt123XQ/exec', {
+-                        method: 'POST',
+-                        mode: 'no-cors',
+-                        headers: { 'Content-Type': 'application/json' },
+-                        body: JSON.stringify({ email, doubt, track: activeTrack, timestamp: new Date().toISOString() })
+-                      });
+-
+-                      emailInput.value = '';
+-                      doubtInput.value = '';
+-                      submitBtn.textContent = 'SENT ✓';
+-                      setSupportMessage({ type: 'success', text: 'Thank you! We will reach out to you soon.' });
+-                      setTimeout(() => {
+-                        submitBtn.textContent = 'SUBMIT →';
+-                        submitBtn.disabled = false;
+-                      }, 2000);
+-                    } catch {
+-                      submitBtn.textContent = 'RETRY →';
+-                      setSupportMessage({ type: 'error', text: 'Something went wrong. Please try again or contact us directly.' });
+-                      setTimeout(() => {
+-                        submitBtn.disabled = false;
+-                      }, 1000);
+-                    }
+-                  }}
+-                  className="space-y-3"
+-                >
+-                  <input
+-                    type="email"
+-                    name="supportEmail"
+-                    placeholder="Your email"
+-                    required
+-                    className="w-full px-4 py-3 bg-[#00121F] border border-white/10 text-white placeholder-white/30 text-sm font-mono focus:outline-none focus:border-[#18B8DA]/50 rounded-sm"
+-                  />
+-                  <textarea
+-                    name="doubt"
+-                    placeholder="Describe your doubt..."
+-                    required
+-                    rows={3}
+-                    onInput={(e) => {
+-                      const target = e.target as HTMLTextAreaElement;
+-                      target.style.height = 'auto';
+-                      target.style.height = Math.min(target.scrollHeight, 200) + 'px';
+-                    }}
+-                    className="w-full px-4 py-3 bg-[#00121F] border border-white/10 text-white placeholder-white/30 text-sm font-mono focus:outline-none focus:border-[#18B8DA]/50 rounded-sm resize-none overflow-y-auto"
+-                    style={{ minHeight: '80px', maxHeight: '200px' }}
+-                  />
+-                  <button
+-                    type="submit"
+-                    className="cursor-target w-full px-4 py-3 bg-[#18B8DA] text-[#00121F] font-bold text-sm uppercase tracking-[0.2em] hover:bg-[#18B8DA]/90 transition-colors rounded-sm disabled:opacity-50"
+-                  >
+-                    Submit →
+-                  </button>
+-                  {supportMessage.type && (
+-                    <p className={`text-xs text-center py-2 ${supportMessage.type === 'success' ? 'text-emerald-400' : 'text-rose-400'}`}>
+-                      {supportMessage.text}
+-                    </p>
+-                  )}
+-                </form>
+-              </div>
+             </div>
+           </div>
+         </div>
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index fb83372..e0dcffd 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -17,7 +17,6 @@ const FloatingLines = dynamic(() => import("@/components/FloatingLines"), { ssr:
+ import Navbar from "./component/navbar";
+ import LandingContent from "./component/landingContent";
+ import AboutUs from "./component/aboutUs";
+-import LiveDashboard from "./component/liveDashboard";
+ 
+ export default function Page() {
+   useEffect(() => {
+@@ -58,8 +57,6 @@ export default function Page() {
+       <div className="relative z-10">
+         <Navbar />
+ 
+-        <LiveDashboard />
+-
+         <LandingContent />
+ 
+         <section id="about" className="scroll-mt-20">
