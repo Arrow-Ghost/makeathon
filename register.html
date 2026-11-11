@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Register · Makeathon 2027</title>
+<meta name="description" content="Register for Makeathon 2027: sign in with Google, form or join a team of 3 to 5, pick a track and submit your build.">
+<meta name="theme-color" content="#17261F">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preload" href="/fonts/barlow-condensed-600-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/dm-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/portal.css">
+<style>
+.skip{position:fixed;left:16px;top:-80px;z-index:100;padding:12px 16px;background-color:var(--amber);color:var(--bg);font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-decoration:none;transition:top .3s var(--ease)}
+.skip:focus{top:12px}
+.shell{display:grid;grid-template-columns:minmax(250px,300px) minmax(0,1fr);gap:clamp(32px,6vw,96px);max-width:1280px;margin:0 auto;padding:clamp(32px,5vw,64px) var(--gut) 112px}
+.rail{position:sticky;top:104px;align-self:start}
+.rail-h{margin-top:14px;font-size:clamp(54px,5.2vw,76px)}
+.steps{position:relative;list-style:none;margin:40px 0 0;padding:0}
+.steps::before{content:"";position:absolute;left:4px;top:24px;bottom:24px;width:1px;background-color:var(--line2)}
+.step{position:relative;display:grid;grid-template-columns:9px 26px minmax(0,1fr) auto;align-items:center;gap:0 14px;width:100%;padding:13px 0;border:none;background:none;color:var(--mute);font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-align:left;text-transform:uppercase;cursor:pointer}
+.step .node{width:9px;height:9px;border:1px solid var(--dim);background-color:var(--bg);transform:rotate(45deg);transition:background-color .4s ease,border-color .4s ease,box-shadow .4s ease}
+.step .num{color:var(--dim)}
+.step .name{font-family:var(--sans);font-weight:600;font-size:22px;letter-spacing:.08em;color:var(--ink);transition:color .25s ease}
+.step .st{font-size:10px;letter-spacing:.16em;color:var(--dim)}
+.step.done .node{background-color:var(--amber);border-color:var(--amber)}
+.step.done .st{color:var(--ok)}
+.step.part .st{color:var(--amber)}
+.step.now .node{border-color:var(--amber);box-shadow:0 0 0 5px rgba(242,184,75,.16)}
+.step.now .name{color:var(--amber)}
+.step.locked{cursor:not-allowed}
+.step.locked .name{color:var(--dim)}
+.step:not(.locked):hover .name{color:var(--amber)}
+.facts{display:grid;gap:16px;margin:40px 0 0;padding-top:22px;border-top:1px solid var(--line)}
+.facts dt{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
+.facts dd{margin:4px 0 0;font-size:18px;line-height:1.3;color:var(--mute)}
+
+.stage{min-width:0;outline:none}
+.loading{display:flex;align-items:center;gap:12px;padding:40px 0;font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--dim)}
+.panel{animation:rise .55s var(--ease) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+.head{margin-bottom:34px}
+.head h2{margin-top:12px;font-size:clamp(46px,6.4vw,80px)}
+.head .lede{margin-top:16px}
+.group{min-width:0;margin:0;padding:0;border:none}
+.group+.group{margin-top:34px;padding-top:30px;border-top:1px solid var(--line)}
+/* floated, so the legend sits inside the group instead of on its top border */
+.legend{float:left;width:100%;display:flex;align-items:center;gap:12px;margin:0 0 20px;padding:0;font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--amber);text-transform:uppercase}
+.legend i{display:inline-grid;place-items:center;width:24px;height:24px;border:1px solid rgba(242,184,75,.6);font-style:normal;font-size:11px;letter-spacing:0}
+.legend+*{clear:both}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 18px}
+.grid .wide{grid-column:1/-1}
+.q{display:flex;flex-direction:column;gap:10px}
+.q+.q{margin-top:22px}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;margin-top:36px;padding-top:26px;border-top:1px solid var(--line)}
+.actions .spacer{flex:1 1 auto}
+.form-msg{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--err)}
+.form-msg:empty{display:none}
+.card .actions{margin-top:26px;padding-top:0;border-top:none}
+.ro-note{margin-bottom:24px}
+
+.split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.split h3{margin-top:10px;font-size:40px}
+.split p{margin-top:10px;font-size:18px;color:var(--mute)}
+.split form{display:grid;gap:14px;margin-top:24px}
+.join-code{font-size:22px;letter-spacing:.32em;text-transform:uppercase}
+.team-top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px}
+.team-name{margin-top:10px;font-size:clamp(40px,5vw,62px);overflow-wrap:anywhere}
+.count{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--mute)}
+.pips{display:flex;gap:6px;margin-bottom:9px}
+.pips i{width:24px;height:6px;background-color:var(--line2)}
+.pips i.on{background-color:var(--amber)}
+.team-status{margin-top:22px}
+.code-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;margin-top:22px;padding:16px 18px;border:1px dashed rgba(242,184,75,.55);background-color:var(--amber-soft)}
+.code-row .lbl{flex-basis:100%}
+.code{margin-right:auto;font-family:var(--mono);font-size:30px;font-weight:500;letter-spacing:.32em;color:var(--amber)}
+.members{list-style:none;margin:26px 0 0;padding:0;border-top:1px solid var(--line)}
+.member{display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.av{display:grid;place-items:center;width:46px;height:46px;border:1px solid var(--line2);font-family:var(--mono);font-size:14px;letter-spacing:.06em;color:var(--mute)}
+.member.lead .av{border-color:var(--amber);color:var(--amber)}
+.m-name{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:23px;font-weight:600;letter-spacing:.03em}
+.m-sub{font-size:16px;color:var(--dim);overflow-wrap:anywhere}
+.m-act{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-family:var(--mono);font-size:10px;font-weight:400;letter-spacing:.16em;padding:3px 7px;border:1px solid var(--amber);color:var(--amber)}
+.tag.plain{border-color:var(--line2);color:var(--mute)}
+.empty-slot{display:grid;grid-template-columns:46px minmax(0,1fr);align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);color:var(--dim);font-family:var(--mono);font-size:12px;letter-spacing:.14em}
+.empty-slot .av{border-style:dashed;border-color:var(--line)}
+
+.tracks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.track>span{min-height:124px;justify-content:space-between;padding-top:16px;padding-bottom:16px}
+.track .tn{font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--dim)}
+.track b{font-size:26px}
+.ps{margin-top:26px}
+
+.comp{display:grid;gap:8px}
+.comp-row{display:grid;grid-template-columns:minmax(0,2.3fr) 96px minmax(0,2fr) 46px;grid-template-areas:"name qty notes x";gap:8px;align-items:start}
+.comp-row .c-name{grid-area:name}.comp-row .c-qty{grid-area:qty}.comp-row .c-notes{grid-area:notes}.comp-row .x{grid-area:x}
+.comp-head{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+.comp-row .in{height:48px;font-size:15px}
+.x{width:46px;height:48px;border:1px solid var(--line);background:none;color:var(--dim);font-size:22px;line-height:1;cursor:pointer;transition:color .2s ease,border-color .2s ease}
+.x:hover{color:var(--err);border-color:var(--err)}
+.add{margin-top:14px}
+.ro-table{width:100%;border-collapse:collapse;font-size:18px}
+.ro-table th{padding:0 12px 10px 0;font-family:var(--mono);font-size:11px;font-weight:400;letter-spacing:.16em;color:var(--dim);text-align:left;text-transform:uppercase}
+.ro-table td{padding:12px 12px 12px 0;border-top:1px solid var(--line);vertical-align:top}
+.ro-table td.n{font-family:var(--mono);color:var(--amber)}
+.counter{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--dim);text-align:right}
+.stamp{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--dim)}
+
+@media (max-width:960px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:26px;padding-top:22px}
+  .rail{position:static}
+  .rail .eyebrow,.rail-h,.facts{display:none}
+  .steps{display:flex;gap:8px;margin:0 calc(var(--gut) * -1);padding:0 var(--gut) 2px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity}
+  .steps::-webkit-scrollbar{display:none}
+  .steps::before{display:none}
+  .steps li{flex:0 0 auto;scroll-snap-align:start}
+  .step{grid-template-columns:9px auto auto;gap:0 9px;padding:10px 14px;border:1px solid var(--line)}
+  .step .st{display:none}
+  .step .name{font-size:17px}
+  .step.now{border-color:var(--amber)}
+  .head{margin-bottom:26px}
+}
+@media (max-width:760px){
+  .split{grid-template-columns:minmax(0,1fr)}
+  .tracks{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:640px){
+  .grid{grid-template-columns:minmax(0,1fr)}
+  .member{grid-template-columns:46px minmax(0,1fr)}
+  .m-act{grid-column:2}
+  .comp-head{display:none}
+  .comp-row{grid-template-columns:minmax(0,1fr) 78px 46px;grid-template-areas:"name qty x" "notes notes notes";padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .code{font-size:26px}
+  .actions .btn{flex:1 1 auto}
+}
+@media (max-width:420px){.tracks{grid-template-columns:minmax(0,1fr)}.track>span{min-height:0}}
+
+/* Sign-in step: one screen, no page scroll. Sizes follow the screen height, the column title
+   gives way to the heading beside it, and both columns sit centred in the space under the bar. */
+body.signin-view .shell{min-height:calc(100vh - 64px);min-height:calc(100dvh - 64px);padding-top:clamp(16px,4.5vh,56px);padding-bottom:clamp(16px,4.5vh,56px);align-items:center}
+body.signin-view .rail{position:static;align-self:center}
+body.signin-view .rail>.eyebrow,body.signin-view .rail-h{display:none}
+body.signin-view .steps{margin-top:0}
+body.signin-view .step{padding:clamp(4px,1.1vh,13px) 0}
+body.signin-view .facts{margin-top:clamp(12px,3.2vh,40px);padding-top:clamp(10px,2.2vh,22px);gap:clamp(8px,1.5vh,16px)}
+body.signin-view .facts dd{font-size:clamp(16px,2vh,18px)}
+body.signin-view .signin h2{font-size:clamp(40px,min(6.6vw,9.6vh),84px)}
+body.signin-view .signin .lede{font-size:clamp(17px,2.3vh,21px);margin-top:clamp(10px,1.8vh,16px)}
+body.signin-view .signin .lede+.lede{margin-top:clamp(6px,1vh,10px)}
+body.signin-view .gbtn{margin-top:clamp(16px,3.2vh,28px)}
+body.signin-view .g-hint{margin-top:clamp(8px,1.4vh,14px)}
+body.signin-view .fine{margin-top:clamp(10px,2vh,22px)}
+@media (max-width:960px){
+  body.signin-view .shell{min-height:0;align-items:start;padding-top:clamp(12px,2.4vh,22px);padding-bottom:clamp(12px,2.4vh,24px);gap:clamp(12px,2.6vh,26px)}
+  body.signin-view .step{padding:clamp(6px,1.2vh,10px) 12px}
+  body.signin-view .signin h2{font-size:clamp(34px,min(11.5vw,7vh),64px)}
+  body.signin-view .gbtn{height:clamp(46px,6.4vh,52px)}
+  body.signin-view .g-hint,body.signin-view .fine{font-size:15px}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the form</a>
+<header class="bar">
+  <a class="logo" href="/" aria-label="Makeathon 2027 home">MAKEATHON <b>2027</b></a>
+  <div class="bar-r">
+    <span class="who" id="who" hidden></span>
+    <button class="ul" id="signout" type="button" hidden>Sign out</button>
+    <a class="ul" href="/" id="site-link"><span aria-hidden="true">←</span> Site</a>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="rail" aria-label="Registration steps">
+    <div class="eyebrow">Registration · 19–20 Jan 2027</div>
+    <h1 class="rail-h">Build<br>your team.</h1>
+    <ol class="steps" id="steps">
+      <li><button type="button" class="step" data-step="verify"><i class="node" aria-hidden="true"></i><span class="num">01</span><span class="name">Sign in</span><span class="st"></span></button></li>
+      <li><button type="button" class="step" data-step="profile"><i class="node" aria-hidden="true"></i><span class="num">02</span><span class="name">Profile</span><span class="st"></span></button></li>
+      <li><button type="button" class="step" data-step="team"><i class="node" aria-hidden="true"></i><span class="num">03</span><span class="name">Team</span><span class="st"></span></button></li>
+      <li><button type="button" class="step" data-step="track"><i class="node" aria-hidden="true"></i><span class="num">04</span><span class="name">Track</span><span class="st"></span></button></li>
+      <li><button type="button" class="step" data-step="components"><i class="node" aria-hidden="true"></i><span class="num">05</span><span class="name">Components</span><span class="st"></span></button></li>
+      <li><button type="button" class="step" data-step="submission"><i class="node" aria-hidden="true"></i><span class="num">06</span><span class="name">Submission</span><span class="st"></span></button></li>
+    </ol>
+    <dl class="facts">
+      <div><dt>Team size</dt><dd>3 to 5 members, one team per person</dd></div>
+      <div><dt>Venue</dt><dd>Anna Auditorium, VIT Vellore</dd></div>
+      <div><dt>Entry</dt><dd>Free for VIT students · ₹500 per person for external participants</dd></div>
+      <div><dt>Questions</dt><dd><a class="ul" href="mailto:enquiry@makeathon.in" style="color:var(--mute);text-transform:none;letter-spacing:.02em">enquiry@makeathon.in</a></dd></div>
+    </dl>
+  </aside>
+
+  <main class="stage" id="main" tabindex="-1">
+    <div class="loading" id="loading"><span class="spin" aria-hidden="true"></span>LOADING YOUR REGISTRATION</div>
+    <div class="note bad" id="boot-error" hidden></div>
+
+    <!-- 01 VERIFY -->
+    <section class="panel" id="p-verify" hidden aria-labelledby="h-verify">
+      <div class="signin">
+        <div class="eyebrow">01 / Sign in</div>
+        <h2 id="h-verify" tabindex="-1">Register for<br>Makeathon 2027.</h2>
+        <p class="lede" id="verify-lede">Sign in with a Google account: personal Gmail, college or work. Registered already? Use the same account to continue.</p>
+        <p class="lede">Open to undergraduate and postgraduate students from any college, VIT included, plus research scholars and working professionals.</p>
+        <div class="note bad auth-note" id="auth-note" role="alert" hidden></div>
+        <div class="note auth-note" id="no-signin" hidden><span>Sign-in is not available right now. Please try again later, or write to <a class="ul" href="mailto:enquiry@makeathon.in" style="text-transform:none;letter-spacing:.02em">enquiry@makeathon.in</a>.</span></div>
+        <div class="g-wrap" id="g-wrap" hidden>
+          <a class="gbtn" id="g-btn" href="/api/google?next=register"><svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Continue with Google</a>
+          <p class="hint g-hint" id="g-hint">No Google account? <a href="https://accounts.google.com/signup" rel="noopener noreferrer">Create one with the email address you already use</a>; it takes a minute.</p>
+          <div class="or" id="g-or" hidden><span>or get a code by email</span></div>
+        </div>
+        <form id="f-email" novalidate hidden>
+          <div class="field">
+            <label class="lbl" for="in-email">Email address</label>
+            <div class="inline">
+              <input class="in" id="in-email" name="email" type="email" inputmode="email" autocomplete="email" spellcheck="false" maxlength="254" placeholder="you@college.edu" required>
+              <button class="btn" type="submit">Send code <span class="arr" aria-hidden="true">→</span></button>
+            </div>
+            <div class="ferr" data-err="email" aria-live="polite"></div>
+          </div>
+        </form>
+        <form id="f-code" novalidate hidden>
+          <div class="field">
+            <label class="lbl" for="in-code"><span>Code sent to <span id="code-to" style="color:var(--ink);text-transform:none;letter-spacing:.04em"></span></span></label>
+            <div class="inline">
+              <input class="in code-in" id="in-code" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" required>
+              <button class="btn" type="submit">Verify <span class="arr" aria-hidden="true">→</span></button>
+            </div>
+            <div class="ferr" data-err="code" aria-live="polite"></div>
+          </div>
+          <div class="sub"><button type="button" class="ul" id="b-change">Change email</button><button type="button" class="ul" id="b-resend">Resend code</button></div>
+          <p class="hint" style="margin-top:16px">The code expires in 10 minutes. If it has not arrived in a minute, check your spam folder.</p>
+        </form>
+        <p class="fine" id="fine">By continuing you agree to the <a href="/terms">terms of service</a> and acknowledge the <a href="/privacy">privacy policy</a>.</p>
+        <div id="verified" hidden style="margin-top:28px">
+          <div class="note ok"><span>Signed in as <b id="v-email"></b>.</span></div>
+          <button class="btn" type="button" id="b-continue" style="margin-top:22px">Continue <span class="arr" aria-hidden="true">→</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 PROFILE -->
+    <section class="panel" id="p-profile" hidden aria-labelledby="h-profile">
+      <div class="head">
+        <div class="eyebrow">02 / Profile</div>
+        <h2 id="h-profile" tabindex="-1">Tell us<br>who you are.</h2>
+        <p class="lede">Every team member fills this in for themselves. Fields marked optional can be left blank.</p>
+      </div>
+      <form id="f-profile" novalidate>
+        <fieldset class="group">
+          <legend class="legend"><i>A</i>About you</legend>
+          <div class="grid">
+            <div class="field wide" data-f="fullName"><label class="lbl" for="pf-fullName">Full name</label><input class="in" id="pf-fullName" name="fullName" autocomplete="name" maxlength="80"><div class="ferr"></div></div>
+            <div class="field" data-f="phone"><label class="lbl" for="pf-phone">Phone number</label><input class="in" id="pf-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="+91 98765 43210"><div class="ferr"></div></div>
+            <div class="field" data-f="gender"><label class="lbl" for="pf-gender">Gender</label><select class="in" id="pf-gender" name="gender"></select><div class="ferr"></div></div>
+            <div class="field" data-f="dob"><label class="lbl" for="pf-dob">Date of birth</label><input class="in" id="pf-dob" name="dob" type="date" autocomplete="bday" min="1935-01-01"><div class="ferr"></div></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend class="legend"><i>B</i>Where you are from</legend>
+          <div class="q field" data-f="affiliation">
+            <div class="lbl" id="lb-aff">Are you from VIT?</div>
+            <div class="choices" role="radiogroup" aria-labelledby="lb-aff">
+              <label class="choice"><input type="radio" name="affiliation" value="internal"><span><b>VIT · Internal</b><small>Students, scholars and staff of any VIT campus</small></span></label>
+              <label class="choice"><input type="radio" name="affiliation" value="external"><span><b>External</b><small>Students of other colleges, and professionals or researchers anywhere</small></span></label>
+            </div>
+            <div class="ferr"></div>
+          </div>
+          <div class="q field" data-f="participantType">
+            <div class="lbl" id="lb-type">You are a</div>
+            <div class="choices" role="radiogroup" aria-labelledby="lb-type">
+              <label class="choice"><input type="radio" name="participantType" value="student"><span><b>Student</b><small>Undergraduate or postgraduate</small></span></label>
+              <label class="choice"><input type="radio" name="participantType" value="professional"><span><b>Professional</b><small>Working in industry</small></span></label>
+              <label class="choice"><input type="radio" name="participantType" value="researcher"><span><b>Researcher</b><small>Research scholar or PhD</small></span></label>
+            </div>
+            <div class="ferr"></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="group" data-when="external">
+          <legend class="legend"><i>C</i><span data-text="orgGroup">College / company</span></legend>
+          <div class="grid">
+            <div class="field wide" data-f="orgName"><label class="lbl" for="pf-orgName"><span data-text="orgName">College / institution name</span></label><input class="in" id="pf-orgName" name="orgName" autocomplete="organization" maxlength="120"><div class="ferr"></div></div>
+            <div class="field wide" data-f="orgAddress"><label class="lbl" for="pf-orgAddress"><span data-text="orgAddress">College address</span></label><textarea class="in" id="pf-orgAddress" name="orgAddress" rows="3" maxlength="300" placeholder="Street, city, state, PIN code"></textarea><div class="ferr"></div></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="group" data-when="internal">
+          <legend class="legend"><i>C</i>VIT details</legend>
+          <div class="grid">
+            <div class="field" data-f="vitCampus"><label class="lbl" for="pf-vitCampus">Campus</label><select class="in" id="pf-vitCampus" name="vitCampus"></select><div class="ferr"></div></div>
+            <div class="field" data-f="vitEmail"><label class="lbl" for="pf-vitEmail">College email</label><input class="in" id="pf-vitEmail" name="vitEmail" type="email" inputmode="email" spellcheck="false" maxlength="254" placeholder="name.surname2024@vitstudent.ac.in"><div class="ferr"></div></div>
+            <div class="field" data-f="vitRegNo" data-when="study"><label class="lbl" for="pf-vitRegNo">Registration number</label><input class="in" id="pf-vitRegNo" name="vitRegNo" maxlength="15" autocapitalize="characters" spellcheck="false" placeholder="22BEC1234" style="text-transform:uppercase"><div class="ferr"></div></div>
+            <div class="field wide q" data-f="residence" data-when="study">
+              <div class="lbl" id="lb-res">Where do you stay?</div>
+              <div class="choices" role="radiogroup" aria-labelledby="lb-res">
+                <label class="choice"><input type="radio" name="residence" value="hosteler"><span><b>Hosteler</b><small>Living in a VIT hostel</small></span></label>
+                <label class="choice"><input type="radio" name="residence" value="day_scholar"><span><b>Day scholar</b><small>Commuting from home</small></span></label>
+              </div>
+              <div class="ferr"></div>
+            </div>
+            <div class="field" data-f="hostelBlock" data-when="study hosteler"><label class="lbl" for="pf-hostelBlock">Hostel block</label><input class="in" id="pf-hostelBlock" name="hostelBlock" maxlength="20" placeholder="e.g. MH Q or LH G"><div class="ferr"></div></div>
+            <div class="field" data-f="hostelRoom" data-when="study hosteler"><label class="lbl" for="pf-hostelRoom">Room number</label><input class="in" id="pf-hostelRoom" name="hostelRoom" maxlength="10" placeholder="e.g. 512"><div class="ferr"></div></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="group" data-when="typed">
+          <legend class="legend"><i>D</i><span data-text="eduGroup">Education</span></legend>
+          <div class="grid">
+            <div class="field" data-f="educationLevel"><label class="lbl" for="pf-educationLevel">Level</label><select class="in" id="pf-educationLevel" name="educationLevel"></select><div class="ferr"></div></div>
+            <div class="field" data-f="degree"><label class="lbl" for="pf-degree">Degree / programme</label><input class="in" id="pf-degree" name="degree" maxlength="80" placeholder="e.g. B.Tech"><div class="ferr"></div></div>
+            <div class="field" data-f="branch"><label class="lbl" for="pf-branch"><span data-text="branch">Branch / specialisation</span></label><input class="in" id="pf-branch" name="branch" maxlength="100" placeholder="e.g. Electronics and Communication"><div class="ferr"></div></div>
+            <div class="field" data-f="yearOfStudy" data-when="student"><label class="lbl" for="pf-yearOfStudy">Year of study</label><select class="in" id="pf-yearOfStudy" name="yearOfStudy"><option value="">Select</option><option value="1">1st year</option><option value="2">2nd year</option><option value="3">3rd year</option><option value="4">4th year</option><option value="5">5th year</option><option value="6">6th year</option></select><div class="ferr"></div></div>
+            <div class="field" data-f="graduationYear"><label class="lbl" for="pf-graduationYear"><span data-text="gradYear">Graduation year</span></label><input class="in" id="pf-graduationYear" name="graduationYear" type="number" inputmode="numeric" min="1960" max="2035" placeholder="e.g. 2027"><div class="ferr"></div></div>
+            <div class="field" data-f="cgpa"><label class="lbl" for="pf-cgpa"><span>CGPA <span style="text-transform:none">(out of 10)</span></span></label><input class="in" id="pf-cgpa" name="cgpa" type="number" inputmode="decimal" min="0" max="10" step="0.01" placeholder="e.g. 8.42"><div class="ferr"></div></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend class="legend"><i>E</i>Special requirements</legend>
+          <div class="field" data-f="specialRequirements"><label class="lbl" for="pf-specialRequirements">Anything we should plan for</label><textarea class="in" id="pf-specialRequirements" name="specialRequirements" rows="3" maxlength="600" placeholder="Dietary needs, accessibility, medical conditions, travel or accommodation"></textarea><div class="ferr"></div></div>
+        </fieldset>
+
+        <div class="actions">
+          <button class="btn" type="submit" id="b-profile">Save and continue <span class="arr" aria-hidden="true">→</span></button>
+          <span class="form-msg" aria-live="polite"></span>
+        </div>
+      </form>
+    </section>
+
+    <!-- 03..06 render into these -->
+    <section class="panel" id="p-team" hidden aria-labelledby="h-team"></section>
+    <section class="panel" id="p-track" hidden aria-labelledby="h-track"></section>
+    <section class="panel" id="p-components" hidden aria-labelledby="h-components"></section>
+    <section class="panel" id="p-submission" hidden aria-labelledby="h-submission"></section>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ESC[c]);
+const ARR = '<span class="arr" aria-hidden="true">→</span>';
+const STEPS = ['verify', 'profile', 'team', 'track', 'components', 'submission'];
+
+let S = null;          // GET /api/register response; null while signed out
+let current = null;    // visible step
+let pendingEmail = '';
+let compRows = null;   // the components editor's rows, kept while switching steps
+let joinCode = (new URLSearchParams(location.search).get('join') || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+let providers = null;  // sign-in methods the server offers: { enabled: Google, email: emailed codes }
+// /api/google sends people back with ?auth=… when Google sign-in did not complete
+const AUTH_MSG = {
+  cancelled: 'Google sign-in was cancelled.',
+  failed: 'Google sign-in did not go through. Please try again.',
+  busy: 'Too many sign-in attempts. Wait a few minutes and try again.',
+  unavailable: 'Sign-in is not available right now. Please try again later.',
+};
+const authStatus = new URLSearchParams(location.search).get('auth');
+if (authStatus) {
+  const u = new URL(location.href); u.searchParams.delete('auth');
+  history.replaceState(null, '', u.pathname + u.search + u.hash);
+}
+
+// ---------- plumbing ----------
+async function api(path, body) {
+  const init = body
+    ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), credentials: 'same-origin' }
+    : { credentials: 'same-origin' };
+  let res;
+  try { res = await fetch(path, init); } catch (e) { throw Object.assign(new Error('No connection. Check your internet and try again.'), { status: 0 }); }
+  let data = null;
+  try { data = await res.json(); } catch (e) {}
+  if (!res.ok) throw Object.assign(new Error((data && data.error) || 'Request failed (' + res.status + ')'), { status: res.status, field: data && data.field });
+  return data;
+}
+const reg = (action, extra) => api('/api/register', Object.assign({ action }, extra));
+
+let toastT = 0;
+function toast(msg, bad) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.toggle('bad', !!bad);
+  t.classList.add('on');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('on'), bad ? 5200 : 3200);
+}
+
+async function busy(btn, fn) {
+  if (!btn || btn.getAttribute('aria-busy') === 'true') return;
+  const html = btn.innerHTML;
+  btn.setAttribute('aria-busy', 'true');
+  btn.innerHTML = '<span class="spin" aria-hidden="true"></span>Working';
+  try { return await fn(); } finally { btn.removeAttribute('aria-busy'); btn.innerHTML = html; }
+}
+
+function clearErrs(root) {
+  $$('.is-err', root).forEach((f) => f.classList.remove('is-err'));
+  $$('.ferr', root).forEach((e) => { e.textContent = ''; });
+  const m = $('.form-msg', root); if (m) m.textContent = '';
+}
+function markErr(field, msg) {
+  if (!field) return;
+  field.classList.add('is-err');
+  const e = $('.ferr', field); if (e) e.textContent = msg;
+}
+function fieldFor(root, key) {
+  return $('[data-f="' + key + '"]', root) || ($('[name="' + key + '"]', root) || {}).closest?.('.field') || null;
+}
+// Shows an API error next to its field when there is one, otherwise under the form.
+function fail(err, root) {
+  if (err.status === 401) return signedOut('Your session ended. Sign in again to continue.');
+  const f = root && err.field ? fieldFor(root, err.field) : null;
+  if (f && !f.hidden) {
+    markErr(f, err.message);
+    const input = $('input:not([type=radio]),select,textarea', f) || $('input', f);
+    f.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    if (input) setTimeout(() => input.focus({ preventScroll: true }), 300);
+  } else if (root && $('.form-msg', root)) {
+    $('.form-msg', root).textContent = err.message;
+  }
+  toast(err.message, true);
+}
+
+const fmtDate = (iso) => { try { return new Date(iso).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }); } catch (e) { return ''; } };
+const initials = (name) => String(name || '?').trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+const TYPE = { student: 'Student', professional: 'Professional', researcher: 'Researcher' };
+
+async function copy(text, what) {
+  try { await navigator.clipboard.writeText(text); toast(what + ' copied'); }
+  catch (e) { window.prompt('Copy this ' + what.toLowerCase() + ':', text); }
+}
+
+// ---------- step state ----------
+function trackOf(t) { return t && S.event.tracks.find((x) => x.id === t.track); }
+function status() {
+  const p = S && S.profile, t = S && S.team, tr = trackOf(t);
+  const trackDone = !!tr && (!(tr.ownProblem || tr.statements.length) || !!t.problemStatement);
+  return {
+    verify: S ? 'done' : 'now',
+    profile: p ? 'done' : S ? 'todo' : 'locked',
+    team: t ? (t.members.length >= S.event.teamMin ? 'done' : 'part') : p ? 'todo' : 'locked',
+    track: t ? (trackDone ? 'done' : 'todo') : 'locked',
+    components: t ? (t.components.length ? 'done' : 'todo') : 'locked',
+    submission: t ? (t.submission ? 'done' : 'todo') : 'locked',
+  };
+}
+const LOCKED = { profile: 'Sign in first', team: 'Save your profile first' };
+function firstStep() {
+  const st = status();
+  if (!S) return 'verify';
+  if (!S.profile) return 'profile';
+  if (!S.team || st.team !== 'done') return 'team';
+  if (st.track !== 'done') return 'track';
+  return 'team';
+}
+
+function renderSteps() {
+  const st = status();
+  $$('.step').forEach((b) => {
+    const k = b.dataset.step, s = st[k];
+    b.className = 'step ' + s + (k === current ? ' now' : '');
+    b.setAttribute('aria-disabled', s === 'locked' ? 'true' : 'false');
+    if (k === current) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+    $('.st', b).textContent = s === 'done' ? 'Done' : s === 'part' ? S.team.members.length + '/' + S.event.teamMax : s === 'locked' ? 'Locked' : '';
+  });
+  const who = $('#who');
+  who.hidden = !S; $('#signout').hidden = !S;
+  who.textContent = S ? S.email : '';
+}
+
+function go(step, opts) {
+  opts = opts || {};
+  if (status()[step] === 'locked') { toast(LOCKED[step] || 'Create or join a team first', true); return; }
+  current = step;
+  document.body.classList.toggle('signin-view', step === 'verify');
+  STEPS.forEach((k) => { $('#p-' + k).hidden = k !== current; });
+  RENDER[step]();
+  renderSteps();
+  const url = location.pathname + location.search + '#' + step;
+  if (location.hash !== '#' + step) history.replaceState(null, '', url);
+  const chip = $('.step[data-step="' + step + '"]');
+  if (chip && chip.scrollIntoView && window.innerWidth <= 960) chip.scrollIntoView({ block: 'nearest', inline: 'center' });
+  if (opts.focus !== false) {
+    const h = $('#h-' + step);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (h) h.focus({ preventScroll: true });
+  }
+}
+
+function apply(next, msg) {
+  S = next;
+  if (msg) toast(msg);
+  go(current, { focus: false });
+  // re-rendering a panel removes the button that had focus; keep keyboard users in the panel
+  if (!document.activeElement || document.activeElement === document.body) {
+    const h = $('#h-' + current); if (h) h.focus({ preventScroll: true });
+  }
+}
+
+function signedOut(msg) {
+  S = null; compRows = null; profileFilled = false;
+  showEmailForm();
+  go('verify');
+  if (msg) toast(msg, true);
+}
+
+// ---------- 01 verify ----------
+function showEmailForm() {
+  $('#f-code').hidden = true;
+  setupSignin();
+}
+let resendAt = 0;
+async function sendCode(btn) {
+  const email = $('#in-email').value.trim().toLowerCase();
+  clearErrs($('#f-email'));
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { markErr(fieldFor($('#f-email'), 'email'), 'Enter a valid email address'); $('#in-email').focus(); return; }
+  await busy(btn, async () => {
+    try {
+      await api('/api/auth', { action: 'request', email });
+      pendingEmail = email;
+      resendAt = Date.now() + 30000;
+      $('#code-to').textContent = email;
+      $('#f-email').hidden = true; $('#f-code').hidden = false;
+      $('#g-wrap').hidden = true; $('#auth-note').hidden = true;
+      clearErrs($('#f-code'));
+      $('#in-code').value = '';
+      $('#in-code').focus();
+      toast('Code sent to ' + email);
+    } catch (e) { fail(e, $('#f-email')); }
+  });
+}
+$('#f-email').addEventListener('submit', (e) => { e.preventDefault(); sendCode(e.submitter || $('#f-email .btn')); });
+$('#in-code').addEventListener('input', (e) => {
+  e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6);
+  if (e.target.value.length === 6) $('#f-code').requestSubmit();
+});
+$('#f-code').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const code = $('#in-code').value.replace(/\D/g, '');
+  clearErrs($('#f-code'));
+  if (code.length !== 6) { markErr(fieldFor($('#f-code'), 'code'), 'Enter the 6-digit code'); return; }
+  await busy($('#f-code .btn'), async () => {
+    try {
+      await api('/api/auth', { action: 'verify', email: pendingEmail, code });
+      S = await api('/api/register');
+      toast('Email verified');
+      go(firstStep());
+    } catch (err) { fail(err, $('#f-code')); $('#in-code').select(); }
+  });
+});
+$('#b-change').addEventListener('click', () => { showEmailForm(); $('#in-email').focus(); });
+$('#b-resend').addEventListener('click', (e) => {
+  const wait = Math.ceil((resendAt - Date.now()) / 1000);
+  if (wait > 0) { toast('You can resend in ' + wait + 's'); return; }
+  $('#in-email').value = pendingEmail;
+  sendCode(e.currentTarget);
+});
+$('#b-continue').addEventListener('click', () => go(firstStep() === 'verify' ? 'profile' : firstStep()));
+$('#signout').addEventListener('click', async () => {
+  try { await api('/api/auth', { action: 'logout' }); } catch (e) {}
+  signedOut();
+  toast('Signed out');
+});
+
+function renderVerify() {
+  const done = !!S;
+  $('#verified').hidden = !done;
+  $('#fine').hidden = done;
+  if (done) { $('#f-code').hidden = true; $('#v-email').textContent = S.email; $('#auth-note').hidden = true; }
+  setupSignin();
+}
+
+// Offers the sign-in methods the server has set up: Google (carrying any team invite
+// through), and emailed codes only when SMTP is configured.
+async function setupSignin() {
+  if (!providers) {
+    try { providers = await api('/api/google?status=1'); } catch (e) { providers = { enabled: false, email: false }; }
+  }
+  const google = !!providers.enabled, email = !!providers.email, out = !S, codeStep = !$('#f-code').hidden;
+  const q = new URLSearchParams({ next: 'register' });
+  if (joinCode) q.set('join', joinCode);
+  $('#g-btn').href = '/api/google?' + q;
+  $('#g-wrap').hidden = !out || !google || codeStep;
+  $('#g-hint').hidden = email;
+  $('#g-or').hidden = !email;
+  $('#f-email').hidden = !out || !email || codeStep;
+  $('#no-signin').hidden = !out || google || email;
+  $('#fine').hidden = !out || (!google && !email);
+  $('#verify-lede').textContent = google
+    ? (email
+      ? 'Sign in with a Google account, or get a 6-digit code by email. Registered already? Use the same account to pick up where you left off.'
+      : 'Sign in with a Google account: personal Gmail, college or work. Registered already? Use the same account to continue.')
+    : 'Start with your email. We send a 6-digit code to confirm it is yours. Registered already? Use the same email to pick up where you left off.';
+}
+$('#g-btn').addEventListener('click', (e) => { e.currentTarget.setAttribute('aria-busy', 'true'); });
+window.addEventListener('pageshow', () => $('#g-btn').removeAttribute('aria-busy'));
+
+// ---------- 02 profile ----------
+const PF = $('#f-profile');
+let profileFilled = false;
+const REQ = {
+  fullName: () => true, phone: () => true, gender: () => true, dob: () => true,
+  affiliation: () => true, participantType: () => true,
+  orgName: (c) => c.external, orgAddress: (c) => c.external,
+  vitCampus: (c) => c.internal, vitEmail: (c) => c.internal,
+  vitRegNo: (c) => c.internal && c.study, residence: (c) => c.internal && c.study,
+  hostelBlock: (c) => c.hosteler, hostelRoom: (c) => c.hosteler,
+  educationLevel: (c) => c.student, degree: (c) => c.study, branch: (c) => c.study,
+  yearOfStudy: (c) => c.student, graduationYear: (c) => c.student, cgpa: (c) => c.student,
+  specialRequirements: () => false,
+};
+function val(name) {
+  const els = PF.elements[name];
+  if (!els) return '';
+  if (els instanceof RadioNodeList || (els.length && els[0] && els[0].type === 'radio')) {
+    const hit = [...els].find((r) => r.checked); return hit ? hit.value : '';
+  }
+  return els.value;
+}
+function conds() {
+  const aff = val('affiliation'), type = val('participantType');
+  return {
+    internal: aff === 'internal', external: aff === 'external', typed: !!type,
+    student: type === 'student', professional: type === 'professional', researcher: type === 'researcher',
+    study: type === 'student' || type === 'researcher', hosteler: val('residence') === 'hosteler',
+  };
+}
+function syncProfile() {
+  const c = conds();
+  // students are undergraduate or postgraduate; everyone else picks from the full list
+  const levels = (c.student && S.event.studentLevels) || S.event.educationLevels;
+  const lv = $('#pf-educationLevel');
+  if (lv.dataset.set !== levels.join('|')) {
+    const keep = lv.value;
+    fillSelect(lv, levels, 'Select');
+    lv.dataset.set = levels.join('|');
+    lv.value = levels.includes(keep) ? keep : '';
+  }
+  $$('[data-when]', PF).forEach((el) => { el.hidden = !el.dataset.when.split(' ').every((k) => c[k]); });
+  const pro = c.professional;
+  const text = {
+    orgGroup: pro ? 'Company' : 'College / institution',
+    orgName: pro ? 'Company name' : 'College / institution name',
+    orgAddress: pro ? 'Company address' : 'College address',
+    eduGroup: pro ? 'Highest qualification' : 'Education',
+    branch: c.researcher ? 'Research area' : 'Branch / specialisation',
+    gradYear: c.student ? 'Expected graduation year' : 'Graduation year',
+  };
+  $$('[data-text]', PF).forEach((el) => { el.textContent = text[el.dataset.text]; });
+  Object.keys(REQ).forEach((k) => {
+    const f = fieldFor(PF, k); if (!f) return;
+    const lbl = $('.lbl', f); if (!lbl) return;
+    let em = $('em', lbl);
+    const optional = !REQ[k](c);
+    if (optional && !em) { em = document.createElement('em'); em.textContent = 'Optional'; lbl.appendChild(em); }
+    if (!optional && em) em.remove();
+  });
+}
+function fillSelect(sel, items, placeholder) {
+  sel.innerHTML = '<option value="">' + esc(placeholder) + '</option>' + items.map((x) => '<option>' + esc(x) + '</option>').join('');
+}
+function renderProfile() {
+  if (!$('#pf-gender').options.length) {
+    fillSelect($('#pf-gender'), S.event.genders, 'Select');
+    fillSelect($('#pf-vitCampus'), S.event.campuses, 'Select campus');
+    fillSelect($('#pf-educationLevel'), S.event.educationLevels, 'Select');
+    const d = new Date(); d.setFullYear(d.getFullYear() - 14);
+    $('#pf-dob').max = d.toISOString().slice(0, 10);
+  }
+  if (!profileFilled) {
+    profileFilled = true;
+    PF.reset();
+    const p = S.profile || {};
+    Object.keys(REQ).forEach((k) => {
+      const v = p[k];
+      if (v == null) return;
+      const els = PF.elements[k];
+      if (els instanceof RadioNodeList) [...els].forEach((r) => { r.checked = r.value === v; });
+      else if (els) els.value = v;
+    });
+    clearErrs(PF);
+  }
+  $('#b-profile').innerHTML = (S.profile ? 'Save changes ' : 'Save and continue ') + ARR;
+  syncProfile();
+}
+PF.addEventListener('change', syncProfile);
+PF.addEventListener('input', (e) => {
+  const f = e.target.closest('.field');
+  if (f) { f.classList.remove('is-err'); const m = $('.ferr', f); if (m) m.textContent = ''; }
+  if (!$('.is-err', PF)) $('.form-msg', PF).textContent = '';
+});
+PF.addEventListener('change', () => { if (!$('.is-err', PF)) $('.form-msg', PF).textContent = ''; });
+PF.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  clearErrs(PF);
+  const c = conds(), profile = {};
+  let first = null;
+  Object.keys(REQ).forEach((k) => {
+    const f = fieldFor(PF, k);
+    const hidden = f && (f.hidden || f.closest('[hidden]'));
+    const v = String(val(k)).trim();
+    profile[k] = hidden ? '' : v;
+    if (!hidden && REQ[k](c) && !v) { markErr(f, 'Required'); first = first || f; }
+  });
+  if (first) {
+    first.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    const i = $('input,select,textarea', first); if (i) setTimeout(() => i.focus({ preventScroll: true }), 300);
+    $('.form-msg', PF).textContent = 'Fill in the highlighted fields';
+    return;
+  }
+  const firstTime = !S.profile;
+  await busy($('#b-profile'), async () => {
+    try {
+      S = await reg('profile', { profile });
+      profileFilled = false;
+      if (firstTime) { toast('Profile saved'); go('team'); } else apply(S, 'Profile updated');
+    } catch (err) { fail(err, PF); }
+  });
+});
+
+// ---------- 03 team ----------
+function head(n, id, eyebrow, title, lede) {
+  return '<div class="head"><div class="eyebrow">' + n + ' / ' + esc(eyebrow) + '</div><h2 id="h-' + id + '" tabindex="-1">' + title + '</h2>' +
+    (lede ? '<p class="lede">' + lede + '</p>' : '') + '</div>';
+}
+function leaderName() {
+  const l = S.team.members.find((m) => m.isLeader); return l ? l.fullName : 'your team leader';
+}
+function readOnlyNote() {
+  return '<div class="note ro-note"><span>Only <b>' + esc(leaderName()) + '</b>, your team leader, can change this. You can see what they have saved.</span></div>';
+}
+function nextBtn(step, label) {
+  return '<span class="spacer"></span><button type="button" class="ul" data-go="' + step + '">' + esc(label) + ' ' + ARR + '</button>';
+}
+
+function renderTeam() {
+  const P = $('#p-team'), E = S.event, t = S.team;
+  if (!t) {
+    P.innerHTML = head('03', 'team', 'Team', 'Form your<br>team.', 'Teams have ' + E.teamMin + ' to ' + E.teamMax + ' members. One person starts the team and becomes its leader; everyone else joins with the team code.') +
+      (joinCode ? '<div class="note warn" style="margin-bottom:18px"><span>You were invited with team code <b>' + esc(joinCode) + '</b>. Join below.</span></div>' : '') +
+      '<div class="split">' +
+        '<div class="card' + (joinCode ? '' : ' hot') + '"><div class="eyebrow">Option A</div><h3>Start a team</h3><p>You become the leader and get a code to share with your teammates.</p>' +
+          '<form id="f-create" novalidate><div class="field" data-f="name"><label class="lbl" for="in-team">Team name</label><input class="in" id="in-team" name="name" maxlength="40" autocomplete="off" placeholder="e.g. Volt Riders"><div class="ferr"></div></div>' +
+          '<button class="btn" type="submit">Create team ' + ARR + '</button></form></div>' +
+        '<div class="card' + (joinCode ? ' hot' : '') + '"><div class="eyebrow">Option B</div><h3>Join a team</h3><p>Ask your team leader for the 6-character team code.</p>' +
+          '<form id="f-join" novalidate><div class="field" data-f="code"><label class="lbl" for="in-join">Team code</label><input class="in join-code" id="in-join" name="code" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="K7QW9P" value="' + esc(joinCode) + '"><div class="ferr"></div></div>' +
+          '<button class="btn" type="submit">Join team ' + ARR + '</button></form></div>' +
+      '</div>';
+    $('#f-create').addEventListener('submit', async (e) => {
+      e.preventDefault(); const f = e.currentTarget; clearErrs(f);
+      const name = $('#in-team').value.trim();
+      if (name.length < 3) { markErr(fieldFor(f, 'name'), 'Use at least 3 characters'); $('#in-team').focus(); return; }
+      await busy($('.btn', f), async () => { try { apply(await reg('createTeam', { name }), 'Team created. Share the code with your teammates.'); } catch (err) { fail(err, f); } });
+    });
+    $('#in-join').addEventListener('input', (e) => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); });
+    $('#f-join').addEventListener('submit', async (e) => {
+      e.preventDefault(); const f = e.currentTarget; clearErrs(f);
+      const code = $('#in-join').value;
+      if (code.length !== 6) { markErr(fieldFor(f, 'code'), 'Enter the 6-character code'); $('#in-join').focus(); return; }
+      await busy($('.btn', f), async () => {
+        try { const next = await reg('joinTeam', { code }); joinCode = ''; history.replaceState(null, '', location.pathname + '#team'); apply(next, 'You joined ' + next.team.name); }
+        catch (err) { fail(err, f); }
+      });
+    });
+    return;
+  }
+
+  const n = t.members.length, full = n >= E.teamMax, ok = n >= E.teamMin;
+  const link = location.origin + '/register?join=' + t.inviteCode;
+  const me = S.profile.id;
+  let pips = '';
+  for (let i = 0; i < E.teamMax; i++) pips += '<i class="' + (i < n ? 'on' : '') + '"></i>';
+  const members = t.members.map((m) => {
+    const acts = t.isLeader && m.id !== me
+      ? '<div class="m-act"><button type="button" class="btn btn-q btn-sm" data-act="makeLeader" data-id="' + m.id + '">Make leader</button><button type="button" class="btn btn-q btn-sm danger" data-act="removeMember" data-id="' + m.id + '">Remove</button></div>'
+      : '<div></div>';
+    return '<li class="member' + (m.isLeader ? ' lead' : '') + '"><span class="av" aria-hidden="true">' + esc(initials(m.fullName)) + '</span><div><div class="m-name">' + esc(m.fullName) +
+      (m.isLeader ? '<span class="tag">Leader</span>' : '') + (m.id === me ? '<span class="tag plain">You</span>' : '') + '</div>' +
+      '<div class="m-sub">' + esc(m.email) + ' · ' + esc(TYPE[m.participantType] || '') + ' · ' + esc(m.orgName) + '</div></div>' + acts + '</li>';
+  }).join('');
+  let slots = '';
+  for (let i = n; i < E.teamMax; i++) slots += '<li class="empty-slot"><span class="av" aria-hidden="true"></span><span>' + (i < E.teamMin ? 'Needed' : 'Open') + ' · seat ' + (i + 1) + '</span></li>';
+  const statusNote = ok
+    ? '<div class="note ok team-status"><span><b>Your team meets the size rule.</b> ' + (full ? 'All seats are filled.' : 'You can add up to ' + (E.teamMax - n) + ' more.') + '</span></div>'
+    : '<div class="note warn team-status"><span><b>Add ' + (E.teamMin - n) + ' more ' + (E.teamMin - n === 1 ? 'member' : 'members') + '.</b> Teams need at least ' + E.teamMin + ' people to take part. Share the code below.</span></div>';
+
+  $('#p-team').innerHTML = head('03', 'team', 'Team', 'Your team.', '') +
+    '<div class="card hot"><div class="team-top"><div><div class="eyebrow">Team</div><div class="team-name" style="font-weight:600;text-transform:uppercase;line-height:.96">' + esc(t.name) + '</div></div>' +
+    '<div class="count"><div class="pips" aria-hidden="true">' + pips + '</div>' + n + ' / ' + E.teamMax + ' members</div></div>' +
+    statusNote +
+    (full ? '' : '<div class="code-row"><div class="lbl">Team code · share it with your teammates</div><div class="code">' + esc(t.inviteCode) + '</div>' +
+      '<button type="button" class="btn btn-o btn-sm" data-copy="code">Copy code</button><button type="button" class="btn btn-o btn-sm" data-copy="link">Copy invite link</button></div>') +
+    '<ul class="members">' + members + slots + '</ul>' +
+    '<div class="actions"><button type="button" class="btn btn-q btn-sm danger" data-act="leaveTeam">' + (t.isLeader && n === 1 ? 'Delete team' : 'Leave team') + '</button>' + nextBtn('track', 'Next: choose a track') + '</div></div>';
+
+  $$('[data-copy]', P).forEach((b) => b.addEventListener('click', () => (b.dataset.copy === 'code' ? copy(t.inviteCode, 'Team code') : copy(link, 'Invite link'))));
+  $$('[data-act]', P).forEach((b) => b.addEventListener('click', () => teamAction(b)));
+}
+
+async function teamAction(btn) {
+  const act = btn.dataset.act, id = Number(btn.dataset.id), t = S.team;
+  const who = id ? (t.members.find((m) => m.id === id) || {}).fullName : '';
+  const confirmText = {
+    leaveTeam: t.isLeader && t.members.length === 1 ? 'Delete ' + t.name + '? This removes the team, its track choice, component list and submission.' : t.isLeader ? '' : 'Leave ' + t.name + '?',
+    removeMember: 'Remove ' + who + ' from the team?',
+    makeLeader: 'Make ' + who + ' the team leader? Only the leader can change the track, components and submission.',
+  }[act];
+  if (act === 'leaveTeam' && t.isLeader && t.members.length > 1) { toast('Make another member the leader before you leave', true); return; }
+  if (confirmText && !window.confirm(confirmText)) return;
+  await busy(btn, async () => {
+    try {
+      const next = await reg(act, id ? { participantId: id } : {});
+      compRows = null;
+      apply(next, { leaveTeam: 'You left the team', removeMember: who + ' was removed', makeLeader: who + ' is now the leader' }[act]);
+    } catch (err) { fail(err); }
+  });
+}
+
+// ---------- 04 track ----------
+function psBlock(track, value, disabled) {
+  if (!track) return '';
+  if (track.ownProblem) {
+    return '<div class="field ps" data-f="problemStatement"><label class="lbl" for="in-ps">Your problem statement</label>' +
+      '<textarea class="in" id="in-ps" name="problemStatement" rows="4" maxlength="300" placeholder="In one or two sentences: the problem you will solve and who it is for"' + (disabled ? ' disabled' : '') + '>' + esc(value || '') + '</textarea>' +
+      '<div class="hint">Open Innovation teams bring their own problem. 10 to 300 characters.</div><div class="ferr"></div></div>';
+  }
+  if (!track.statements.length) {
+    return '<div class="note ps"><span><b>Problem statements for ' + esc(track.name) + ' are not out yet.</b> They are being finalised with industry partners and will appear here. Save the track now and pick a statement once they are released.</span></div>';
+  }
+  return '<div class="field ps" data-f="problemStatement"><label class="lbl" for="in-ps">Problem statement</label><select class="in" id="in-ps" name="problemStatement"' + (disabled ? ' disabled' : '') + '><option value="">Select a problem statement</option>' +
+    track.statements.map((s) => '<option value="' + esc(s.id) + '"' + (s.id === value ? ' selected' : '') + '>' + esc(s.id + ' · ' + s.title) + '</option>').join('') + '</select><div class="ferr"></div></div>';
+}
+function renderTrack() {
+  const P = $('#p-track'), t = S.team, E = S.event, lead = t.isLeader;
+  const tiles = E.tracks.map((tr, i) => {
+    const sub = tr.ownProblem ? 'Bring your own problem' : tr.statements.length ? tr.statements.length + ' problem statements' : 'Statements to be announced';
+    return '<label class="choice track"><input type="radio" name="track" value="' + esc(tr.id) + '"' + (t.track === tr.id ? ' checked' : '') + (lead ? '' : ' disabled') + '><span><span class="tn">' + String(i + 1).padStart(2, '0') + '</span><b>' + esc(tr.name) + '</b><small>' + sub + '</small></span></label>';
+  }).join('');
+  P.innerHTML = head('04', 'track', 'Track', 'Pick your<br>track.', 'Five themed tracks and Open Innovation. The problem statement can be chosen once statements are released.') +
+    (lead ? '' : readOnlyNote()) +
+    '<form id="f-track" novalidate><div class="field" data-f="track"><div class="tracks" role="radiogroup" aria-label="Tracks">' + tiles + '</div><div class="ferr"></div></div>' +
+    '<div id="ps-slot">' + psBlock(trackOf(t), t.problemStatement, !lead) + '</div>' +
+    '<div class="actions">' + (lead ? '<button class="btn" type="submit">Save track ' + ARR + '</button><span class="form-msg" aria-live="polite"></span>' : '') + nextBtn('components', 'Next: components') + '</div></form>';
+  const f = $('#f-track');
+  f.addEventListener('change', (e) => {
+    if (e.target.name !== 'track') return;
+    const tr = E.tracks.find((x) => x.id === e.target.value);
+    const keep = tr && tr.id === t.track ? t.problemStatement : '';
+    $('#ps-slot').innerHTML = psBlock(tr, keep, !lead);
+    fieldFor(f, 'track').classList.remove('is-err');
+  });
+  f.addEventListener('submit', async (e) => {
+    e.preventDefault(); clearErrs(f);
+    const picked = $('input[name=track]:checked', f);
+    if (!picked) { markErr(fieldFor(f, 'track'), 'Choose a track'); return; }
+    const ps = $('#in-ps', f);
+    await busy($('.btn[type=submit]', f), async () => {
+      try { apply(await reg('track', { track: picked.value, problemStatement: ps ? ps.value.trim() : '' }), 'Track saved'); }
+      catch (err) { fail(err, f); }
+    });
+  });
+}
+
+// ---------- 05 components ----------
+function compRowHtml(r, i) {
+  return '<div class="comp-row" data-i="' + i + '">' +
+    '<input class="in c-name" aria-label="Component ' + (i + 1) + '" maxlength="80" placeholder="e.g. ESP32 dev board" value="' + esc(r.name) + '">' +
+    '<input class="in c-qty" aria-label="Quantity for component ' + (i + 1) + '" type="number" inputmode="numeric" min="1" max="100" value="' + esc(r.qty) + '">' +
+    '<input class="in c-notes" aria-label="Notes for component ' + (i + 1) + '" maxlength="160" placeholder="Model, rating or notes (optional)" value="' + esc(r.notes) + '">' +
+    '<button type="button" class="x" data-rm="' + i + '" aria-label="Remove component ' + (i + 1) + '">×</button></div>';
+}
+function readRows() {
+  return $$('#p-components .comp-row:not(.comp-head)').map((row) => ({ name: $('.c-name', row).value, qty: $('.c-qty', row).value, notes: $('.c-notes', row).value }));
+}
+function renderComponents() {
+  const P = $('#p-components'), t = S.team, lead = t.isLeader, open = S.event.componentsOpen;
+  const lede = 'List the parts your team needs from the lab: boards, sensors, modules, motors, power supplies. Hardware is allotted from this list, so be specific.';
+  if (!lead || !open) {
+    const rows = t.components.map((c, i) => '<tr><td class="n">' + String(i + 1).padStart(2, '0') + '</td><td>' + esc(c.name) + '</td><td class="n">' + esc(c.qty) + '</td><td class="dim">' + esc(c.notes || '') + '</td></tr>').join('');
+    P.innerHTML = head('05', 'components', 'Components', 'Parts you<br>need.', lede) +
+      (!open ? '<div class="note ro-note"><span>The components form is closed.</span></div>' : readOnlyNote()) +
+      (rows ? '<table class="ro-table"><thead><tr><th>#</th><th>Component</th><th>Qty</th><th>Notes</th></tr></thead><tbody>' + rows + '</tbody></table>' : '<p class="muted">No components listed yet.</p>') +
+      '<div class="actions">' + nextBtn('submission', 'Next: submission') + '</div>';
+    return;
+  }
+  if (!compRows) {
+    compRows = t.components.map((c) => ({ name: c.name, qty: String(c.qty), notes: c.notes || '' }));
+    while (compRows.length < 3) compRows.push({ name: '', qty: '1', notes: '' });
+  }
+  P.innerHTML = head('05', 'components', 'Components', 'Parts you<br>need.', lede) +
+    '<form id="f-comp" novalidate><div class="comp"><div class="comp-row comp-head" aria-hidden="true"><span>Component</span><span>Qty</span><span>Notes</span><span></span></div>' +
+    compRows.map(compRowHtml).join('') + '</div>' +
+    '<button type="button" class="btn btn-o btn-sm add" id="b-addc">+ Add component</button>' +
+    '<div class="actions"><button class="btn" type="submit">Save list ' + ARR + '</button>' +
+    (t.componentsUpdatedAt ? '<span class="stamp">Saved ' + esc(fmtDate(t.componentsUpdatedAt)) + '</span>' : '') +
+    '<span class="form-msg" aria-live="polite"></span>' + nextBtn('submission', 'Next: submission') + '</div></form>';
+  const f = $('#f-comp');
+  f.addEventListener('input', () => { compRows = readRows(); });
+  f.addEventListener('click', (e) => {
+    const rm = e.target.closest('[data-rm]');
+    if (!rm) return;
+    compRows = readRows(); compRows.splice(Number(rm.dataset.rm), 1);
+    if (!compRows.length) compRows.push({ name: '', qty: '1', notes: '' });
+    renderComponents();
+  });
+  $('#b-addc').addEventListener('click', () => {
+    compRows = readRows();
+    if (compRows.length >= 40) { toast('List at most 40 components', true); return; }
+    compRows.push({ name: '', qty: '1', notes: '' });
+    renderComponents();
+    const rows = $$('#p-components .comp-row:not(.comp-head)');
+    $('.c-name', rows[rows.length - 1]).focus();
+  });
+  f.addEventListener('submit', async (e) => {
+    e.preventDefault(); clearErrs(f);
+    const items = readRows().filter((r) => r.name.trim()).map((r) => ({ name: r.name.trim(), qty: Number(r.qty || 1), notes: r.notes.trim() }));
+    await busy($('.btn[type=submit]', f), async () => {
+      try { compRows = null; apply(await reg('components', { items }), items.length ? 'Component list saved' : 'Component list cleared'); }
+      catch (err) { compRows = readRows(); fail(err, f); }
+    });
+  });
+}
+
+// ---------- 06 submission ----------
+function renderSubmission() {
+  const P = $('#p-submission'), t = S.team, s = t.submission || {}, lead = t.isLeader, open = S.event.submissionsOpen;
+  const dis = lead && open ? '' : ' disabled';
+  const field = (k, label, input, hint) => '<div class="field' + (k === 'abstract' || k === 'title' ? ' wide' : '') + '" data-f="' + k + '"><label class="lbl" for="sb-' + k + '">' + label + '</label>' + input + (hint ? '<div class="hint">' + hint + '</div>' : '') + '<div class="ferr"></div></div>';
+  const url = (k, label, ph, hint) => field(k, label + ' <em>Optional</em>', '<input class="in" id="sb-' + k + '" name="' + k + '" type="url" inputmode="url" maxlength="500" spellcheck="false" placeholder="' + ph + '" value="' + esc(s[k] || '') + '"' + dis + '>', hint);
+  P.innerHTML = head('06', 'submission', 'Submission', 'Submit your<br>solution.', 'Describe what you are building and link your work. You can update the submission until submissions close; the latest version counts.') +
+    (!open ? '<div class="note ro-note"><span>Submissions are closed.</span></div>' : lead ? '' : readOnlyNote()) +
+    (t.submission ? '<div class="note ok" style="margin-bottom:26px"><span><b>Submitted.</b> Last updated ' + esc(fmtDate(s.updatedAt)) + '.</span></div>' : '') +
+    '<form id="f-sub" novalidate><div class="grid">' +
+    field('title', 'Project title', '<input class="in" id="sb-title" name="title" maxlength="120" placeholder="What is it called?" value="' + esc(s.title || '') + '"' + dis + '>') +
+    field('abstract', 'Solution summary', '<textarea class="in" id="sb-abstract" name="abstract" rows="8" maxlength="3000" placeholder="The problem, your approach, the hardware and software involved, and how you will show it working"' + dis + '>' + esc(s.abstract || '') + '</textarea>', '<span class="counter" id="sb-count"></span>') +
+    url('repoUrl', 'Repository', 'https://github.com/team/project') +
+    url('demoUrl', 'Demo video', 'https://youtu.be/…') +
+    '<div class="wide">' + url('documentUrl', 'Document or slides', 'https://drive.google.com/…', 'A Google Drive, OneDrive or Docs link. Set sharing to “anyone with the link can view”.') + '</div>' +
+    '</div><div class="actions">' + (lead && open ? '<button class="btn" type="submit">' + (t.submission ? 'Update submission' : 'Submit solution') + ' ' + ARR + '</button><span class="form-msg" aria-live="polite"></span>' : '') +
+    '<span class="spacer"></span><button type="button" class="ul" data-go="team">Back to team ' + ARR + '</button></div></form>';
+  const f = $('#f-sub'), ab = $('#sb-abstract'), cnt = $('#sb-count');
+  const count = () => { cnt.textContent = ab.value.length + ' / 3000'; };
+  ab.addEventListener('input', count); count();
+  f.addEventListener('input', (e) => { const fl = e.target.closest('.field'); if (fl) { fl.classList.remove('is-err'); $('.ferr', fl).textContent = ''; } });
+  f.addEventListener('submit', async (e) => {
+    e.preventDefault(); clearErrs(f);
+    const body = {};
+    ['title', 'abstract', 'repoUrl', 'demoUrl', 'documentUrl'].forEach((k) => { body[k] = f.elements[k].value.trim(); });
+    if (body.title.length < 3) { markErr(fieldFor(f, 'title'), 'Give the project a title'); f.elements.title.focus(); return; }
+    if (body.abstract.length < 30) { markErr(fieldFor(f, 'abstract'), 'Write at least 30 characters'); f.elements.abstract.focus(); return; }
+    await busy($('.btn[type=submit]', f), async () => {
+      try { apply(await reg('submission', body), t.submission ? 'Submission updated' : 'Solution submitted'); }
+      catch (err) { fail(err, f); }
+    });
+  });
+}
+
+const RENDER = { verify: renderVerify, profile: renderProfile, team: renderTeam, track: renderTrack, components: renderComponents, submission: renderSubmission };
+
+// ---------- wiring ----------
+$('#steps').addEventListener('click', (e) => { const b = e.target.closest('.step'); if (b) go(b.dataset.step); });
+$('#main').addEventListener('click', (e) => { const b = e.target.closest('[data-go]'); if (b) go(b.dataset.go); });
+window.addEventListener('hashchange', () => { const k = location.hash.slice(1); if (STEPS.includes(k) && k !== current) go(k); });
+
+async function boot() {
+  try {
+    S = await api('/api/register');
+  } catch (e) {
+    S = null;
+    if (e.status !== 401) {
+      $('#loading').hidden = true;
+      const b = $('#boot-error');
+      b.hidden = false;
+      b.innerHTML = '<span><b>We could not load registration.</b> ' + esc(e.message) + ' <button type="button" class="ul" id="b-retry">Try again</button></span>';
+      $('#b-retry').addEventListener('click', () => { b.hidden = true; $('#loading').hidden = false; boot(); });
+      return;
+    }
+  }
+  $('#loading').hidden = true;
+  const want = location.hash.slice(1);
+  go(STEPS.includes(want) && status()[want] !== 'locked' && want !== 'verify' ? want : firstStep(), { focus: false });
+  if (authStatus && !S && AUTH_MSG[authStatus]) {
+    const note = $('#auth-note');
+    note.innerHTML = '<span>' + esc(AUTH_MSG[authStatus]) + '</span>';
+    note.hidden = false;
+  }
+}
+boot();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin · Makeathon 2027</title>
+<meta name="theme-color" content="#17261F">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preload" href="/fonts/barlow-condensed-600-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/dm-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/portal.css">
+<style>
+.wrap{max-width:1480px;margin:0 auto;padding:clamp(28px,4vw,56px) var(--gut) 96px}
+.loading{display:flex;align-items:center;gap:12px;padding:40px 0;font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--dim)}
+#login{padding-top:3vh}
+.dash-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px}
+.dash-head h1{margin-top:10px;font-size:clamp(50px,6.4vw,88px)}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px}
+.stamp{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:1px;margin-top:32px;border:1px solid var(--line);background-color:var(--line)}
+.stat{padding:18px 20px 20px;background-color:var(--bg)}
+.stat .k{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
+.stat .v{margin-top:10px;font-size:52px;font-weight:600;line-height:.9;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.stat .s{margin-top:10px;font-size:16px;line-height:1.3;color:var(--mute)}
+.stat.hot .v{color:var(--amber)}
+.bars{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px 32px;margin-top:28px}
+.barrow{display:grid;gap:7px}
+.barrow .t{display:flex;justify-content:space-between;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--mute);text-transform:uppercase}
+.barrow .t b{font-weight:500;color:var(--ink)}
+.trk{height:6px;background-color:var(--line)}
+.trk i{display:block;height:100%;background-color:var(--amber);transition:width .8s var(--ease)}
+.barrow.none .trk i{background-color:var(--dim)}
+.tabs{display:flex;gap:2px;margin-top:44px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;margin-bottom:-1px;padding:13px 16px;border:none;border-bottom:2px solid transparent;background:none;color:var(--mute);font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;cursor:pointer;transition:color .2s ease}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected=true]{color:var(--amber);border-bottom-color:var(--amber)}
+.tab .n{margin-left:8px;color:var(--dim)}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:18px}
+.toolbar .in{height:42px;font-size:14px}
+.toolbar .search{flex:1 1 260px;max-width:440px}
+.toolbar select.in{flex:0 0 auto;width:auto;padding-left:12px}
+.toolbar .count{margin-left:auto;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--dim);white-space:nowrap}
+.table-wrap{margin-top:14px;max-height:calc(100vh - 150px);overflow:auto;border:1px solid var(--line);background-color:rgba(23,38,31,.9)}
+table.data{width:100%;border-collapse:separate;border-spacing:0;font-size:17px}
+.data th{position:sticky;top:0;z-index:1;padding:0;border-bottom:1px solid var(--line2);background-color:var(--raise);text-align:left}
+.data th button{display:flex;align-items:center;gap:6px;width:100%;padding:12px 14px;border:none;background:none;color:var(--dim);font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-align:left;text-transform:uppercase;white-space:nowrap;cursor:pointer}
+.data th button:hover{color:var(--ink)}
+.data th[aria-sort] button{color:var(--amber)}
+.data td{max-width:320px;padding:12px 14px;border-bottom:1px solid var(--line);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:top}
+.data td.m{font-family:var(--mono);font-size:13px;letter-spacing:.02em;color:var(--mute)}
+.data td.b{font-size:19px;font-weight:600;letter-spacing:.02em}
+.data td.w{min-width:240px;white-space:normal}
+.data tbody tr{cursor:pointer;transition:background-color .15s ease}
+.data tbody tr:hover{background-color:rgba(242,184,75,.06)}
+.data tbody tr:focus-visible{outline:2px solid var(--amber);outline-offset:-2px;background-color:rgba(242,184,75,.06)}
+.data.static tbody tr{cursor:default}
+.data.static tbody tr:hover{background-color:transparent}
+.pill{display:inline-block;padding:2px 8px;border:1px solid var(--line2);font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--mute);white-space:nowrap}
+.pill.ok{border-color:rgba(134,212,159,.5);color:var(--ok)}
+.pill.warn{border-color:rgba(242,184,75,.6);color:var(--amber)}
+.empty{padding:48px 16px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--dim);text-align:center;text-transform:uppercase}
+.link{color:var(--amber);text-decoration:none;border-bottom:1px solid rgba(242,184,75,.4)}
+.link:hover{border-bottom-color:var(--amber)}
+
+.scrim{position:fixed;inset:0;z-index:79;background-color:rgba(8,14,11,.62);opacity:0;pointer-events:none;transition:opacity .3s ease}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:80;width:min(580px,100vw);overflow-y:auto;overscroll-behavior:contain;border-left:1px solid var(--line2);background-color:var(--bg);box-shadow:-40px 0 80px -40px rgba(0,0,0,.7);transform:translateX(100%);visibility:hidden;transition:transform .45s var(--ease),visibility 0s linear .45s}
+.drawer.on{transform:none;visibility:visible;transition-delay:0s}
+.dr-top{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 24px;border-bottom:1px solid var(--line);background-color:rgba(23,38,31,.96)}
+.dr-body{padding:26px 24px 56px}
+.dr-title{margin-top:10px;font-size:46px;overflow-wrap:anywhere}
+.dr-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.dsec{margin-top:30px}
+.dsec h3{margin-bottom:8px;font-family:var(--mono);font-size:12px;font-weight:400;letter-spacing:.18em;color:var(--amber)}
+.kv{display:grid;grid-template-columns:minmax(110px,160px) minmax(0,1fr);margin:0}
+.kv dt{padding:11px 12px 11px 0;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.kv dd{margin:0;padding:8px 0;border-top:1px solid var(--line);font-size:18px;overflow-wrap:anywhere;white-space:pre-wrap}
+.kv dd.m{font-family:var(--mono);font-size:14px;padding-top:10px}
+.mrow{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:12px 0;border:none;border-top:1px solid var(--line);background:none;color:var(--ink);font-family:var(--sans);font-size:19px;text-align:left;cursor:pointer}
+.mrow:hover b{color:var(--amber)}
+.mrow b{font-weight:600}
+.mrow small{display:block;font-size:15px;color:var(--dim)}
+.prose{font-size:18px;line-height:1.5;color:var(--mute);white-space:pre-wrap;overflow-wrap:anywhere}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat{padding:14px 14px 16px}.stat .v{font-size:40px}.stat .s{font-size:15px}.toolbar .count{margin-left:0;flex-basis:100%}.kv{grid-template-columns:minmax(0,1fr)}.kv dt{padding-bottom:0}.kv dd{border-top:none;padding-top:4px}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="logo" href="/">MAKEATHON <b>2027</b> <i>Admin</i></a>
+  <div class="bar-r">
+    <span class="who" id="who" hidden></span>
+    <button class="ul" id="signout" type="button" hidden>Sign out</button>
+  </div>
+</header>
+
+<main class="wrap" id="main">
+  <div class="loading" id="loading"><span class="spin" aria-hidden="true"></span>LOADING</div>
+  <div class="note bad" id="error" hidden></div>
+
+  <section id="login" class="signin" hidden aria-labelledby="h-login">
+    <div class="eyebrow">Restricted</div>
+    <h2 id="h-login">Admin<br>sign in.</h2>
+    <p class="lede">Sign in with your admin Google account. Only addresses on the admin list can open the dashboard.</p>
+    <div class="note bad auth-note" id="auth-note" role="alert" hidden></div>
+    <div class="note auth-note" id="no-signin" hidden><span>Sign-in is not available right now: Google sign-in is not configured on the server.</span></div>
+    <div class="g-wrap" id="g-wrap" hidden>
+      <a class="gbtn" id="g-btn" href="/api/google?next=admin"><svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Continue with Google</a>
+      <div class="or" id="g-or" hidden><span>or get a code by email</span></div>
+    </div>
+    <form id="f-email" novalidate hidden>
+      <div class="field" data-f="email">
+        <label class="lbl" for="in-email">Admin email</label>
+        <div class="inline">
+          <input class="in" id="in-email" type="email" inputmode="email" autocomplete="email" spellcheck="false" maxlength="254" placeholder="you@example.com" required>
+          <button class="btn" type="submit">Send code <span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="ferr" aria-live="polite"></div>
+      </div>
+    </form>
+    <form id="f-code" novalidate hidden>
+      <div class="field" data-f="code">
+        <label class="lbl" for="in-code"><span>Code sent to <span id="code-to" style="color:var(--ink);text-transform:none;letter-spacing:.04em"></span></span></label>
+        <div class="inline">
+          <input class="in code-in" id="in-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" required>
+          <button class="btn" type="submit">Verify <span class="arr" aria-hidden="true">→</span></button>
+        </div>
+        <div class="ferr" aria-live="polite"></div>
+      </div>
+      <div class="sub"><button type="button" class="ul" id="b-change">Change email</button></div>
+    </form>
+  </section>
+
+  <section id="denied" hidden>
+    <div class="eyebrow">Restricted</div>
+    <h2 style="margin-top:12px;font-size:clamp(46px,6vw,76px)">No admin<br>access.</h2>
+    <div class="note bad" style="margin-top:24px;max-width:620px"><span><b id="denied-email"></b> is not on the admin list. Sign out and use an admin address.</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:24px"><button class="btn" type="button" id="b-denied-out">Sign out</button><a class="btn btn-q" href="/register">Go to registration</a></div>
+  </section>
+
+  <section id="dash" hidden aria-labelledby="h-dash">
+    <div class="dash-head">
+      <div><div class="eyebrow">Admin · Makeathon 2027</div><h1 id="h-dash">Registrations</h1></div>
+      <div class="tools"><span class="stamp" id="stamp"></span><button class="btn btn-q btn-sm" type="button" id="b-refresh">Refresh</button></div>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="bars" id="bars" aria-label="Teams by track"></div>
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="toolbar" id="toolbar">
+      <input class="in search" id="q" type="search" placeholder="Search" aria-label="Search this table" spellcheck="false">
+      <span id="filters" style="display:contents"></span>
+      <span class="count" id="count"></span>
+      <button class="btn btn-o btn-sm" type="button" id="b-export">Export CSV</button>
+    </div>
+    <div class="table-wrap" id="table-wrap" role="tabpanel"><table class="data" id="tbl"></table></div>
+  </section>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title" inert>
+  <div class="dr-top"><span class="eyebrow" id="dr-kind"></span><button class="btn btn-q btn-sm" type="button" id="dr-close">Close</button></div>
+  <div class="dr-body" id="dr-body"></div>
+</aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ESC[c]);
+const TYPE = { student: 'Student', professional: 'Professional', researcher: 'Researcher' };
+const RES = { hosteler: 'Hosteler', day_scholar: 'Day scholar' };
+
+let D = null;
+let pById = new Map(), tById = new Map(), trackName = new Map();
+let tab = 'participants', query = '', shown = [];
+const filterVals = {};
+const sorts = {};
+
+async function api(path, body) {
+  const init = body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), credentials: 'same-origin' } : { credentials: 'same-origin' };
+  let res;
+  try { res = await fetch(path, init); } catch (e) { throw Object.assign(new Error('No connection. Check your internet and try again.'), { status: 0 }); }
+  let data = null;
+  try { data = await res.json(); } catch (e) {}
+  if (!res.ok) throw Object.assign(new Error((data && data.error) || 'Request failed (' + res.status + ')'), { status: res.status, field: data && data.field });
+  return data;
+}
+let toastT = 0;
+function toast(msg, bad) {
+  const t = $('#toast'); t.textContent = msg; t.classList.toggle('bad', !!bad); t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), bad ? 5200 : 3000);
+}
+async function busy(btn, fn) {
+  if (btn.getAttribute('aria-busy') === 'true') return;
+  const html = btn.innerHTML; btn.setAttribute('aria-busy', 'true'); btn.innerHTML = '<span class="spin" aria-hidden="true"></span>Working';
+  try { return await fn(); } finally { btn.removeAttribute('aria-busy'); btn.innerHTML = html; }
+}
+function show(id) { ['loading', 'login', 'denied', 'dash'].forEach((k) => { $('#' + k).hidden = k !== id; }); }
+function setErr(form, msg) { const f = $('.field', form); f.classList.toggle('is-err', !!msg); $('.ferr', f).textContent = msg || ''; }
+
+const fmt = (iso) => { if (!iso) return ''; try { return new Date(iso).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { return iso; } };
+const fmtDay = (iso) => { if (!iso) return ''; try { return new Date(iso + 'T00:00:00').toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }); } catch (e) { return iso; } };
+const age = (dob) => { if (!dob) return ''; const d = new Date(dob + 'T00:00:00'); return Math.floor((Date.now() - d) / 31557600000); };
+const safeUrl = (u) => (/^https?:\/\//i.test(u || '') ? u : null);
+const link = (u, label) => { const s = safeUrl(u); return s ? '<a class="link" href="' + esc(s) + '" target="_blank" rel="noopener noreferrer">' + esc(label || s) + '</a>' : ''; };
+const teamOf = (p) => (p.teamId ? tById.get(p.teamId) : null);
+const from = (p) => (p.affiliation === 'internal' ? 'VIT ' + (p.vitCampus || '') : 'External');
+const psLabel = (t) => {
+  if (!t.problemStatement) return '';
+  const tr = D.event.tracks.find((x) => x.id === t.track);
+  const s = tr && tr.statements.find((x) => x.id === t.problemStatement);
+  return s ? s.id + ' · ' + s.title : t.problemStatement;
+};
+
+// ---------- auth ----------
+let pendingEmail = '';
+const AUTH_MSG = {
+  cancelled: 'Google sign-in was cancelled.',
+  failed: 'Google sign-in did not go through. Please try again.',
+  busy: 'Too many sign-in attempts. Wait a few minutes and try again.',
+  unavailable: 'Sign-in is not available right now. Please try again later.',
+};
+const authStatus = new URLSearchParams(location.search).get('auth');
+if (authStatus) history.replaceState(null, '', location.pathname);
+let providers = null;  // { enabled: Google, email: emailed codes (only with SMTP set up) }
+function syncLogin() {
+  const google = !!providers.enabled, email = !!providers.email, codeStep = !$('#f-code').hidden;
+  $('#g-wrap').hidden = !google || codeStep;
+  $('#g-or').hidden = !email;
+  $('#f-email').hidden = !email || codeStep;
+  $('#no-signin').hidden = google || email;
+}
+async function showLogin() {
+  show('login');
+  if (!providers) {
+    try { providers = await api('/api/google?status=1'); } catch (e) { providers = { enabled: false, email: false }; }
+  }
+  syncLogin();
+  if (authStatus && AUTH_MSG[authStatus]) { $('#auth-note').innerHTML = '<span>' + esc(AUTH_MSG[authStatus]) + '</span>'; $('#auth-note').hidden = false; }
+}
+$('#g-btn').addEventListener('click', (e) => { e.currentTarget.setAttribute('aria-busy', 'true'); });
+window.addEventListener('pageshow', () => $('#g-btn').removeAttribute('aria-busy'));
+$('#f-email').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = $('#in-email').value.trim().toLowerCase();
+  setErr(e.currentTarget, '');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setErr(e.currentTarget, 'Enter a valid email address'); return; }
+  await busy($('.btn', e.currentTarget), async () => {
+    try {
+      await api('/api/auth', { action: 'request', email });
+      pendingEmail = email; $('#code-to').textContent = email;
+      $('#f-email').hidden = true; $('#f-code').hidden = false; $('#g-wrap').hidden = true; $('#auth-note').hidden = true; $('#in-code').value = ''; $('#in-code').focus();
+      toast('Code sent');
+    } catch (err) { setErr($('#f-email'), err.message); }
+  });
+});
+$('#in-code').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6); if (e.target.value.length === 6) $('#f-code').requestSubmit(); });
+$('#f-code').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  setErr(e.currentTarget, '');
+  await busy($('.btn', e.currentTarget), async () => {
+    try { const s = await api('/api/auth', { action: 'verify', email: pendingEmail, code: $('#in-code').value }); signedIn(s); }
+    catch (err) { setErr($('#f-code'), err.message); $('#in-code').select(); }
+  });
+});
+$('#b-change').addEventListener('click', () => { $('#f-code').hidden = true; syncLogin(); $('#in-email').focus(); });
+async function signOut() {
+  try { await api('/api/auth', { action: 'logout' }); } catch (e) {}
+  D = null; $('#who').hidden = true; $('#signout').hidden = true;
+  $('#f-code').hidden = true; $('#f-email').hidden = false;
+  closeDrawer(); showLogin();
+}
+$('#signout').addEventListener('click', signOut);
+$('#b-denied-out').addEventListener('click', signOut);
+
+function signedIn(s) {
+  $('#who').textContent = s.email; $('#who').hidden = false; $('#signout').hidden = false;
+  if (!s.admin) { $('#denied-email').textContent = s.email; show('denied'); return; }
+  load();
+}
+
+// ---------- data ----------
+async function load(btn) {
+  const run = async () => {
+    try {
+      D = await api('/api/admin');
+      pById = new Map(D.participants.map((p) => [p.id, p]));
+      tById = new Map(D.teams.map((t) => [t.id, t]));
+      trackName = new Map(D.event.tracks.map((t) => [t.id, t.name]));
+      $('#error').hidden = true;
+      show('dash');
+      $('#stamp').textContent = 'Updated ' + fmt(D.generatedAt);
+      renderStats(); renderTabs(); renderTable();
+    } catch (err) {
+      if (err.status === 401) { showLogin(); return; }
+      if (err.status === 403) { $('#denied-email').textContent = $('#who').textContent; show('denied'); return; }
+      if (!D) show('loading');
+      $('#loading').hidden = true;
+      const e = $('#error'); e.hidden = false; e.innerHTML = '<span><b>Could not load the dashboard.</b> ' + esc(err.message) + '</span>';
+    }
+  };
+  return btn ? busy(btn, run) : run();
+}
+$('#b-refresh').addEventListener('click', (e) => load(e.currentTarget));
+
+function renderStats() {
+  const P = D.participants, T = D.teams, E = D.event;
+  const internal = P.filter((p) => p.affiliation === 'internal').length;
+  const complete = T.filter((t) => t.memberCount >= E.teamMin).length;
+  const noTeam = P.filter((p) => !p.teamId).length;
+  const n = (k) => P.filter((p) => p.participantType === k).length;
+  const subs = T.filter((t) => t.submission).length;
+  const tiles = [
+    ['Participants', P.length, internal + ' VIT · ' + (P.length - internal) + ' external', true],
+    ['Teams', T.length, complete + ' ready (' + E.teamMin + '+) · ' + (T.length - complete) + ' need members'],
+    ['Not in a team', noTeam, 'Profile saved, no team yet'],
+    ['Students', n('student'), n('professional') + ' professional' + (n('professional') === 1 ? '' : 's') + ' · ' + n('researcher') + ' researcher' + (n('researcher') === 1 ? '' : 's')],
+    ['Submissions', subs, 'of ' + T.length + ' teams'],
+    ['Notify list', D.subscribers.length, 'Signed up on the site'],
+  ];
+  $('#stats').innerHTML = tiles.map((t) => '<div class="stat' + (t[3] ? ' hot' : '') + '"><div class="k">' + esc(t[0]) + '</div><div class="v">' + esc(t[1]) + '</div><div class="s">' + esc(t[2]) + '</div></div>').join('');
+  const counts = E.tracks.map((tr) => [tr.name, T.filter((t) => t.track === tr.id).length, false]);
+  counts.push(['No track yet', T.filter((t) => !t.track).length, true]);
+  const max = Math.max(1, ...counts.map((c) => c[1]));
+  $('#bars').innerHTML = counts.map((c) => '<div class="barrow' + (c[2] ? ' none' : '') + '"><div class="t"><span>' + esc(c[0]) + '</span><b>' + c[1] + '</b></div><div class="trk"><i style="width:' + (c[1] / max * 100).toFixed(1) + '%"></i></div></div>').join('');
+}
+
+// ---------- tables ----------
+function componentTotals() {
+  const map = new Map();
+  D.teams.forEach((t) => (t.components || []).forEach((c) => {
+    const key = c.name.trim().toLowerCase().replace(/\s+/g, ' ');
+    if (!map.has(key)) map.set(key, { name: c.name.trim(), qty: 0, teams: [] });
+    const row = map.get(key); row.qty += Number(c.qty) || 0; row.teams.push({ team: t, qty: c.qty, notes: c.notes });
+  }));
+  return [...map.values()];
+}
+
+const TABS = {
+  participants: {
+    label: 'Participants',
+    rows: () => D.participants,
+    cols: [
+      { k: 'name', l: 'Name', v: (p) => p.fullName, c: 'b' },
+      { k: 'email', l: 'Email', v: (p) => p.email, c: 'm' },
+      { k: 'phone', l: 'Phone', v: (p) => p.phone, c: 'm' },
+      { k: 'type', l: 'Type', v: (p) => TYPE[p.participantType] },
+      { k: 'from', l: 'From', v: from },
+      { k: 'org', l: 'College / company', v: (p) => p.orgName },
+      { k: 'reg', l: 'Reg no', v: (p) => p.vitRegNo || '', c: 'm' },
+      { k: 'team', l: 'Team', v: (p) => (teamOf(p) || {}).name || '', h: (p) => (teamOf(p) ? esc(teamOf(p).name) : '<span class="pill warn">No team</span>') },
+      { k: 'created', l: 'Registered', v: (p) => p.createdAt, f: fmt, c: 'm' },
+    ],
+    filters: [
+      { k: 'aff', opts: [['', 'Internal + external'], ['internal', 'VIT only'], ['external', 'External only']], test: (p, v) => p.affiliation === v },
+      { k: 'type', opts: [['', 'All types'], ['student', 'Students'], ['professional', 'Professionals'], ['researcher', 'Researchers']], test: (p, v) => p.participantType === v },
+      { k: 'team', opts: [['', 'Any team status'], ['in', 'In a team'], ['none', 'No team']], test: (p, v) => (v === 'in' ? !!p.teamId : !p.teamId) },
+    ],
+    text: (p) => [p.fullName, p.email, p.phone, p.orgName, p.vitRegNo, p.vitEmail, p.vitCampus, (teamOf(p) || {}).name].join(' '),
+    open: (p) => openParticipant(p),
+    defaultSort: { k: 'created', d: -1 },
+    csv: (rows) => [
+      ['ID', 'Name', 'Email', 'Phone', 'Gender', 'Date of birth', 'Type', 'Internal/External', 'College/Company', 'Address', 'VIT campus', 'Registration no', 'College email', 'Residence', 'Hostel block', 'Room', 'Education level', 'Degree', 'Branch/Area', 'Year of study', 'Graduation year', 'CGPA', 'Special requirements', 'Team', 'Team code', 'Team leader', 'Registered', 'Updated'],
+      ...rows.map((p) => { const t = teamOf(p); return [p.id, p.fullName, p.email, p.phone, p.gender, p.dob, TYPE[p.participantType], p.affiliation, p.orgName, p.orgAddress, p.vitCampus, p.vitRegNo, p.vitEmail, RES[p.residence] || '', p.hostelBlock, p.hostelRoom, p.educationLevel, p.degree, p.branch, p.yearOfStudy, p.graduationYear, p.cgpa, p.specialRequirements, t ? t.name : '', t ? t.inviteCode : '', t ? (t.leaderId === p.id ? 'yes' : 'no') : '', p.createdAt, p.updatedAt]; }),
+    ],
+  },
+  teams: {
+    label: 'Teams',
+    rows: () => D.teams,
+    cols: [
+      { k: 'name', l: 'Team', v: (t) => t.name, c: 'b' },
+      { k: 'code', l: 'Code', v: (t) => t.inviteCode, c: 'm' },
+      { k: 'leader', l: 'Leader', v: (t) => (pById.get(t.leaderId) || {}).fullName || '' },
+      { k: 'size', l: 'Members', v: (t) => t.memberCount, h: (t) => '<span class="pill ' + (t.memberCount >= D.event.teamMin ? 'ok' : 'warn') + '">' + t.memberCount + ' / ' + D.event.teamMax + '</span>' },
+      { k: 'track', l: 'Track', v: (t) => trackName.get(t.track) || '', h: (t) => (t.track ? esc(trackName.get(t.track) || t.track) : '<span class="dim">—</span>') },
+      { k: 'ps', l: 'Problem statement', v: psLabel },
+      { k: 'parts', l: 'Parts', v: (t) => (t.components || []).length, c: 'm' },
+      { k: 'sub', l: 'Submission', v: (t) => (t.submission ? t.submission.updatedAt : ''), h: (t) => (t.submission ? '<span class="pill ok">Submitted</span>' : '<span class="dim">—</span>') },
+      { k: 'created', l: 'Created', v: (t) => t.createdAt, f: fmt, c: 'm' },
+    ],
+    filters: [
+      { k: 'track', opts: () => [['', 'All tracks'], ...D.event.tracks.map((t) => [t.id, t.name]), ['__none', 'No track yet']], test: (t, v) => (v === '__none' ? !t.track : t.track === v) },
+      { k: 'size', opts: [['', 'Any size'], ['ok', 'Ready (3+)'], ['short', 'Need members']], test: (t, v) => (v === 'ok') === (t.memberCount >= D.event.teamMin) },
+      { k: 'sub', opts: [['', 'Any submission'], ['yes', 'Submitted'], ['no', 'Not submitted']], test: (t, v) => (v === 'yes') === !!t.submission },
+    ],
+    text: (t) => [t.name, t.inviteCode, (pById.get(t.leaderId) || {}).fullName, trackName.get(t.track), t.problemStatement, ...D.participants.filter((p) => p.teamId === t.id).map((p) => p.fullName + ' ' + p.email)].join(' '),
+    open: (t) => openTeam(t),
+    defaultSort: { k: 'created', d: -1 },
+    csv: (rows) => [
+      ['ID', 'Team', 'Code', 'Members', 'Leader', 'Leader email', 'Member names', 'Member emails', 'Track', 'Problem statement', 'Components', 'Submission title', 'Summary', 'Repository', 'Demo', 'Document', 'Submitted/updated', 'Created'],
+      ...rows.map((t) => { const ms = D.participants.filter((p) => p.teamId === t.id), l = pById.get(t.leaderId) || {}, s = t.submission || {}; return [t.id, t.name, t.inviteCode, t.memberCount, l.fullName, l.email, ms.map((m) => m.fullName).join('; '), ms.map((m) => m.email).join('; '), trackName.get(t.track) || '', psLabel(t), (t.components || []).map((c) => c.name + ' x' + c.qty + (c.notes ? ' (' + c.notes + ')' : '')).join('; '), s.title, s.abstract, s.repoUrl, s.demoUrl, s.documentUrl, s.updatedAt, t.createdAt]; }),
+    ],
+  },
+  components: {
+    label: 'Components',
+    rows: componentTotals,
+    cols: [
+      { k: 'name', l: 'Component', v: (r) => r.name, c: 'b' },
+      { k: 'qty', l: 'Total qty', v: (r) => r.qty, c: 'm' },
+      { k: 'teams', l: 'Teams', v: (r) => r.teams.length, c: 'm' },
+      { k: 'by', l: 'Requested by', v: (r) => r.teams.map((x) => x.team.name + ' ×' + x.qty).join(', '), c: 'w' },
+    ],
+    filters: [],
+    text: (r) => r.name + ' ' + r.teams.map((x) => x.team.name + ' ' + (x.notes || '')).join(' '),
+    open: (r) => openComponent(r),
+    defaultSort: { k: 'qty', d: -1 },
+    csv: (rows) => [['Component', 'Total qty', 'Teams', 'Breakdown'], ...rows.map((r) => [r.name, r.qty, r.teams.length, r.teams.map((x) => x.team.name + ' x' + x.qty + (x.notes ? ' (' + x.notes + ')' : '')).join('; ')])],
+  },
+  submissions: {
+    label: 'Submissions',
+    rows: () => D.teams.filter((t) => t.submission),
+    cols: [
+      { k: 'team', l: 'Team', v: (t) => t.name, c: 'b' },
+      { k: 'title', l: 'Title', v: (t) => t.submission.title },
+      { k: 'track', l: 'Track', v: (t) => trackName.get(t.track) || '' },
+      { k: 'repo', l: 'Repository', v: (t) => t.submission.repoUrl || '', h: (t) => link(t.submission.repoUrl, 'Open') || '<span class="dim">—</span>' },
+      { k: 'demo', l: 'Demo', v: (t) => t.submission.demoUrl || '', h: (t) => link(t.submission.demoUrl, 'Open') || '<span class="dim">—</span>' },
+      { k: 'doc', l: 'Document', v: (t) => t.submission.documentUrl || '', h: (t) => link(t.submission.documentUrl, 'Open') || '<span class="dim">—</span>' },
+      { k: 'updated', l: 'Updated', v: (t) => t.submission.updatedAt, f: fmt, c: 'm' },
+    ],
+    filters: [{ k: 'track', opts: () => [['', 'All tracks'], ...D.event.tracks.map((t) => [t.id, t.name])], test: (t, v) => t.track === v }],
+    text: (t) => [t.name, t.submission.title, t.submission.abstract, trackName.get(t.track)].join(' '),
+    open: (t) => openTeam(t),
+    defaultSort: { k: 'updated', d: -1 },
+    csv: (rows) => [['Team', 'Title', 'Track', 'Summary', 'Repository', 'Demo', 'Document', 'Updated'], ...rows.map((t) => [t.name, t.submission.title, trackName.get(t.track) || '', t.submission.abstract, t.submission.repoUrl, t.submission.demoUrl, t.submission.documentUrl, t.submission.updatedAt])],
+  },
+  subscribers: {
+    label: 'Notify list',
+    rows: () => D.subscribers,
+    cols: [
+      { k: 'email', l: 'Email', v: (s) => s.email, c: 'm' },
+      { k: 'reg', l: 'Registered', v: (s) => (D.participants.some((p) => p.email === s.email) ? 'yes' : ''), h: (s) => (D.participants.some((p) => p.email === s.email) ? '<span class="pill ok">Registered</span>' : '<span class="dim">—</span>') },
+      { k: 'created', l: 'Signed up', v: (s) => s.createdAt, f: fmt, c: 'm' },
+    ],
+    filters: [],
+    text: (s) => s.email,
+    open: null,
+    defaultSort: { k: 'created', d: -1 },
+    csv: (rows) => [['Email', 'Signed up'], ...rows.map((s) => [s.email, s.createdAt])],
+  },
+};
+
+function renderTabs() {
+  $('#tabs').innerHTML = Object.keys(TABS).map((k) => '<button type="button" class="tab" role="tab" data-tab="' + k + '" aria-selected="' + (k === tab) + '">' + esc(TABS[k].label) + '<span class="n">' + TABS[k].rows().length + '</span></button>').join('');
+  const T = TABS[tab];
+  $('#filters').innerHTML = T.filters.map((f) => {
+    const opts = typeof f.opts === 'function' ? f.opts() : f.opts;
+    const cur = filterVals[tab + ':' + f.k] || '';
+    return '<select class="in" data-filter="' + f.k + '" aria-label="Filter">' + opts.map((o) => '<option value="' + esc(o[0]) + '"' + (o[0] === cur ? ' selected' : '') + '>' + esc(o[1]) + '</option>').join('') + '</select>';
+  }).join('');
+}
+$('#tabs').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-tab]'); if (!b) return;
+  tab = b.dataset.tab; query = ''; $('#q').value = '';
+  renderTabs(); renderTable();
+});
+$('#filters').addEventListener('change', (e) => { const s = e.target.closest('[data-filter]'); if (!s) return; filterVals[tab + ':' + s.dataset.filter] = s.value; renderTable(); });
+let qT = 0;
+$('#q').addEventListener('input', (e) => { clearTimeout(qT); qT = setTimeout(() => { query = e.target.value.trim().toLowerCase(); renderTable(); }, 120); });
+
+function renderTable() {
+  const T = TABS[tab];
+  const sort = sorts[tab] || T.defaultSort;
+  const all = T.rows();
+  let rows = all.filter((r) => T.filters.every((f) => { const v = filterVals[tab + ':' + f.k]; return !v || f.test(r, v); }));
+  if (query) { const words = query.split(/\s+/); rows = rows.filter((r) => { const hay = T.text(r).toLowerCase(); return words.every((w) => hay.includes(w)); }); }
+  const col = T.cols.find((c) => c.k === sort.k);
+  if (col) rows = rows.slice().sort((a, b) => {
+    const x = col.v(a), y = col.v(b);
+    const r = typeof x === 'number' && typeof y === 'number' ? x - y : String(x ?? '').localeCompare(String(y ?? ''), 'en', { numeric: true, sensitivity: 'base' });
+    return r * sort.d;
+  });
+  shown = rows;
+  $('#count').textContent = rows.length === all.length ? rows.length + ' rows' : rows.length + ' of ' + all.length;
+  const head = '<thead><tr>' + T.cols.map((c) => '<th scope="col"' + (c.k === sort.k ? ' aria-sort="' + (sort.d > 0 ? 'ascending' : 'descending') + '"' : '') + '><button type="button" data-sort="' + c.k + '">' + esc(c.l) + (c.k === sort.k ? (sort.d > 0 ? ' ↑' : ' ↓') : '') + '</button></th>').join('') + '</tr></thead>';
+  const body = rows.length
+    ? '<tbody>' + rows.map((r, i) => '<tr' + (T.open ? ' tabindex="0" data-i="' + i + '"' : '') + '>' + T.cols.map((c) => {
+        const html = c.h ? c.h(r) : esc(c.f ? c.f(c.v(r)) : c.v(r));
+        const title = c.h ? '' : ' title="' + esc(c.f ? c.f(c.v(r)) : c.v(r)) + '"';
+        return '<td' + (c.c ? ' class="' + c.c + '"' : '') + title + '>' + html + '</td>';
+      }).join('') + '</tr>').join('') + '</tbody>'
+    : '<tbody><tr><td colspan="' + T.cols.length + '" class="empty">' + (all.length ? 'Nothing matches these filters' : 'Nothing here yet') + '</td></tr></tbody>';
+  $('#tbl').className = 'data' + (T.open ? '' : ' static');
+  $('#tbl').innerHTML = head + body;
+  $('#b-export').textContent = 'Export ' + rows.length + ' to CSV';
+}
+$('#tbl').addEventListener('click', (e) => {
+  const s = e.target.closest('[data-sort]');
+  if (s) { const T = TABS[tab], cur = sorts[tab] || T.defaultSort; sorts[tab] = { k: s.dataset.sort, d: cur.k === s.dataset.sort ? -cur.d : 1 }; renderTable(); return; }
+  if (e.target.closest('a')) return;
+  const tr = e.target.closest('tr[data-i]'); if (tr && TABS[tab].open) TABS[tab].open(shown[Number(tr.dataset.i)]);
+});
+$('#tbl').addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const tr = e.target.closest('tr[data-i]'); if (!tr) return;
+  e.preventDefault(); TABS[tab].open(shown[Number(tr.dataset.i)]);
+});
+
+// ---------- CSV ----------
+function csvCell(v) {
+  let s = v == null ? '' : String(v);
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; // keep spreadsheets from running cell text as a formula
+  return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+$('#b-export').addEventListener('click', () => {
+  const table = TABS[tab].csv(shown);
+  const text = '﻿' + table.map((r) => r.map(csvCell).join(',')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' }));
+  a.download = 'makeathon-' + tab + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  toast('Exported ' + shown.length + ' rows');
+});
+
+// ---------- drawer ----------
+let lastFocus = null;
+function openDrawer(kind, html) {
+  if (!$('#drawer').classList.contains('on')) lastFocus = document.activeElement;
+  $('#dr-kind').textContent = kind;
+  $('#dr-body').innerHTML = html;
+  $('#drawer').inert = false; $('#main').inert = true;
+  $('#drawer').classList.add('on'); $('#scrim').classList.add('on');
+  $('#drawer').scrollTop = 0;
+  $('#dr-close').focus();
+}
+function closeDrawer() {
+  if (!$('#drawer').classList.contains('on')) return;
+  $('#drawer').classList.remove('on'); $('#scrim').classList.remove('on');
+  $('#drawer').inert = true; $('#main').inert = false;
+  if (lastFocus && lastFocus.focus) lastFocus.focus();
+}
+$('#dr-close').addEventListener('click', closeDrawer);
+$('#scrim').addEventListener('click', closeDrawer);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+$('#dr-body').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-open]'); if (!b) return;
+  const [kind, id] = b.dataset.open.split(':');
+  if (kind === 'p') openParticipant(pById.get(Number(id)));
+  if (kind === 't') openTeam(tById.get(Number(id)));
+});
+const kv = (pairs) => '<dl class="kv">' + pairs.filter((p) => p[1] !== null && p[1] !== undefined && p[1] !== '').map((p) => '<dt>' + esc(p[0]) + '</dt><dd' + (p[2] ? ' class="m"' : '') + '>' + (p[3] ? p[1] : esc(p[1])) + '</dd>').join('') + '</dl>';
+const sec = (title, html) => (html && html !== '<dl class="kv"></dl>' ? '<div class="dsec"><h3>' + esc(title) + '</h3>' + html + '</div>' : '');
+
+function openParticipant(p) {
+  if (!p) return;
+  const t = teamOf(p);
+  const internal = p.affiliation === 'internal';
+  openDrawer('Participant #' + p.id,
+    '<h2 class="dr-title" id="dr-title">' + esc(p.fullName) + '</h2>' +
+    '<div class="dr-tags"><span class="pill">' + esc(TYPE[p.participantType]) + '</span><span class="pill">' + esc(from(p)) + '</span>' + (t ? (t.leaderId === p.id ? '<span class="pill ok">Team leader</span>' : '') : '<span class="pill warn">No team</span>') + '</div>' +
+    sec('Contact', kv([['Email', '<a class="link" href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a>', false, true], ['Phone', '<a class="link" href="tel:' + esc(p.phone.replace(/[^\d+]/g, '')) + '">' + esc(p.phone) + '</a>', false, true]])) +
+    sec('Personal', kv([['Gender', p.gender], ['Date of birth', fmtDay(p.dob) + ' · ' + age(p.dob) + ' years']])) +
+    sec(internal ? 'VIT' : (p.participantType === 'professional' ? 'Company' : 'College'), kv(internal
+      ? [['Campus', p.vitCampus], ['College email', p.vitEmail, true], ['Reg no', p.vitRegNo, true], ['Residence', RES[p.residence]], ['Hostel', p.residence === 'hosteler' ? 'Block ' + p.hostelBlock + ' · Room ' + p.hostelRoom : '']]
+      : [['Name', p.orgName], ['Address', p.orgAddress]])) +
+    sec('Education', kv([['Level', p.educationLevel], ['Degree', p.degree], [p.participantType === 'researcher' ? 'Research area' : 'Branch', p.branch], ['Year of study', p.yearOfStudy], ['Graduation', p.graduationYear], ['CGPA', p.cgpa == null ? '' : Number(p.cgpa).toFixed(2), true]])) +
+    sec('Special requirements', p.specialRequirements ? '<p class="prose">' + esc(p.specialRequirements) + '</p>' : '') +
+    sec('Team', t ? '<button type="button" class="mrow" data-open="t:' + t.id + '"><span><b>' + esc(t.name) + '</b><small>' + esc(t.inviteCode) + ' · ' + t.memberCount + ' members' + (t.track ? ' · ' + esc(trackName.get(t.track)) : '') + '</small></span><span class="arr" aria-hidden="true">→</span></button>' : '<p class="dim">Not in a team yet.</p>') +
+    sec('Record', kv([['Registered', fmt(p.createdAt), true], ['Updated', fmt(p.updatedAt), true]])));
+}
+
+function openTeam(t) {
+  if (!t) return;
+  const ms = D.participants.filter((p) => p.teamId === t.id).sort((a, b) => (b.id === t.leaderId) - (a.id === t.leaderId));
+  const s = t.submission;
+  const comps = (t.components || []).length
+    ? '<table class="data static" style="font-size:17px"><thead><tr><th><button type="button" tabindex="-1">Part</button></th><th><button type="button" tabindex="-1">Qty</button></th><th><button type="button" tabindex="-1">Notes</button></th></tr></thead><tbody>' +
+      t.components.map((c) => '<tr><td style="white-space:normal">' + esc(c.name) + '</td><td class="m">' + esc(c.qty) + '</td><td style="white-space:normal" class="dim">' + esc(c.notes || '') + '</td></tr>').join('') + '</tbody></table>'
+    : '<p class="dim">No components listed.</p>';
+  openDrawer('Team #' + t.id,
+    '<h2 class="dr-title" id="dr-title">' + esc(t.name) + '</h2>' +
+    '<div class="dr-tags"><span class="pill">' + esc(t.inviteCode) + '</span><span class="pill ' + (t.memberCount >= D.event.teamMin ? 'ok' : 'warn') + '">' + t.memberCount + ' / ' + D.event.teamMax + ' members</span>' + (s ? '<span class="pill ok">Submitted</span>' : '') + '</div>' +
+    sec('Members', ms.map((m) => '<button type="button" class="mrow" data-open="p:' + m.id + '"><span><b>' + esc(m.fullName) + (m.id === t.leaderId ? ' · Leader' : '') + '</b><small>' + esc(m.email) + ' · ' + esc(m.phone) + ' · ' + esc(from(m)) + '</small></span><span class="arr" aria-hidden="true">→</span></button>').join('')) +
+    sec('Track', kv([['Track', trackName.get(t.track) || 'Not chosen'], ['Problem', psLabel(t)]])) +
+    sec('Components' + (t.componentsUpdatedAt ? ' · ' + fmt(t.componentsUpdatedAt) : ''), comps) +
+    sec('Submission', s ? kv([['Title', s.title], ['Repository', link(s.repoUrl), false, true], ['Demo', link(s.demoUrl), false, true], ['Document', link(s.documentUrl), false, true], ['Updated', fmt(s.updatedAt), true]]) + '<p class="prose" style="margin-top:14px">' + esc(s.abstract) + '</p>' : '<p class="dim">Nothing submitted yet.</p>') +
+    sec('Record', kv([['Created', fmt(t.createdAt), true], ['Updated', fmt(t.updatedAt), true]])));
+}
+
+function openComponent(r) {
+  openDrawer('Component',
+    '<h2 class="dr-title" id="dr-title">' + esc(r.name) + '</h2>' +
+    '<div class="dr-tags"><span class="pill ok">' + r.qty + ' total</span><span class="pill">' + r.teams.length + ' teams</span></div>' +
+    sec('Requested by', r.teams.map((x) => '<button type="button" class="mrow" data-open="t:' + x.team.id + '"><span><b>' + esc(x.team.name) + ' · ×' + esc(x.qty) + '</b>' + (x.notes ? '<small>' + esc(x.notes) + '</small>' : '') + '</span><span class="arr" aria-hidden="true">→</span></button>').join('')));
+}
+
+// ---------- boot ----------
+(async () => {
+  try { signedIn(await api('/api/auth')); }
+  catch (e) {
+    if (e.status === 401) { showLogin(); return; }
+    show('loading'); $('#loading').hidden = true;
+    const el = $('#error'); el.hidden = false; el.innerHTML = '<span><b>Could not reach the server.</b> ' + esc(e.message) + '</span>';
+  }
+})();
+})();
+</script>
+</body>
+</html>

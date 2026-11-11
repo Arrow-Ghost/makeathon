@@ -148,6 +148,42 @@ x-dc{display:none!important}
   text-align: center;
   border-bottom: none !important;
 }
+.mk-drawer .mk-draw-reg {
+  margin-top: 20px;
+  display: block;
+  padding: 15px 20px;
+  border: 1px solid rgba(242,184,75,0.85) !important;
+  color: #F2B84B;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.14em;
+  text-align: center;
+}
+.mk-drawer .mk-draw-reg:hover { background: rgba(242,184,75,0.1); }
+.mk-drawer .mk-draw-reg + .mk-draw-cta { margin-top: 10px; }
+
+/* Phone bar: a compact register button beside the menu (tablets show the full link row) */
+.mk-mreg {
+  margin-left: auto;
+  margin-right: 8px;
+  padding: 9px 12px;
+  border: 1px solid rgba(242,184,75,0.85);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: #F2B84B;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color .25s ease, color .25s ease;
+}
+.mk-mreg:hover, .mk-mreg:active { background-color: #F2B84B; color: #17261F; }
+.mk-mreg, .mk-mnav .mk-mham { flex-shrink: 0; }
+@media (max-width: 389px) {
+  .mk-mnav-logo { font-size: 20px; letter-spacing: 0.13em; }
+  .mk-mreg { padding: 8px 10px; letter-spacing: 0.1em; }
+}
+/* the narrowest phones keep REGISTER in the menu only */
+@media (max-width: 339px) { .mk-mreg { display: none; } }
 
 /* Mobile ticker */
 .mk-mticker {
@@ -889,6 +925,9 @@ x-dc{display:none!important}
   box-shadow: 0 0 8px rgba(47,154,82,0.7);
 }
 .mk-mfooter-org { color: #9BACA4; }
+.mk-mfooter-legal { display: flex; gap: 20px; }
+.mk-mfooter-legal a { color: #C1CBC6; text-decoration: none; }
+.mk-mfooter-legal a:hover { color: #F2B84B; }
 .mk-mfooter-top {
   color: #F2B84B;
   text-decoration: none;
@@ -1041,7 +1080,10 @@ x-dc{display:none!important}
   .mk-mnav-links a:hover { color: #F2B84B; }
   .mk-mnav-links .mk-mnav-cta { padding: 10px 12px; background: #F2B84B; color: #17261F; }
   .mk-mnav-links .mk-mnav-cta:hover { color: #17261F; filter: brightness(1.06); }
-  .mk-mham, .mk-drawer { display: none; }
+  .mk-mnav-links a { white-space: nowrap; }
+  .mk-mnav-links .mk-mnav-reg { padding: 9px 12px; border: 1px solid rgba(242,184,75,0.85); color: #F2B84B; }
+  .mk-mnav-links .mk-mnav-reg:hover { background-color: #F2B84B; color: #17261F; }
+  .mk-mham, .mk-drawer, .mk-mreg { display: none; }
   .mk-mhero, .mk-msec, .mk-mnotify, #m-contact { scroll-margin-top: 68px; }
 
   .mk-mhero { padding-top: 72px; padding-bottom: 64px; }
@@ -1103,6 +1145,14 @@ x-dc{display:none!important}
   .mk-mfooter-bottom { flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 24px; }
   .mk-mfooter-top { align-self: auto; }
   .mk-mhero-logo { width: 76px; height: 74px; margin-bottom: 22px; }
+}
+
+/* Small tablets: six links and two buttons share the bar, so it tightens and the button reads REGISTER. */
+@media (min-width: 768px) and (max-width: 939px) {
+  .mk-mnav-links { gap: 11px; letter-spacing: .1em; }
+  .mk-mnav-links .mk-mnav-cta, .mk-mnav-links .mk-mnav-reg { padding-left: 10px; padding-right: 10px; }
+  .mk-mnav-logo { letter-spacing: .12em; }
+  .mk-reg-now { display: none; }
 }
 
 /* ── FINISH ──
@@ -1515,6 +1565,7 @@ button:hover{filter:brightness(1.08)}
 .k-nl.is-on{color:#F2B84B}
 .k-ncta{display:block;white-space:nowrap;max-width:220px;padding:11px 18px;transition:max-width .8s cubic-bezier(.2,.7,.2,1),padding .8s cubic-bezier(.2,.7,.2,1),margin .8s cubic-bezier(.2,.7,.2,1),opacity .5s ease,box-shadow .4s ease}
 .k-ncta.is-hid{max-width:0;padding-left:0;padding-right:0;margin-left:-30px;opacity:0;pointer-events:none}
+.k-nav .k-nreg{height:auto;padding:10px 16px;font-size:inherit;letter-spacing:inherit;font-weight:500;white-space:nowrap}
 .k-meta dt{font-size:11px;letter-spacing:.2em;color:#9BACA4}
 .k-meta dd{margin:7px 0 0;font-size:13px;letter-spacing:.14em;color:#EDF1EF}
 .k-btn{position:relative;overflow:hidden;isolation:isolate;transition:box-shadow .4s ease,scale .18s ease}
@@ -1745,6 +1796,7 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <a href="#why" class="k-nl {{nOn.g}}" aria-current="{{nAc.g}}" onClick="{{goTracks}}" onMouseEnter="{{nh.g}}">{{nv.g}}</a>
 <a href="#faq" class="k-nl {{nOn.e}}" aria-current="{{nAc.e}}" onClick="{{goFaq}}" onMouseEnter="{{nh.e}}">{{nv.e}}</a>
 <a href="#notify" ref="{{qMagA}}" class="k-btn k-ncta {{ctaCls}}" tabindex="{{ctaTab}}" onClick="{{goNotify}}" onMouseEnter="{{nh.f}}" style="background-color: #F2B84B; color: #17261F; font-weight: 500">{{nv.f}}</a>
+<a href="/register" class="k-btnO k-nreg" onMouseEnter="{{nh.h}}">{{nv.h}} <span class="k-arr" aria-hidden="true">→</span></a>
 </nav>
 </header>
 
@@ -1912,7 +1964,7 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 </div>
 <div class="k-mono k-hud" style="position: absolute; left: 60px; right: 60px; top: calc(812px + {{yh}}); padding-top: 20px; border-top: 1px solid rgba(237,241,239,0.2); display: flex; justify-content: space-between; align-items: center; font-size: 13px; letter-spacing: 0.16em">
 <span style="display: flex; align-items: center; gap: 10px; color: {{syC}}; transition: color 0.6s ease"><span style="width: 7px; height: 7px; border-radius: 50%; background-color: {{syD}}; box-shadow: {{syG}}; transition: background-color 0.6s ease, box-shadow 0.6s ease"></span>{{syTxt}}</span>
-<span style="color: #9BACA4">SCHOOL OF ELECTRICAL ENGINEERING · VIT VELLORE</span>
+<span style="display: flex; align-items: center; gap: 26px"><span style="color: #9BACA4">SCHOOL OF ELECTRICAL ENGINEERING · VIT VELLORE</span><a href="/privacy" class="k-ul" style="color: #C1CBC6">PRIVACY</a><a href="/terms" class="k-ul" style="color: #C1CBC6">TERMS</a></span>
 <a href="#top" class="k-ul" onClick="{{goTop}}" style="color: #F2B84B">BACK TO TOP ↑</a>
 </div>
 <div class="k-mono" style="position: absolute; left: 0px; right: 0px; top: 560px; display: flex; justify-content: center; gap: 22px">
@@ -2225,7 +2277,7 @@ for (let i = 0; i < text.length; i++) { const c = text[i]; o += (" ·'’,.:-—
 return o;
 }
 qFaqs() {
-const s = this.state, FAQ = [["What is Makeathon?", "The SELECT Makeathon is a flagship annual innovation program: a 36-hour challenge where students, designers and technology enthusiasts build real-world prototypes for problem statements from industry partners, across hardware and software."], ["When and where is Makeathon 2027?", "19 to 20 January 2027 at Anna Auditorium, VIT Vellore, Tamil Nadu 632014."], ["Who can take part?", "Teams of 3 to 5 members: undergraduate students, research scholars and working professionals."], ["What does it cost?", "Free for VIT students. External participants pay ₹500 per person."], ["What are the tracks?", "FaultWatch, Vitalis, Cosmolith, Live Wire, CogniForge and Open Innovation. Problem statements from industry partners will be released before the event."], ["What can we win?", "A total prize pool of ₹1,00,000, awarded to teams. Every participating team receives digital certificates, and teams keep full ownership of their projects."], ["How can my organisation partner with Makeathon?", "Write to enquiry@makeathon.in. We will share the partnership deck and the ways to get involved, from contributing problem statements to judging."]];
+const s = this.state, FAQ = [["What is Makeathon?", "The SELECT Makeathon is a flagship annual innovation program: a 36-hour challenge where students, designers and technology enthusiasts build real-world prototypes for problem statements from industry partners, across hardware and software."], ["When and where is Makeathon 2027?", "19 to 20 January 2027 at Anna Auditorium, VIT Vellore, Tamil Nadu 632014."], ["Who can take part?", "Teams of 3 to 5 members: undergraduate and postgraduate students, research scholars and working professionals."], ["What does it cost?", "Free for VIT students. External participants pay ₹500 per person."], ["What are the tracks?", "FaultWatch, Vitalis, Cosmolith, Live Wire, CogniForge and Open Innovation. Problem statements from industry partners will be released before the event."], ["What can we win?", "A total prize pool of ₹1,00,000, awarded to teams. Every participating team receives digital certificates, and teams keep full ownership of their projects."], ["How can my organisation partner with Makeathon?", "Write to enquiry@makeathon.in. We will share the partnership deck and the ways to get involved, from contributing problem statements to judging."]];
 return FAQ.map((f, i) => ({
 n: String(i + 1).padStart(2, '0'), q: f[0], a: f[1], open: s.open === i, exp: s.open === i ? 'true' : 'false',
 sign: s.open === i ? '−' : '+', on: s.open === i ? 'is-open' : '',
@@ -2296,7 +2348,7 @@ qSubmit(email) {
 return fetch('/api/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) })
 .then((r) => { if (!r.ok) throw new Error('subscribe ' + r.status); });
 }
-qNav = { a: () => this.qScramble('n0'), b: () => this.qScramble('n1'), c: () => this.qScramble('n2'), d: () => this.qScramble('n3'), e: () => this.qScramble('n4'), f: () => this.qScramble('n5'), g: () => this.qScramble('n6') };
+qNav = { a: () => this.qScramble('n0'), b: () => this.qScramble('n1'), c: () => this.qScramble('n2'), d: () => this.qScramble('n3'), e: () => this.qScramble('n4'), f: () => this.qScramble('n5'), g: () => this.qScramble('n6'), h: () => this.qScramble('n7') };
 qInit() {
 this.qG3 = null; this.qG3Off = false; this.qQ = 2; this.qFT = 16.7; this.qFrameN = 0; this.qKey3 = ''; this.qLast3 = 0;
 this.qOrb = { a: 0, e: 0, va: 0, ve: 0 }; this.qPar = { a: 0, e: 0 }; this.qDrag = null;
@@ -4632,7 +4684,7 @@ hintTxt: 'DRAG TO TURN · POINT AT THE SENSOR ·',
 goTop: this.qGo(0), goAbout: this.qGo(this.qAt.about), goBuild: this.qGo(this.qAt.build), goArchive: this.qGo(this.qAt.archive), goNext: this.qGo(this.qAt.next), goNotify: this.qGo(this.qAt.notify), goFaq: this.qGo(this.qAt.faq), goTracks: this.qGo(this.qAt.why), goEnd: this.qGo(-1),
 wmR: ((1 - wmF) * 100).toFixed(2) + '%', wmX: (wmF * 1008).toFixed(1) + 'px', wmEo: wmF > 0.002 && wmF < 0.995 ? 1 : 0,
 syTxt: T('sy', synced ? 'IT WORKS · SEE YOU AT THE BENCH' : 'BOOTING'), syC: synced ? '#F2B84B' : '#9BACA4', syD: synced ? '#F2B84B' : '#9BACA4', syG: synced ? '0px 0px 10px rgba(242,184,75,0.9)' : 'none',
-nv: { g: T('n6', 'WHY'), a: T('n0', 'ABOUT'), b: T('n1', 'THE BUILD'), c: T('n2', 'ARCHIVE'), d: T('n3', "WHAT'S NEXT"), e: T('n4', 'FAQ'), f: T('n5', 'OPENING SOON') },
+nv: { g: T('n6', 'WHY'), a: T('n0', 'ABOUT'), b: T('n1', 'THE BUILD'), c: T('n2', 'ARCHIVE'), d: T('n3', "WHAT'S NEXT"), e: T('n4', 'FAQ'), f: T('n5', 'GET NOTIFIED'), h: T('n7', 'REGISTER NOW') },
 k: k.toFixed(4), sw: (1440 + 2 * xw).toFixed(1) + 'px', xw: xw.toFixed(1) + 'px', xw2: (2 * xw).toFixed(1) + 'px', yh: yh.toFixed(1) + 'px',
 bootNum: (16 * (1 - Math.pow(1 - cl(bt / 1750), 2.4))).toFixed(3),
 hOp: O.hero.toFixed(3), hY: (-50 * ss(0.3, 1.0, sp)).toFixed(1) + 'px',
@@ -4692,8 +4744,10 @@ faqs
       <a href="#m-next">NEXT</a>
       <a href="#m-why">WHY</a>
       <a href="#m-faq">FAQ</a>
-      <a href="#m-notify" class="mk-mnav-cta">OPENING SOON</a>
+      <a href="#m-notify" class="mk-mnav-cta">GET NOTIFIED</a>
+      <a href="/register" class="mk-mnav-reg">REGISTER<span class="mk-reg-now"> NOW</span></a>
     </div>
+    <a href="/register" class="mk-mreg">REGISTER</a>
     <button class="mk-mham" id="mk-ham" aria-label="Toggle navigation" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -4707,7 +4761,8 @@ faqs
     <a href="#m-next">NEXT</a>
     <a href="#m-why">WHY</a>
     <a href="#m-faq">FAQ</a>
-    <a href="#m-notify" class="mk-draw-cta">OPENING SOON →</a>
+    <a href="/register" class="mk-draw-reg">REGISTER NOW →</a>
+    <a href="#m-notify" class="mk-draw-cta">GET NOTIFIED →</a>
   </div>
 
   <!-- Ticker -->
@@ -5016,7 +5071,7 @@ faqs
           <span class="mk-mfaq-q">Who can take part?</span>
           <span class="mk-mfaq-pm"></span>
         </button>
-        <p id="mk-mfaq-a2" class="mk-mfaq-a">Teams of 3 to 5 members: undergraduate students, research scholars and working professionals.</p>
+        <p id="mk-mfaq-a2" class="mk-mfaq-a">Teams of 3 to 5 members: undergraduate and postgraduate students, research scholars and working professionals.</p>
       </div>
       <div class="mk-mfaq-item">
         <button type="button" class="mk-mfaq-btn" aria-expanded="false" aria-controls="mk-mfaq-a3">
@@ -5114,6 +5169,7 @@ faqs
           <span>ALL SYSTEMS OPERATIONAL</span>
         </div>
         <div class="mk-mfooter-org">SCHOOL OF ELECTRICAL ENGINEERING · VIT VELLORE</div>
+        <div class="mk-mfooter-legal"><a href="/privacy">PRIVACY</a><a href="/terms">TERMS</a></div>
         <a href="#top-mobile" class="mk-mfooter-top">BACK TO TOP ↑</a>
       </div>
     </div>
