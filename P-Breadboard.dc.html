@@ -720,6 +720,9 @@ x-dc{display:none!important}
   margin: 0 0 8px;
 }
 .mk-mnotify h2 span { display: block; }
+.mk-mnotify h2 .mk-gold { color: #F2B84B; }
+.mk-msoon { display: flex; align-items: center; gap: 12px; margin-top: 22px; padding: 16px 18px; border: 1px solid #F2B84B; font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: .16em; color: #F2B84B; }
+.mk-msoon span { flex-shrink: 0; width: 7px; height: 7px; border-radius: 50%; background: #F2B84B; box-shadow: 0 0 10px rgba(242,184,75,.9); animation: k-pulse 2s ease-in-out infinite; }
 .mk-mnotify p {
   font-size: 17px;
   line-height: 1.45;
@@ -1691,7 +1694,7 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 </style>
 </helmet>
 <div ref="{{qRootRef}}" onScroll="{{qOnScroll}}" class="k-root" data-calm="{{calm}}" style="position: relative; height: 100vh; overflow-x: hidden; overflow-y: auto; background-color: #17261F">
-<a class="k-skip k-mono" href="#notify" onClick="{{goNotify}}">SKIP TO SIGN-UP</a>
+<a class="k-skip k-mono" href="#notify" onClick="{{goNotify}}">SKIP TO REGISTRATION</a>
 <div ref="{{qFadeRef}}" class="k-fade" aria-hidden="true"></div>
 <button ref="{{qFlowRef}}" type="button" class="k-flow is-off"><svg class="k-flow-a k-flow-l" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg><span class="k-flow-t"></span><i class="k-flow-c"></i><svg class="k-flow-a k-flow-r" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></button>
 <div ref="{{qCurRef}}" class="k-cur" aria-hidden="true">
@@ -1757,7 +1760,7 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <div><dt>HOSTED BY</dt><dd>SELECT · VIT VELLORE</dd></div>
 <div><dt>DATES</dt><dd style="display: flex; align-items: center; gap: 8px; color: #F2B84B"><span class="k-led" style="width: 7px; height: 7px; border-radius: 50%; background-color: #F2B84B"></span>19–20 JAN 2027</dd></div>
 </dl>
-<a href="#notify" class="k-btnO k-mono" onClick="{{goNotify}}" tabindex="{{heroTab}}" style="pointer-events: {{hPe}}">GET NOTIFIED <span class="k-arr" aria-hidden="true">→</span></a>
+<a href="#notify" class="k-btnO k-mono" onClick="{{goNotify}}" tabindex="{{heroTab}}" style="pointer-events: {{hPe}}">OPENING SOON <span class="k-arr" aria-hidden="true">→</span></a>
 </div>
 </div>
 </div>
@@ -1846,22 +1849,9 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 
 <div class="{{suCls}}" style="position: absolute; left: calc(796px + {{xw2}}); top: 186px; width: 600px; opacity: {{suOp}}; transform: translateY({{suY}}); pointer-events: {{suPe}}">
 <div class="k-mono k-eb" style="font-size: 14px; letter-spacing: 0.18em; color: #F2B84B">{{ebSu}}</div>
-<h2 id="notify" style="margin: 12px 0px 0px; font-weight: 600; font-size: 132px; line-height: 0.92; letter-spacing: 0.02em"><span class="k-ln"><span>HEAR IT</span></span><span class="k-ln"><span style="transition-delay: 0.09s">FIRST.</span></span></h2>
-<p style="margin: 22px 0px 0px; max-width: 540px; font-size: 24px; line-height: 1.42; color: #C1CBC6">Get an email the moment registrations open and problem statements for Makeathon 2027 are released.</p>
-<sc-if value="{{notSent}}" hint-placeholder-val="{{ true }}">
-<label for="k-email" class="k-mono" style="display: block; margin-top: 28px; font-size: 13px; letter-spacing: 0.16em; color: #9BACA4">EMAIL ADDRESS</label>
-<div class="k-field {{shk}}" style="display: flex; margin-top: 8px; width: 584px">
-<input id="k-email" class="k-in {{inCls}}" type="email" inputmode="email" autocomplete="email" spellcheck="false" placeholder="you@college.edu" value="{{email}}" onChange="{{onEmail}}" onKeyDown="{{onKey}}" onFocus="{{suFocus}}" aria-invalid="{{errInv}}" aria-describedby="k-email-msg" style="flex-grow: 1; height: 58px; box-sizing: border-box; padding: 0px 18px; background-color: rgba(23,38,31,0.35); border: 1px solid rgba(237,241,239,0.7); border-right: none; color: #EDF1EF; font-family: 'DM Mono', monospace; font-size: 16px; outline: none">
-<button ref="{{qMagB}}" type="button" class="k-btn" onClick="{{onSend}}" onFocus="{{suFocus}}" aria-busy="{{busy}}" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-width: 172px; height: 58px; padding: 0px 26px; background-color: #F2B84B; color: #17261F; border: none; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 20px; letter-spacing: 0.12em; cursor: pointer">
-<sc-if value="{{sending}}" hint-placeholder-val="{{ false }}"><span class="k-ph3" aria-hidden="true"><i></i><i></i><i></i></span>SENDING</sc-if>
-<sc-if value="{{idle}}" hint-placeholder-val="{{ true }}">NOTIFY ME <span class="k-arr" aria-hidden="true">→</span></sc-if>
-</button>
-</div>
-<div id="k-email-msg" class="k-mono" aria-live="polite" style="margin-top: 10px; min-height: 16px; font-size: 13px; letter-spacing: 0.12em; color: #F29A88">{{err}}</div>
-</sc-if>
-<sc-if value="{{sent}}" hint-placeholder-val="{{ false }}">
-<div class="k-stamp" style="margin-top: 28px; width: 584px; box-sizing: border-box; border: 1px solid #F2B84B; padding: 18px 20px"><div class="k-mono" style="font-size: 13px; letter-spacing: 0.16em; color: #F2B84B">YOU'RE ON THE LIST · PIXEL {{yourSlot}}</div><div style="font-size: 23px; line-height: 1.35; margin-top: 6px">We will write to {{email}} as soon as registrations open for Makeathon 2027. Your pixel is lit on the ring, and the board says hello.</div></div>
-</sc-if>
+<h2 id="notify" style="margin: 12px 0px 0px; font-weight: 600; font-size: 132px; line-height: 0.92; letter-spacing: 0.02em"><span class="k-ln"><span>OPENING</span></span><span class="k-ln"><span style="transition-delay: 0.09s; color: #F2B84B">SOON.</span></span></h2>
+<p style="margin: 22px 0px 0px; max-width: 540px; font-size: 24px; line-height: 1.42; color: #C1CBC6">Registrations for Makeathon 2027 are not open yet. The registration link and problem statements will be announced here soon.</p>
+<div style="display: flex; align-items: center; gap: 14px; margin-top: 28px; width: 584px; box-sizing: border-box; border: 1px solid #F2B84B; padding: 18px 20px"><span aria-hidden="true" style="flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%; background-color: #F2B84B; box-shadow: 0px 0px 10px rgba(242,184,75,0.9); animation: k-pulse 2s ease-in-out infinite"></span><span class="k-mono" style="font-size: 15px; letter-spacing: 0.16em; color: #F2B84B">REGISTRATIONS · OPENING SOON</span></div>
 <div class="k-mono" style="display: flex; gap: 30px; margin-top: 26px; font-size: 13px; letter-spacing: 0.16em">
 <a href="#contact" class="k-ul" onClick="{{goFaq}}" style="color: #F2B84B">PARTNER WITH US <span class="k-arr" aria-hidden="true">→</span></a>
 <a href="./makeathon-2027-brochure.pdf" download class="k-ul">DOWNLOAD BROCHURE</a>
@@ -1926,7 +1916,7 @@ html.mk-ph3d,html.mk-ph3d body{height:100%;overflow:hidden}
 <a href="#top" class="k-ul" onClick="{{goTop}}" style="color: #F2B84B">BACK TO TOP ↑</a>
 </div>
 <div class="k-mono" style="position: absolute; left: 0px; right: 0px; top: 560px; display: flex; justify-content: center; gap: 22px">
-<a href="#notify" class="k-btnO" onClick="{{goNotify}}">GET NOTIFIED <span class="k-arr" aria-hidden="true">→</span></a>
+<a href="#notify" class="k-btnO" onClick="{{goNotify}}">OPENING SOON <span class="k-arr" aria-hidden="true">→</span></a>
 <a href="#contact" class="k-btnO" onClick="{{goFaq}}" style="border-color: rgba(237,241,239,0.45); color: #EDF1EF">PARTNER WITH US <span class="k-arr" aria-hidden="true">→</span></a>
 </div>
 </div>
@@ -2010,8 +2000,8 @@ qFlowInit() {
 const b = this.qFlowEl; if (!b) return;
 this.qFlowTx = b.querySelector('.k-flow-t'); this.qFlowTgt = null;
 const A = this.qAt;
-this.qFlowDesk = [['ABOUT', A.about, 1.1], ['THE BUILD', A.build, 3.4], ['FIRMWARE', A.firmware, 9.4], ['IT WORKS', A.works, 12.6], ['ARCHIVE', A.archive, 14.4], ["WHAT'S NEXT", A.next, 19.2], ['STAY UPDATED', A.notify, 21.8], ['WHY', A.why, 23.35], ['FAQ & CONTACT', A.faq, 25.0], ['VIT × SELECT', A.hosts, 26.7]];
-this.qFlowPhone = [['ABOUT', 0, 'm-about'], ['THE BUILD', 0, 'm-build'], ['ARCHIVE', 0, 'm-archive'], ["WHAT'S NEXT", 0, 'm-next'], ['WHY', 0, 'm-why'], ['VIT × SELECT', 0, 'm-hosts'], ['FAQ', 0, 'm-faq'], ['STAY UPDATED', 0, 'm-notify']];
+this.qFlowDesk = [['ABOUT', A.about, 1.1], ['THE BUILD', A.build, 3.4], ['FIRMWARE', A.firmware, 9.4], ['IT WORKS', A.works, 12.6], ['ARCHIVE', A.archive, 14.4], ["WHAT'S NEXT", A.next, 19.2], ['REGISTRATION', A.notify, 21.8], ['WHY', A.why, 23.35], ['FAQ & CONTACT', A.faq, 25.0], ['VIT × SELECT', A.hosts, 26.7]];
+this.qFlowPhone = [['ABOUT', 0, 'm-about'], ['THE BUILD', 0, 'm-build'], ['ARCHIVE', 0, 'm-archive'], ["WHAT'S NEXT", 0, 'm-next'], ['WHY', 0, 'm-why'], ['VIT × SELECT', 0, 'm-hosts'], ['FAQ', 0, 'm-faq'], ['REGISTRATION', 0, 'm-notify']];
 b.addEventListener('click', () => {
 const t = this.qFlowTgt; if (!t) return;
 if (!this.qPh3D) { this.qGo(t[1])(); return; }
@@ -2061,7 +2051,7 @@ qPhBuild() {
 const meta = [['FORMAT', 'HARDWARE HACKATHON'], ['HOSTED BY', 'SELECT · VIT VELLORE'], ['DATES', '19–20 JAN 2027'], ['PRIZE POOL', '₹1,00,000']].map((r) => '<div><dt>' + r[0] + '</dt><dd' + (r[0] === 'FORMAT' || r[0] === 'HOSTED BY' ? '' : ' style="color:#F2B84B"') + '>' + r[1] + '</dd></div>').join('');
 this.qPhEl.innerHTML =
 '<div class="k-pc-t"><div class="k-pc-yr">2027</div><h1 class="k-pc-hero">MAKEATHON</h1></div>' +
-'<div class="k-pc-b"><dl class="k-pc-meta">' + meta + '</dl><div class="k-pc-cta"><a href="#m-notify" class="mk-btn-primary">GET NOTIFIED →</a><a href="#m-faq" class="mk-btn-outline">FAQ</a></div><div class="k-pc-hint">DRAG TO TURN · TAP THE BUTTON · SCROLL ↓</div></div>';
+'<div class="k-pc-b"><dl class="k-pc-meta">' + meta + '</dl><div class="k-pc-cta"><a href="#m-notify" class="mk-btn-primary">OPENING SOON →</a><a href="#m-faq" class="mk-btn-outline">FAQ</a></div><div class="k-pc-hint">DRAG TO TURN · TAP THE BUTTON · SCROLL ↓</div></div>';
 }
 qBoot() {
 this.qT0 = performance.now() + 1e7; this.qB0 = 0;
@@ -4619,7 +4609,7 @@ for (let r = 0; r < 8; r++) { const t = cl((scan - (r + 0.55) / 8) / 0.05); v['r
 // chapters, nav, the frame trace
 const B = [0, 1.1, 3.4, 9.4, 12.6, 14.4, 19.2, 21.8, 23.35, 25.0, 26.7];
 let ch = 0; B.forEach((b, i) => { if (sp >= b) ch = i; });
-const CH = ['MAKEATHON 2027', 'STATEMENT', 'THE BUILD', 'FIRMWARE', 'IT WORKS', 'ARCHIVE', "WHAT'S NEXT", 'STAY UPDATED', 'WHY', 'FAQ & CONTACT', 'VIT × SELECT'];
+const CH = ['MAKEATHON 2027', 'STATEMENT', 'THE BUILD', 'FIRMWARE', 'IT WORKS', 'ARCHIVE', "WHAT'S NEXT", 'REGISTRATION', 'WHY', 'FAQ & CONTACT', 'VIT × SELECT'];
 const fw = Math.max(0, s.w - 40), fh = Math.max(0, s.h - 40), fper = 2 * (fw + fh) || 1;
 const ptAt = (u) => { let d = cl(u) * fper; if (d <= fw) return [20 + d, 20]; d -= fw; if (d <= fh) return [20 + fw, 20 + d]; d -= fh; if (d <= fw) return [20 + fw - d, 20 + fh]; d -= fw; return [20, 20 + fh - d]; };
 const fp = cl(sp / TOTALR), spk = ptAt(fp);
@@ -4642,7 +4632,7 @@ hintTxt: 'DRAG TO TURN · POINT AT THE SENSOR ·',
 goTop: this.qGo(0), goAbout: this.qGo(this.qAt.about), goBuild: this.qGo(this.qAt.build), goArchive: this.qGo(this.qAt.archive), goNext: this.qGo(this.qAt.next), goNotify: this.qGo(this.qAt.notify), goFaq: this.qGo(this.qAt.faq), goTracks: this.qGo(this.qAt.why), goEnd: this.qGo(-1),
 wmR: ((1 - wmF) * 100).toFixed(2) + '%', wmX: (wmF * 1008).toFixed(1) + 'px', wmEo: wmF > 0.002 && wmF < 0.995 ? 1 : 0,
 syTxt: T('sy', synced ? 'IT WORKS · SEE YOU AT THE BENCH' : 'BOOTING'), syC: synced ? '#F2B84B' : '#9BACA4', syD: synced ? '#F2B84B' : '#9BACA4', syG: synced ? '0px 0px 10px rgba(242,184,75,0.9)' : 'none',
-nv: { g: T('n6', 'WHY'), a: T('n0', 'ABOUT'), b: T('n1', 'THE BUILD'), c: T('n2', 'ARCHIVE'), d: T('n3', "WHAT'S NEXT"), e: T('n4', 'FAQ'), f: T('n5', 'GET NOTIFIED') },
+nv: { g: T('n6', 'WHY'), a: T('n0', 'ABOUT'), b: T('n1', 'THE BUILD'), c: T('n2', 'ARCHIVE'), d: T('n3', "WHAT'S NEXT"), e: T('n4', 'FAQ'), f: T('n5', 'OPENING SOON') },
 k: k.toFixed(4), sw: (1440 + 2 * xw).toFixed(1) + 'px', xw: xw.toFixed(1) + 'px', xw2: (2 * xw).toFixed(1) + 'px', yh: yh.toFixed(1) + 'px',
 bootNum: (16 * (1 - Math.pow(1 - cl(bt / 1750), 2.4))).toFixed(3),
 hOp: O.hero.toFixed(3), hY: (-50 * ss(0.3, 1.0, sp)).toFixed(1) + 'px',
@@ -4670,7 +4660,7 @@ rlOp: (ss(15.75, 16.05, sp) * (1 - ss(18.4, 18.7, sp))).toFixed(3), rlY: ((1 - s
 rsY: rsY.toFixed(1) + 'px', rsOp, ticks, capNum: pad2(rn + 1), capTitle: REEL[rn][0].toUpperCase(), capSub: REEL[rn][1].toUpperCase(),
 nxCls: rv(O.nxOp, sp > 21), ebNx: T('nx', "WHAT'S NEXT"), ebSp: T('nx', 'SPECIFICATION · MAKEATHON 2027'), nxOp: O.nxOp.toFixed(3), nxY: (-30 * ss(21.2, 21.6, sp)).toFixed(1) + 'px',
 scanY: (46 + scan * 8 * 58).toFixed(1) + 'px', scanOp: scan > 0 && scan < 1 ? 1 : 0,
-suCls: rv(O.suOp, sp > 23), ebSu: T('su', 'STAY UPDATED'), suOp: O.suOp.toFixed(3), suY: ((1 - O.suOp) * 30).toFixed(1) + 'px', suPe: O.suOp > 0.5 ? 'auto' : 'none',
+suCls: rv(O.suOp, sp > 23), ebSu: T('su', 'REGISTRATION'), suOp: O.suOp.toFixed(3), suY: ((1 - O.suOp) * 30).toFixed(1) + 'px', suPe: O.suOp > 0.5 ? 'auto' : 'none',
 yourSlot: this.qYour >= 0 ? pad2(this.qYour + 1) : '—',
 benchOp: (ss(4.9, 5.2, sp) * (1 - ss(13.9, 14.2, sp))).toFixed(3), benchV: bench[0], benchA: bench[1],
 hudOp: (ss(0.4, 0.8, sp) * (1 - ss(27.7, 28, sp))).toFixed(3),
@@ -4702,7 +4692,7 @@ faqs
       <a href="#m-next">NEXT</a>
       <a href="#m-why">WHY</a>
       <a href="#m-faq">FAQ</a>
-      <a href="#m-notify" class="mk-mnav-cta">GET NOTIFIED</a>
+      <a href="#m-notify" class="mk-mnav-cta">OPENING SOON</a>
     </div>
     <button class="mk-mham" id="mk-ham" aria-label="Toggle navigation" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -4717,7 +4707,7 @@ faqs
     <a href="#m-next">NEXT</a>
     <a href="#m-why">WHY</a>
     <a href="#m-faq">FAQ</a>
-    <a href="#m-notify" class="mk-draw-cta">GET NOTIFIED →</a>
+    <a href="#m-notify" class="mk-draw-cta">OPENING SOON →</a>
   </div>
 
   <!-- Ticker -->
@@ -4776,7 +4766,7 @@ faqs
         </div>
       </dl>
       <div class="mk-mhero-cta">
-        <a href="#m-notify" class="mk-btn-primary">GET NOTIFIED →</a>
+        <a href="#m-notify" class="mk-btn-primary">OPENING SOON →</a>
         <a href="#m-faq" class="mk-btn-outline">FAQ</a>
       </div>
     </div>
@@ -5096,32 +5086,11 @@ faqs
   <div class="mk-mnotify" id="m-notify">
     <div class="mk-mnotify-bg" aria-hidden="true"></div>
     <div style="position:relative">
-      <div class="mk-msec-label">SIGN UP</div>
-      <h2><span>HEAR IT</span><span>FIRST.</span></h2>
-      <p>Get an email the moment registrations open and problem statements for Makeathon 2027 are released.</p>
+      <div class="mk-msec-label">REGISTRATION</div>
+      <h2><span>OPENING</span><span class="mk-gold">SOON.</span></h2>
+      <p>Registrations for Makeathon 2027 are not open yet. The registration link and problem statements will be announced here soon.</p>
 
-      <div id="mk-m-form-wrap">
-        <div class="mk-mfield">
-          <input
-            class="mk-minput"
-            id="mk-m-email"
-            type="email"
-            inputmode="email"
-            autocomplete="email"
-            placeholder="you@college.edu"
-            aria-label="Email address"
-          >
-          <button type="button" class="mk-msubmit" id="mk-m-submit">
-            NOTIFY ME →
-          </button>
-        </div>
-        <div class="mk-merr" id="mk-m-err" aria-live="polite"></div>
-      </div>
-
-      <div class="mk-msuccess" id="mk-m-success" aria-live="polite">
-        <div class="mk-msuccess-title">YOU'RE ON THE LIST</div>
-        <div class="mk-msuccess-body">We will write to you as soon as registrations open for Makeathon 2027.</div>
-      </div>
+      <div class="mk-msoon"><span aria-hidden="true"></span>REGISTRATIONS · OPENING SOON</div>
 
       <div class="mk-mlinks">
         <a href="mailto:enquiry@makeathon.in?subject=Makeathon%202027%20partnership">PARTNER WITH US →</a>
@@ -5136,7 +5105,7 @@ faqs
     <div style="position:relative">
       <div class="mk-mfooter-logo" aria-hidden="true">MAKEATHON <span>2027</span></div>
       <div class="mk-mfooter-cta">
-        <a href="#m-notify" class="mk-btn-primary">GET NOTIFIED →</a>
+        <a href="#m-notify" class="mk-btn-primary">OPENING SOON →</a>
         <a href="mailto:enquiry@makeathon.in?subject=Makeathon%202027%20partnership" class="mk-btn-outline">PARTNER WITH US →</a>
       </div>
       <div class="mk-mfooter-bottom">
